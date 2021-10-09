@@ -21,21 +21,21 @@ public:
 
 private:
     // private methods
-    bool CompUnit() {
-        Decl();
-        FuncDef();
-        if (!MainFuncDef()) {
-            throw MyException();
-        }
-        return true;
-    }
-
-    bool Decl() {
-        if (!ConstDecl() && !VarDecl()) {
-            throw MyException();
-        }
-        return true;
-    }
+//    bool CompUnit() {
+//        Decl();
+//        FuncDef();
+//        if (!MainFuncDef()) {
+//            throw MyException();
+//        }
+//        return true;
+//    }
+//
+//    bool Decl() {
+//        if (!ConstDecl() && !VarDecl()) {
+//            throw MyException();
+//        }
+//        return true;
+//    }
 };
 
 

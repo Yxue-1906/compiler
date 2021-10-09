@@ -6,35 +6,28 @@
 #define PARSER_MYOUTPUT_H
 
 #include <iostream>
+#include <fstream>
 
 class MyOutput {
 public:
 
-    template<typename First, typename ...Rest>
-    static void myOutputLexer(First &&, Rest &&...);
-
-    template<typename First, typename ...Rest>
-    static void myOutputParser(First &&, Rest &&...);
-
-    static bool setOutputOption(int type);
-
 private:
-    static bool LexerOutput;
-    static bool ParserOutput;
+    static std::ofstream out{"output.txt"};
+public:
+
+    MyOutput(bool);
+
+    template<class F>
+    MyOutput operator<<(F f) {
+        if (enable)std::cout << f;
+        return *this;
+    }
+
+    bool setEnable(bool);
+
+public:
+    bool enable = false;
 };
 
-template<typename First, typename ...Rest>
-void MyOutput::myOutputLexer(First &&first, Rest &&...rest) {
-    if (!LexerOutput)return;
-    std::cout << std::forward<First>(first);
-    myOutput(std::forward<Rest>(rest)...);
-}
-
-template<typename First, typename ...Rest>
-void MyOutput::myOutputParser(First &&first, Rest &&...rest) {
-    if (!ParserOutput)return;
-    std::cout << std::forward<First>(first);
-    myOutput(std::forward<Rest>(rest)...);
-}
 
 #endif //PARSER_MYOUTPUT_H

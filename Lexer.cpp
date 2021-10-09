@@ -6,6 +6,7 @@
 #include "Lexer.h"
 #include "MyException.h"
 #include "MyDefination.h"
+#include "MyOutput.h"
 
 //Lexer::Lexer(std::ifstream ifs) {
 //    this->ifs = ifs;
@@ -17,17 +18,42 @@ Lexer::Lexer(std::string str) {
     this->ifs.open(str, std::ios::in);
     getline(ifs, now_line), ++line_count;
     now_char_p = now_line.begin();
+    now_look_forward_p = now_line.begin();
 }
 
 Lexer::~Lexer() {
     this->ifs.close();
 }
 
-//bool Lexer::isWhitespace(typeof(std::string::iterator) ite) {
-//    if (*ite != 32 && *ite != 33 && (*ite < 40 || *ite > 126))return true;
-//    return false;
-//}
-bool Lexer::isal_num(int ch) {
+/**
+ * take in a string for pre-read, an optional tailJudge to judge if tail meets requirement
+ * @param chs a string to match
+ * @param tailJudge must return ture if tail meets requirement; false if not
+ * @return ture if pre-read successful and move ite forward; false if pre-read fail
+ */
+bool Lexer::safeLookAhead(const std::string chs, std::function<bool(std::string::iterator)> tailJudge = {}) {
+    if (now_look_forward_p != now_char_p)now_look_forward_p = now_char_p;
+    for (auto ite = chs.begin(); ite != chs.end(); ++ite) {
+        if (now_look_forward_p != now_line.end() && *now_look_forward_p == *ite) {
+            ++now_look_forward_p;
+        } else {
+            now_look_forward_p = now_char_p;
+            return false;
+        }
+    }
+    if (tailJudge) {
+        if (!tailJudge(now_look_forward_p)) {
+            now_look_forward_p = now_char_p;
+            return false;
+        } else {
+            ++now_look_forward_p;
+        }
+    }
+    now_char_p = now_look_forward_p;
+    return true;
+}
+
+bool Lexer::isAlNum(int ch) {
     return std::isalnum(ch) || ch == '_';
 }
 
@@ -71,480 +97,170 @@ bool Lexer::jumpComment(int type) {
 }
 
 bool Lexer::getSymbol(std::string *const ans, int *const type) {
-    switch (*now_char_p) {
-        case '!': {
-            (*ans).push_back('!');
-            *type = NOT;
-            ++now_char_p;
-            if (now_char_p != now_line.end() && *now_char_p == '=') {
-                (*ans).push_back('=');
-                *type = NEQ;
-                ++now_char_p;
-            }
-            return true;
-        }
-        case '%': {
-            (*ans).push_back('%');
-            *type = MOD;
-            ++now_char_p;
-            return true;
-        }
-        case '&': {
-            if (now_char_p + 1 != now_line.end() && *(now_char_p + 1) == '&') {
-                (*ans).append("&&");
-                now_char_p += 2;
-                *type = AND;
-            } else {
-                throw MyException();
-            }
-            return true;
-        }
-        case '(': {
-            (*ans).push_back('(');
-            *type = LPARENT;
-            ++now_char_p;
-            return true;
-        }
-        case ')': {
-            (*ans).push_back(')');
-            *type = RPARENT;
-            ++now_char_p;
-            return true;
-        }
-        case '*': {
-            (*ans).push_back('*');
-            *type = MULT;
-            ++now_char_p;
-            return true;
-        }
-        case '+': {
-            (*ans).push_back('+');
-            *type = PLUS;
-            ++now_char_p;
-            return true;
-        }
-        case ',': {
-            (*ans).push_back(',');
-            *type = COMMA;
-            ++now_char_p;
-            return true;
-        }
-        case '-': {
-            (*ans).push_back('-');
-            *type = MINU;
-            ++now_char_p;
-            return true;
-        }
-        case '/': {
-            if (now_char_p + 1 != now_line.end()) {
-                if (*(now_char_p + 1) == '/') {
-                    jumpComment(0);
-                    *type = COMMENT;
-                    return true;
-                } else if (*(now_char_p + 1) == '*') {
-                    jumpComment(1);
-                    *type = COMMENT;
-                    return true;
-                }
-            }
-            (*ans).push_back('/');
-            *type = DIV;
-            ++now_char_p;
-            return true;
-        }
-        case ';': {
-            (*ans).push_back(';');
-            *type = SEMICN;
-            ++now_char_p;
-            return true;
-        }
-        case '<': {
-            (*ans).push_back('<');
-            *type = LSS;
-            ++now_char_p;
-            if (now_char_p != now_line.end() && *now_char_p == '=') {
-                (*ans).push_back('=');
-                *type = LEQ;
-                ++now_char_p;
-            }
-            return true;
-        }
-        case '=': {
-            (*ans).push_back('=');
-            *type = ASSIGN;
-            ++now_char_p;
-            if (now_char_p != now_line.end() && *now_char_p == '=') {
-                (*ans).push_back('=');
-                *type = EQL;
-                ++now_char_p;
-            }
-            return true;
-        }
-        case '>': {
-            (*ans).push_back('>');
-            *type = GRE;
-            ++now_char_p;
-            if (now_char_p != now_line.end() && *now_char_p == '=') {
-                (*ans).push_back('=');
-                *type = GEQ;
-                ++now_char_p;
-            }
-            return true;
-        }
-        case '[': {
-            (*ans).push_back('[');
-            *type = LBRACK;
-            ++now_char_p;
-            return true;
-        }
-        case ']': {
-            (*ans).push_back(']');
-            *type = RBRACK;
-            ++now_char_p;
-            return true;
-        }
-        case 'b': {
-            if (now_char_p + 1 == now_line.end() || *(now_char_p + 1) != 'r') {
-                *type = OTHER;
-                break;
-            }
-            if (now_char_p + 2 == now_line.end() || *(now_char_p + 2) != 'e') {
-                *type = OTHER;
-                break;
-            }
-            if (now_char_p + 3 == now_line.end() || *(now_char_p + 3) != 'a') {
-                *type = OTHER;
-                break;
-            }
-            if (now_char_p + 4 == now_line.end() || *(now_char_p + 4) != 'k') {
-                *type = OTHER;
-                break;
-            }
-            if (now_char_p + 5 != now_line.end() && Lexer::isal_num(*(now_char_p + 5))) {
-                *type = OTHER;
-                break;
-            }
-            (*ans).append("break");
-            *type = BREAKTK;
-            now_char_p += 5;
-            return true;
-        }
-        case 'c': {
-            if (now_char_p + 1 == now_line.end() || *(now_char_p + 1) != 'o') {
-                *type = OTHER;
-                break;
-            }
-            if (now_char_p + 2 == now_line.end() || *(now_char_p + 2) != 'n') {
-                *type = OTHER;
-                break;
-            }
-            if (now_char_p + 3 != now_line.end()) {
-                switch (*(now_char_p + 3)) {
-                    case 's': {
-                        if (now_char_p + 4 == now_line.end() || *(now_char_p + 4) != 't') {
-                            *type = OTHER;
-                            break;
-                        }
-                        if (now_char_p + 5 != now_line.end() && Lexer::isal_num(*(now_char_p + 5))) {
-                            *type = OTHER;
-                            break;
-                        }
-                        (*ans).append("const");
-                        *type = CONSTTK;
-                        now_char_p += 5;
-                        return true;
-                    }
-                    case 't': {
-                        if (now_char_p + 4 == now_line.end() || *(now_char_p + 4) != 'i') {
-                            *type = OTHER;
-                            break;
-                        }
-                        if (now_char_p + 5 == now_line.end() || *(now_char_p + 5) != 'n') {
-                            *type = OTHER;
-                            break;
-                        }
-                        if (now_char_p + 6 == now_line.end() || *(now_char_p + 6) != 'u') {
-                            *type = OTHER;
-                            break;
-                        }
-                        if (now_char_p + 7 == now_line.end() || *(now_char_p + 7) != 'e') {
-                            *type = OTHER;
-                            break;
-                        }
-                        if (now_char_p + 8 != now_line.end() && Lexer::isal_num(*(now_char_p + 8))) {
-                            *type = OTHER;
-                            break;
-                        }
-                        (*ans).append("continue");
-                        *type = CONTINUETK;
-                        now_char_p += 8;
-                        return true;
-                    }
-                    default:
-                        *type = OTHER;
-                }
-            } else {
-                *type = OTHER;
-                break;
-            }
-        }
-        case 'e': {
-            if (now_char_p + 1 == now_line.end() || *(now_char_p + 1) != 'l') {
-                *type = OTHER;
-                break;
-            }
-            if (now_char_p + 2 == now_line.end() || *(now_char_p + 2) != 's') {
-                *type = OTHER;
-                break;
-            }
-            if (now_char_p + 3 == now_line.end() || *(now_char_p + 3) != 'e') {
-                *type = OTHER;
-                break;
-            }
-            if (now_char_p + 4 != now_line.end() && Lexer::isal_num(*(now_char_p + 4))) {
-                *type = OTHER;
-                break;
-            }
-            (*ans).append("else");
-            *type = ELSETK;
-            now_char_p += 4;
-            return true;
-        }
-        case 'g': {
-            if (now_char_p + 1 == now_line.end() || *(now_char_p + 1) != 'e') {
-                *type = OTHER;
-                break;
-            }
-            if (now_char_p + 2 == now_line.end() || *(now_char_p + 2) != 't') {
-                *type = OTHER;
-                break;
-            }
-            if (now_char_p + 3 == now_line.end() || *(now_char_p + 3) != 'i') {
-                *type = OTHER;
-                break;
-            }
-            if (now_char_p + 4 == now_line.end() || *(now_char_p + 4) != 'n') {
-                *type = OTHER;
-                break;
-            }
-            if (now_char_p + 5 == now_line.end() || *(now_char_p + 5) != 't') {
-                *type = OTHER;
-                break;
-            }
-            if (now_char_p + 6 != now_line.end() && Lexer::isal_num(*(now_char_p + 6))) {
-                *type = OTHER;
-                break;
-            }
-            (*ans).append("getint");
-            *type = GETINTTK;
-            now_char_p += 6;
-            return true;
-        }
-        case 'i': {
-            if (now_char_p + 1 != now_line.end()) {
-                switch (*(now_char_p + 1)) {
-                    case 'f': {
-                        if (now_char_p + 2 != now_line.end() && Lexer::isal_num(*(now_char_p + 2))) {
-                            *type = OTHER;
-                            break;
-                        }
-                        (*ans).append("if");
-                        *type = IFTK;
-                        now_char_p += 2;
-                        return true;
-                    }
-                    case 'n': {
-                        if (now_char_p + 2 == now_line.end() || *(now_char_p + 2) != 't') {
-                            *type = OTHER;
-                            break;
-                        }
-                        if (now_char_p + 3 != now_line.end() && Lexer::isal_num(*(now_char_p + 3))) {
-                            *type = OTHER;
-                            break;
-                        }
-                        (*ans).append("int");
-                        *type = INTTK;
-                        now_char_p += 3;
-                        return true;
-                    }
-                }
-            } else {
-                *type = OTHER;
-                break;
-            }
-        }
-        case 'm': {
-            if (now_char_p + 1 == now_line.end() || *(now_char_p + 1) != 'a') {
-                *type = OTHER;
-                break;
-            }
-            if (now_char_p + 2 == now_line.end() || *(now_char_p + 2) != 'i') {
-                *type = OTHER;
-                break;
-            }
-            if (now_char_p + 3 == now_line.end() || *(now_char_p + 3) != 'n') {
-                *type = OTHER;
-                break;
-            }
-            if (now_char_p + 4 != now_line.end() && Lexer::isal_num(*(now_char_p + 4))) {
-                *type = OTHER;
-                break;
-            }
-            (*ans).append("main");
-            *type = MAINTK;
-            now_char_p += 4;
-            return true;
-        }
-        case 'p': {
-            if (now_char_p + 1 == now_line.end() || *(now_char_p + 1) != 'r') {
-                *type = OTHER;
-                break;
-            }
-            if (now_char_p + 2 == now_line.end() || *(now_char_p + 2) != 'i') {
-                *type = OTHER;
-                break;
-            }
-            if (now_char_p + 3 == now_line.end() || *(now_char_p + 3) != 'n') {
-                *type = OTHER;
-                break;
-            }
-            if (now_char_p + 4 == now_line.end() || *(now_char_p + 4) != 't') {
-                *type = OTHER;
-                break;
-            }
-            if (now_char_p + 5 == now_line.end() || *(now_char_p + 5) != 'f') {
-                *type = OTHER;
-                break;
-            }
-            if (now_char_p + 6 != now_line.end() && Lexer::isal_num(*(now_char_p + 6))) {
-                *type = OTHER;
-                break;
-            }
-            (*ans).append("printf");
-            *type = PRINTFTK;
-            now_char_p += 6;
-            return true;
-        }
-        case 'r': {
-            if (now_char_p + 1 == now_line.end() || *(now_char_p + 1) != 'e') {
-                *type = OTHER;
-                break;
-            }
-            if (now_char_p + 2 == now_line.end() || *(now_char_p + 2) != 't') {
-                *type = OTHER;
-                break;
-            }
-            if (now_char_p + 3 == now_line.end() || *(now_char_p + 3) != 'u') {
-                *type = OTHER;
-                break;
-            }
-            if (now_char_p + 4 == now_line.end() || *(now_char_p + 4) != 'r') {
-                *type = OTHER;
-                break;
-            }
-            if (now_char_p + 5 == now_line.end() || *(now_char_p + 5) != 'n') {
-                *type = OTHER;
-                break;
-            }
-            if (now_char_p + 6 != now_line.end() && Lexer::isal_num(*(now_char_p + 6))) {
-                *type = OTHER;
-                break;
-            }
-            (*ans).append("return");
-            *type = RETURNTK;
-            now_char_p += 6;
-            return true;
-        }
-        case 'v': {
-            if (now_char_p + 1 == now_line.end() || *(now_char_p + 1) != 'o') {
-                *type = OTHER;
-                break;
-            }
-            if (now_char_p + 2 == now_line.end() || *(now_char_p + 2) != 'i') {
-                *type = OTHER;
-                break;
-            }
-            if (now_char_p + 3 == now_line.end() || *(now_char_p + 3) != 'd') {
-                *type = OTHER;
-                break;
-            }
-            if (now_char_p + 4 != now_line.end() && Lexer::isal_num(*(now_char_p + 4))) {
-                *type = OTHER;
-                break;
-            }
-            (*ans).append("void");
-            *type = VOIDTK;
-            now_char_p += 4;
-            return true;
-        }
-        case 'w': {
-            if (now_char_p + 1 == now_line.end() || *(now_char_p + 1) != 'h') {
-                *type = OTHER;
-                break;
-            }
-            if (now_char_p + 2 == now_line.end() || *(now_char_p + 2) != 'i') {
-                *type = OTHER;
-                break;
-            }
-            if (now_char_p + 3 == now_line.end() || *(now_char_p + 3) != 'l') {
-                *type = OTHER;
-                break;
-            }
-            if (now_char_p + 4 == now_line.end() || *(now_char_p + 4) != 'e') {
-                *type = OTHER;
-                break;
-            }
-            if (now_char_p + 5 != now_line.end() && Lexer::isal_num(*(now_char_p + 5))) {
-                *type = OTHER;
-                break;
-            }
-            (*ans).append("while");
-            *type = WHILETK;
-            now_char_p += 5;
-            return true;
-        }
-        case '{': {
-            (*ans).push_back('{');
-            *type = LBRACE;
-            now_char_p++;
-            return true;
-        }
-        case '|': {
-            if (now_char_p + 1 != now_line.end() && *(now_char_p + 1) == '|') {
-                (*ans).append("||");
-                now_char_p += 2;
-                *type = OR;
-            } else {
-                throw MyException();
-            }
-            return true;
-        }
-        case '}': {
-            (*ans).push_back('}');
-            *type = RBRACE;
-            now_char_p++;
-            return true;
-        }
-        case '\"': {
-            Lexer::getStr(ans, type);
-            return true;
-        }
-        case '_': {
-            *type = IDENFR;
-            break;
-        }
-        default:
-            *type = OTHER;
-    }
-    return false;
-}
-
-bool Lexer::getIdent(std::string *const ans, int *const type) {
-    if (!std::isalpha(*now_char_p) && *now_char_p != '_') {
+    auto generalTailJudge = [this](std::string::iterator ite) {
+        if (ite == now_line.end() || !isAlNum(*ite))return true;
+        return false;
+    };
+    if (safeLookAhead("!=")) {
+        ans->append("!=");
+        *type = NEQ;
+        return true;
+    } else if (safeLookAhead("!")) {
+        ans->push_back('!');
+        *type = NOT;
+        return true;
+    } else if (safeLookAhead("%")) {
+        ans->push_back('%');
+        *type = MOD;
+        return true;
+    } else if (safeLookAhead("&&")) {
+        ans->append("&&");
+        *type = AND;
+        return true;
+    } else if (safeLookAhead("(")) {
+        ans->push_back('(');
+        *type = LPARENT;
+        return true;
+    } else if (safeLookAhead(")")) {
+        ans->push_back(')');
+        *type = RPARENT;
+        return true;
+    } else if (safeLookAhead("*")) {
+        ans->push_back('*');
+        *type = MULT;
+        return true;
+    } else if (safeLookAhead("+")) {
+        ans->push_back('+');
+        *type = PLUS;
+        return true;
+    } else if (safeLookAhead(",")) {
+        ans->push_back(',');
+        *type = COMMA;
+        return true;
+    } else if (safeLookAhead("-")) {
+        ans->push_back('-');
+        *type = MINU;
+        return true;
+    } else if (safeLookAhead("//")) {
+        jumpComment(LINE_COMMENT);
+        *type = OTHER;
+        return getSymbol(ans, type);
+    } else if (safeLookAhead("/*")) {
+        jumpComment(BLOCK_COMMENT);
+        *type = OTHER;
+        return getSymbol(ans, type);
+    } else if (safeLookAhead("/")) {
+        ans->push_back('/');
+        *type = DIV;
+        return true;
+    } else if (safeLookAhead(";")) {
+        ans->push_back(';');
+        *type = SEMICN;
+        return true;
+    } else if (safeLookAhead("<=")) {
+        ans->append("<=");
+        *type = LEQ;
+        return true;
+    } else if (safeLookAhead("<")) {
+        ans->push_back('<');
+        *type = LSS;
+        return true;
+    } else if (safeLookAhead("==")) {
+        ans->append("==");
+        *type = EQL;
+        return true;
+    } else if (safeLookAhead("=")) {
+        ans->push_back('=');
+        *type = EQL;
+        return true;
+    } else if (safeLookAhead(">=")) {
+        ans->append(">=");
+        *type = GEQ;
+        return true;
+    } else if (safeLookAhead(">")) {
+        ans->push_back('>');
+        *type = GRE;
+        return true;
+    } else if (safeLookAhead("[")) {
+        ans->push_back('[');
+        *type = LBRACK;
+        return true;
+    } else if (safeLookAhead("]")) {
+        ans->push_back(']');
+        *type = RBRACK;
+        return true;
+    } else if (safeLookAhead("break", generalTailJudge)) {
+        ans->append("break");
+        *type = BREAKTK;
+        return true;
+    } else if (safeLookAhead("const", generalTailJudge)) {
+        ans->append("const");
+        *type = CONSTTK;
+        return true;
+    } else if (safeLookAhead("continues", generalTailJudge)) {
+        ans->append("continues");
+        *type = CONTINUETK;
+        return true;
+    } else if (safeLookAhead("else", generalTailJudge)) {
+        ans->append("else");
+        *type = ELSETK;
+        return true;
+    } else if (safeLookAhead("getint", generalTailJudge)) {
+        ans->append("getint");
+        *type = GETINTTK;
+        return true;
+    } else if (safeLookAhead("if", generalTailJudge)) {
+        ans->append("if");
+        *type = IFTK;
+        return true;
+    } else if (safeLookAhead("int", generalTailJudge)) {
+        ans->append("int");
+        *type = INTCON;
+        return true;
+    } else if (safeLookAhead("main", generalTailJudge)) {
+        ans->append("main");
+        *type = MAINTK;
+        return true;
+    } else if (safeLookAhead("printf", generalTailJudge)) {
+        ans->append("printf");
+        *type = PRINTFTK;
+        return true;
+    } else if (safeLookAhead("return", generalTailJudge)) {
+        ans->append("return");
+        *type = RETURNTK;
+        return true;
+    } else if (safeLookAhead("void", generalTailJudge)) {
+        ans->append("void");
+        *type = VOIDTK;
+        return true;
+    } else if (safeLookAhead("while", generalTailJudge)) {
+        ans->append("while");
+        *type = WHILETK;
+        return true;
+    } else if (safeLookAhead("{")) {
+        ans->push_back('{');
+        *type = LBRACE;
+        return true;
+    } else if (safeLookAhead("||")) {
+        ans->append("||");
+        *type = OR;
+        return true;
+    } else if (safeLookAhead("}")) {
+        ans->push_back('}');
+        *type = RBRACE;
+        return true;
+    } else {
         *type = OTHER;
         return false;
     }
-    while (now_char_p != now_line.end() && Lexer::isal_num(*now_char_p)) {
+}
+
+bool Lexer::getIdent(std::string *const ans, int *const type) {
+    if (now_char_p == now_line.end() || (!std::isalpha(*now_char_p) && *now_char_p != '_')) {
+        *type = OTHER;
+        return false;
+    }
+    while (now_char_p != now_line.end() && isAlNum(*now_char_p)) {
         ans->push_back(*now_char_p);
         ++now_char_p;
     }
@@ -553,7 +269,7 @@ bool Lexer::getIdent(std::string *const ans, int *const type) {
 }
 
 bool Lexer::getConst(std::string *const ans, int *const type) {
-    if (!std::isdigit(*now_char_p)) {
+    if (now_char_p == now_line.end() || !std::isdigit(*now_char_p)) {
         *type = OTHER;
         return false;
     }
@@ -566,6 +282,11 @@ bool Lexer::getConst(std::string *const ans, int *const type) {
 }
 
 bool Lexer::getStr(std::string *const ans, int *const type) {
+    if (now_char_p == now_line.end() || *now_char_p != '"') {
+        *type = OTHER;
+        return false;
+    }
+    ++now_char_p;
     while (now_char_p != now_line.end()) {
         ans->push_back(*now_char_p);
         ++now_char_p;
@@ -587,11 +308,8 @@ bool Lexer::getWord(std::string **const ans, int *type) {
     }
     *ans = new std::string();
     try {
-        if (getSymbol(*ans, type)) {
-            return true;
-        } else if (getIdent(*ans, type)) {
-            return true;
-        } else if (getConst(*ans, type)) {
+        if (getSymbol(*ans, type) || getIdent(*ans, type) || getConst(*ans, type) || getStr(*ans, type)) {
+            lexerOutput << **ans << " " << name[*type] << '\n';
             return true;
         } else return false;
     } catch (MyException e) {

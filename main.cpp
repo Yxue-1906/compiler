@@ -13,8 +13,6 @@ int main() {
     std::string **strpp = (std::string **) malloc(sizeof(std::string *));
     int *type = (int *) malloc(sizeof(int));
     while (lexer.getWord(strpp, type)) {
-        if (*type != COMMENT)
-            ofs << name[*type] << ' ' << **strpp << std::endl;
         delete *strpp;
     }
     delete strpp;

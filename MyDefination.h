@@ -5,6 +5,8 @@
 #ifndef LEXER_MYDEFINATION_H
 #define LEXER_MYDEFINATION_H
 
+#include <map>
+
 const int IDENFR = 1;
 const int INTCON = 2;
 const int STRCON = 3;
@@ -87,4 +89,7 @@ static std::map<int, std::string> name = {
         {38, "RBRACE"},
         {39, "COMMENT"}
 };
+
+//#ifdef LEXER_OUTPUT
+//#define
 #endif //LEXER_MYDEFINATION_H

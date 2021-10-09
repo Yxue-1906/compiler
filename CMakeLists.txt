@@ -3,4 +3,4 @@ project(Parser)
 
 set(CMAKE_CXX_STANDARD 11)
 
-add_executable(Parser main.cpp Parser.cpp Parser.h MyOutput.cpp MyOutput.h)
+add_executable(Parser main.cpp Parser.cpp Parser.h MyOutput.cpp MyOutput.h Lexer.cpp MyException.cpp MyOutput.cpp MyOutput.h)
