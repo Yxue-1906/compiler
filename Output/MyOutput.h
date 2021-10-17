@@ -7,6 +7,7 @@
 
 #include "iostream"
 #include "fstream"
+#include "../Exception/MyException.h"
 
 class MyOutput {
 public:
@@ -15,10 +16,11 @@ private:
 public:
     static void setOutput(std::string);
 
+    virtual void myOutput() = 0;
+
 protected:
     std::ofstream &getOfs();
 
-    virtual void myOutput() = 0;
 };
 
 

@@ -56,6 +56,7 @@ private:
     static const int LINE_COMMENT = 0;
     static const int BLOCK_COMMENT = 1;
     std::vector<Token *> tokenList;
+    bool inited = false;
 
     std::ifstream ifs;
     std::string now_line;
@@ -69,8 +70,7 @@ public:
 
     ~Lexer();
 
-    bool getWord();
-
+    std::vector<Token *> getList();
 
 private:
     //bool isWhitespace(typeof(std::string::iterator));

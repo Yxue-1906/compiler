@@ -12,6 +12,7 @@ Lexer::Lexer(std::ifstream ifs) {
     this->ifs = std::move(ifs);
     ifs >> now_line;
     now_char_p = now_line.begin();
+    this->init();
 }
 
 //Lexer::Lexer(std::string str) {
@@ -23,6 +24,14 @@ Lexer::Lexer(std::ifstream ifs) {
 
 Lexer::~Lexer() {
     this->ifs.close();
+}
+
+std::vector<Token *> Lexer::getList() {
+    if (inited)return this->tokenList;
+    else {
+        std::cout << "lexer has not inited!" << std::endl;
+        throw new MyException();
+    }
 }
 
 /**
@@ -228,24 +237,20 @@ STRCON *Lexer::getStr() {
     return new STRCON(str);
 }
 
-bool Lexer::getWord() {
-    if (!Lexer::jumpSpace()) {
-        return false;
-    }
-    try {
-        Token *nextSym = nullptr;
-        if ((nextSym = getSymbol()) || (nextSym = getIdent()) ||
-            (nextSym = getConst()) || (nextSym = getStr())) {
-            this->tokenList.push_back(nextSym);
-            return true;
-        } else return false;
-    } catch (MyException e) {
-        //e.printStack();
-        std::cout << "error!" << std::endl;
-    }
-    return false;
-}
 
 void Lexer::init() {
-    while (getWord());
+    while (true) {
+        if (!Lexer::jumpSpace())break;
+        try {
+            Token *nextSym = nullptr;
+            if ((nextSym = getSymbol()) || (nextSym = getIdent()) ||
+                (nextSym = getConst()) || (nextSym = getStr())) {
+                this->tokenList.push_back(nextSym);
+            } else break;
+        } catch (MyException e) {
+            //e.printStack();
+            std::cout << "error!" << std::endl;
+        }
+    }
+    inited = true;
 }

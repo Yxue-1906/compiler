@@ -15,8 +15,8 @@ public:
 
 public:
     virtual void myOutput() override {
-        std::ofstream ofs = getOfs();
-        ofs << getTokenName() << ' ' << ident << std::endl;
+        std::ofstream ofs = std::move(getOfs());
+        ofs << getTokenName() << ' ' << value << std::endl;
     }
 };
 
