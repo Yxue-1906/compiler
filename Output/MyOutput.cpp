@@ -11,6 +11,12 @@ void MyOutput::setOutput(std::string file) {
         ofs.open(file, std::ios::out);
 }
 
+void MyOutput::setOutput(std::ofstream &ofs) {
+    std::cout << ofs.is_open() << std::endl;
+    if (!MyOutput::ofs.is_open())
+        MyOutput::ofs = std::move(ofs);
+}
+
 std::ofstream &MyOutput::getOfs() {
     if (ofs.is_open())
         return ofs;

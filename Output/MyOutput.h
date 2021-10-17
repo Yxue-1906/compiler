@@ -16,6 +16,8 @@ private:
 public:
     static void setOutput(std::string);
 
+    static void setOutput(std::ofstream &);
+
     virtual void myOutput() = 0;
 
 protected:

@@ -13,7 +13,7 @@ public:
 
 public:
     virtual void myOutput() override {
-        std::ofstream ofs = std::move(getOfs());
+        std::ofstream &ofs = getOfs();
         ofs << getTokenName() << ' ' << value << std::endl;
     }
 };
