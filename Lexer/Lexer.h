@@ -7,7 +7,6 @@
 
 #include <fstream>
 #include <functional>
-#include "MyOutput.h"
 
 class Lexer {
     // should implement in singleton pattern
@@ -24,10 +23,7 @@ private:
     int line_count = 0;
     bool end = false;
 
-    MyOutput lexerOutput{true};
-
 public:
-    //Lexer(std::ifstream);
     Lexer(std::string);
 
     ~Lexer();

@@ -4,9 +4,8 @@
 
 #include <iostream>
 #include "Lexer.h"
-#include "MyException.h"
-#include "MyDefination.h"
-#include "MyOutput.h"
+#include "../Exception/MyException.h"
+#include "../MyDefination.h"
 
 //Lexer::Lexer(std::ifstream ifs) {
 //    this->ifs = ifs;
@@ -309,7 +308,6 @@ bool Lexer::getWord(std::string **const ans, int *type) {
     *ans = new std::string();
     try {
         if (getSymbol(*ans, type) || getIdent(*ans, type) || getConst(*ans, type) || getStr(*ans, type)) {
-            lexerOutput << **ans << " " << name[*type] << '\n';
             return true;
         } else return false;
     } catch (MyException e) {
