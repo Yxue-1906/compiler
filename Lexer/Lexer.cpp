@@ -50,12 +50,12 @@ bool Lexer::safeLookAhead(const std::string chs, std::function<bool(std::string:
             return false;
         }
     }
+    if (chs == "printf")
+        std::cout << std::endl;
     if (tailJudge) {
         if (!tailJudge(now_look_forward_p)) {
             now_look_forward_p = now_char_p;
             return false;
-        } else {
-            ++now_look_forward_p;
         }
     }
     now_char_p = now_look_forward_p;
@@ -162,7 +162,7 @@ Token *Lexer::getSymbol() {
         return new BREAKTK();
     } else if (safeLookAhead("const", generalTailJudge)) {
         return new CONSTTK();
-    } else if (safeLookAhead("continues", generalTailJudge)) {
+    } else if (safeLookAhead("continue", generalTailJudge)) {
         return new CONTINUETK();
     } else if (safeLookAhead("else", generalTailJudge)) {
         return new ELSETK();
