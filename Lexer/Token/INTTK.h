@@ -6,11 +6,11 @@
 #define PARSER_INTTK_H
 
 
-class INTTK: public Token {
+class INTTK : public Token {
 private:
     const std::string value;
 public:
-    CONSTTK() : Token(6), value("int") {}
+    INTTK() : Token(6), value("int") {}
 
 public:
     virtual void myOutput() override {

@@ -7,18 +7,19 @@
 #include "../Exception/MyException.h"
 #include "../MyDefination.h"
 
-//Lexer::Lexer(std::ifstream ifs) {
-//    this->ifs = ifs;
-//    ifs >> now_line;
-//    now_char_p = now_line.begin();
-//}
 
-Lexer::Lexer(std::string str) {
-    this->ifs.open(str, std::ios::in);
-    getline(ifs, now_line), ++line_count;
+Lexer::Lexer(std::ifstream ifs) {
+    this->ifs = std::move(ifs);
+    ifs >> now_line;
     now_char_p = now_line.begin();
-    now_look_forward_p = now_line.begin();
 }
+
+//Lexer::Lexer(std::string str) {
+//    this->ifs.open(str, std::ios::in);
+//    getline(ifs, now_line), ++line_count;
+//    now_char_p = now_line.begin();
+//    now_look_forward_p = now_line.begin();
+//}
 
 Lexer::~Lexer() {
     this->ifs.close();
@@ -79,14 +80,16 @@ bool Lexer::jumpComment(int type) {
             if (!jumpSpace()) {
                 return false;
             }
-            if (*now_char_p == '*' && now_char_p + 1 != now_line.end() && *(now_char_p + 1) == '/') {
+            if (*now_char_p == '*' && now_char_p + 1 != now_line.end()
+                && *(now_char_p + 1) == '/') {
                 now_char_p += 2;
                 return true;
             }
             now_char_p++;
         }
     } else {
-        if (getline(ifs, now_line) && ++line_count)now_char_p = now_line.begin();
+        if (getline(ifs, now_line) && ++line_count)
+            now_char_p = now_line.begin();
         else {
             end = true;
             return false;
@@ -95,219 +98,145 @@ bool Lexer::jumpComment(int type) {
     return false;
 }
 
-bool Lexer::getSymbol(std::string *const ans, int *const type) {
+Token *Lexer::getSymbol() {
     auto generalTailJudge = [this](std::string::iterator ite) {
         if (ite == now_line.end() || !isAlNum(*ite))return true;
         return false;
     };
     if (safeLookAhead("!=")) {
-        ans->append("!=");
-        *type = NEQ;
-        return true;
+        return new NEQ();
     } else if (safeLookAhead("!")) {
-        ans->push_back('!');
-        *type = NOT;
-        return true;
+        return new NOT();
     } else if (safeLookAhead("%")) {
-        ans->push_back('%');
-        *type = MOD;
-        return true;
+        return new MOD();
     } else if (safeLookAhead("&&")) {
-        ans->append("&&");
-        *type = AND;
-        return true;
+        return new AND();
     } else if (safeLookAhead("(")) {
-        ans->push_back('(');
-        *type = LPARENT;
-        return true;
+        return new LPARENT();
     } else if (safeLookAhead(")")) {
-        ans->push_back(')');
-        *type = RPARENT;
-        return true;
+        return new RPARENT();
     } else if (safeLookAhead("*")) {
-        ans->push_back('*');
-        *type = MULT;
-        return true;
+        return new MULT();
     } else if (safeLookAhead("+")) {
-        ans->push_back('+');
-        *type = PLUS;
-        return true;
+        return new PLUS();
     } else if (safeLookAhead(",")) {
-        ans->push_back(',');
-        *type = COMMA;
-        return true;
+        return new COMMA();
     } else if (safeLookAhead("-")) {
-        ans->push_back('-');
-        *type = MINU;
-        return true;
+        return new MINU();
     } else if (safeLookAhead("//")) {
         jumpComment(LINE_COMMENT);
-        *type = OTHER;
-        return getSymbol(ans, type);
+        return getSymbol();
     } else if (safeLookAhead("/*")) {
         jumpComment(BLOCK_COMMENT);
-        *type = OTHER;
-        return getSymbol(ans, type);
+        return getSymbol();
     } else if (safeLookAhead("/")) {
-        ans->push_back('/');
-        *type = DIV;
-        return true;
+        return new DIV();
     } else if (safeLookAhead(";")) {
-        ans->push_back(';');
-        *type = SEMICN;
-        return true;
+        return new SEMICN();
     } else if (safeLookAhead("<=")) {
-        ans->append("<=");
-        *type = LEQ;
-        return true;
+        return new LEQ();
     } else if (safeLookAhead("<")) {
-        ans->push_back('<');
-        *type = LSS;
-        return true;
+        return new LSS();
     } else if (safeLookAhead("==")) {
-        ans->append("==");
-        *type = EQL;
-        return true;
+        return new EQL();
     } else if (safeLookAhead("=")) {
-        ans->push_back('=');
-        *type = EQL;
-        return true;
+        return new ASSIGN();
     } else if (safeLookAhead(">=")) {
-        ans->append(">=");
-        *type = GEQ;
-        return true;
+        return new GEQ();
     } else if (safeLookAhead(">")) {
-        ans->push_back('>');
-        *type = GRE;
-        return true;
+        return new GRE();
     } else if (safeLookAhead("[")) {
-        ans->push_back('[');
-        *type = LBRACK;
-        return true;
+        return new LBRACK();
     } else if (safeLookAhead("]")) {
-        ans->push_back(']');
-        *type = RBRACK;
-        return true;
+        return new RBRACK();
     } else if (safeLookAhead("break", generalTailJudge)) {
-        ans->append("break");
-        *type = BREAKTK;
-        return true;
+        return new BREAKTK();
     } else if (safeLookAhead("const", generalTailJudge)) {
-        ans->append("const");
-        *type = CONSTTK;
-        return true;
+        return new CONSTTK();
     } else if (safeLookAhead("continues", generalTailJudge)) {
-        ans->append("continues");
-        *type = CONTINUETK;
-        return true;
+        return new CONTINUETK();
     } else if (safeLookAhead("else", generalTailJudge)) {
-        ans->append("else");
-        *type = ELSETK;
-        return true;
+        return new ELSETK();
     } else if (safeLookAhead("getint", generalTailJudge)) {
-        ans->append("getint");
-        *type = GETINTTK;
-        return true;
+        return new GETINTTK();
     } else if (safeLookAhead("if", generalTailJudge)) {
-        ans->append("if");
-        *type = IFTK;
-        return true;
+        return new IFTK();
     } else if (safeLookAhead("int", generalTailJudge)) {
-        ans->append("int");
-        *type = INTCON;
-        return true;
+        return new INTTK();
     } else if (safeLookAhead("main", generalTailJudge)) {
-        ans->append("main");
-        *type = MAINTK;
-        return true;
+        return new MAINTK();
     } else if (safeLookAhead("printf", generalTailJudge)) {
-        ans->append("printf");
-        *type = PRINTFTK;
-        return true;
+        return new PRINTFTK();
     } else if (safeLookAhead("return", generalTailJudge)) {
-        ans->append("return");
-        *type = RETURNTK;
-        return true;
+        return new RETURNTK();
     } else if (safeLookAhead("void", generalTailJudge)) {
-        ans->append("void");
-        *type = VOIDTK;
-        return true;
+        return new VOIDTK();
     } else if (safeLookAhead("while", generalTailJudge)) {
-        ans->append("while");
-        *type = WHILETK;
-        return true;
+        return new WHILETK();
     } else if (safeLookAhead("{")) {
-        ans->push_back('{');
-        *type = LBRACE;
-        return true;
+        return new LBRACE();
     } else if (safeLookAhead("||")) {
-        ans->append("||");
-        *type = OR;
-        return true;
+        return new OR();
     } else if (safeLookAhead("}")) {
-        ans->push_back('}');
-        *type = RBRACE;
-        return true;
+        return new RBRACE();
     } else {
-        *type = OTHER;
-        return false;
+        return nullptr;
     }
 }
 
-bool Lexer::getIdent(std::string *const ans, int *const type) {
+IDENFR *Lexer::getIdent() {
+    std::string ident;
     if (now_char_p == now_line.end() || (!std::isalpha(*now_char_p) && *now_char_p != '_')) {
-        *type = OTHER;
-        return false;
+        return nullptr;
     }
     while (now_char_p != now_line.end() && isAlNum(*now_char_p)) {
-        ans->push_back(*now_char_p);
+        ident.push_back(*now_char_p);
         ++now_char_p;
     }
-    *type = IDENFR;
-    return true;
+    return new IDENFR(ident);
 }
 
-bool Lexer::getConst(std::string *const ans, int *const type) {
+INTCON *Lexer::getConst() {
+    int num = 0;
     if (now_char_p == now_line.end() || !std::isdigit(*now_char_p)) {
-        *type = OTHER;
-        return false;
+        return nullptr;
     }
     while (now_char_p != now_line.end() && std::isdigit(*now_char_p)) {
-        ans->push_back(*now_char_p);
+        num *= 10;
+        num += *now_char_p - '0';
         ++now_char_p;
     }
-    *type = INTCON;
-    return true;
+    return new INTCON(num);
 }
 
-bool Lexer::getStr(std::string *const ans, int *const type) {
+STRCON *Lexer::getStr() {
+    std::string str;
     if (now_char_p == now_line.end() || *now_char_p != '"') {
-        *type = OTHER;
-        return false;
+        return nullptr;
     }
-    ++now_char_p;
+    str.push_back(*(now_char_p++));
     while (now_char_p != now_line.end()) {
-        ans->push_back(*now_char_p);
+        str.push_back(*now_char_p);
         ++now_char_p;
         if (*now_char_p == '"') {
-            ans->push_back('"');
+            str.push_back('"');
             ++now_char_p;
             break;
         }
         if (now_char_p == now_line.end())throw MyException();
     }
-    *type = STRCON;
-    return true;
+    return new STRCON(str);
 }
 
-bool Lexer::getWord(std::string **const ans, int *type) {
+bool Lexer::getWord() {
     if (!Lexer::jumpSpace()) {
-        *ans = nullptr;
-        *type = 0;
+        return false;
     }
-    *ans = new std::string();
     try {
-        if (getSymbol(*ans, type) || getIdent(*ans, type) || getConst(*ans, type) || getStr(*ans, type)) {
+        Token *nextSym = nullptr;
+        if ((nextSym = getSymbol()) || (nextSym = getIdent()) ||
+            (nextSym = getConst()) || (nextSym = getStr())) {
+            this->tokenList.push_back(nextSym);
             return true;
         } else return false;
     } catch (MyException e) {
@@ -315,4 +244,8 @@ bool Lexer::getWord(std::string **const ans, int *type) {
         std::cout << "error!" << std::endl;
     }
     return false;
+}
+
+void Lexer::init() {
+    while (getWord());
 }
