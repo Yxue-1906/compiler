@@ -5,8 +5,8 @@
 #ifndef PARSER_PARSER_H
 #define PARSER_PARSER_H
 
-#include "Lexer/Lexer.h"
-#include "Exception/MyException.h"
+#include "../Lexer/Lexer.h"
+#include "../Exception/MyException.h"
 
 class Parser {
 public:
