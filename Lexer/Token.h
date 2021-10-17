@@ -7,23 +7,25 @@
 
 
 #include <map>
-#include "../../Output/MyOutput.h"
+#include "../Output/MyOutput.h"
 
 class Token : public MyOutput {
 private:
-    static const std::map<int, std::string> type2Name;
-
     const std::string tokenName;
     const int tokenType;
+
+public:
+    static const std::map<int, std::string> type2Name;
+
 public:
     Token(int);
 
-private:
-
-protected:
     std::string &getTokenName();
 
     int getTokenType();
+
+private:
+
 
 };
 

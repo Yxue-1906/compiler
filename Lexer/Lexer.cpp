@@ -5,7 +5,6 @@
 #include <iostream>
 #include "Lexer.h"
 #include "../Exception/MyException.h"
-#include "../MyDefination.h"
 
 
 Lexer::Lexer(std::ifstream ifs) {
@@ -50,8 +49,6 @@ bool Lexer::safeLookAhead(const std::string chs, std::function<bool(std::string:
             return false;
         }
     }
-    if (chs == "printf")
-        std::cout << std::endl;
     if (tailJudge) {
         if (!tailJudge(now_look_forward_p)) {
             now_look_forward_p = now_char_p;

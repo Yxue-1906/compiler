@@ -12,7 +12,6 @@ void MyOutput::setOutput(std::string file) {
 }
 
 void MyOutput::setOutput(std::ofstream &ofs) {
-    std::cout << ofs.is_open() << std::endl;
     if (!MyOutput::ofs.is_open())
         MyOutput::ofs = std::move(ofs);
 }
@@ -24,5 +23,4 @@ std::ofstream &MyOutput::getOfs() {
         std::cout << "ofs is not initialized!" << std::endl;
         throw new MyException();
     }
-
 }

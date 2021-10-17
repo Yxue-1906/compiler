@@ -1,7 +1,6 @@
 #include <iostream>
 #include <map>
 #include "Lexer/Lexer.h"
-#include "MyDefination.h"
 
 int main() {
     std::ifstream ifs;

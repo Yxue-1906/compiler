@@ -8,7 +8,7 @@
 #include <fstream>
 #include <functional>
 #include <vector>
-#include "Token/Token.h"
+#include "Token.h"
 #include "Token/NEQ.h"
 #include "Token/NOT.h"
 #include "Token/LPARENT.h"

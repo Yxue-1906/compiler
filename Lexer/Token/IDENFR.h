@@ -5,7 +5,7 @@
 #ifndef PARSER_IDENFR_H
 #define PARSER_IDENFR_H
 
-#include "Token.h"
+#include "../Token.h"
 
 class IDENFR : public Token {
 private:
