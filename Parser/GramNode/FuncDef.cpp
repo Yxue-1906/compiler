@@ -11,6 +11,7 @@ FuncDef::FuncDef(std::vector<GramNode *> sons) {
 
 bool FuncDef::create(GramNode *&toReturn, std::vector<Token *>::iterator &ite_p) {
     auto ite = ite_p;
-    std::vector<Token> sons;
+    std::vector<GramNode *> son_ps;
+    GramNode *nexNode;
 
 }
