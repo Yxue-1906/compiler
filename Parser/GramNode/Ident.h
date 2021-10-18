@@ -15,7 +15,7 @@ private:
     Ident(std::vector<GramNode *> sons);
 
 public:
-    static bool create(GramNode **toReturn, std::vector<Token *>::iterator &ite_p);
+    static bool create(GramNode *&toReturn, std::vector<Token *>::iterator &ite_p);
 };
 
 

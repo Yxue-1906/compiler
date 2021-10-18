@@ -2,23 +2,21 @@
 // Created by unrelated on 2021/10/18.
 //
 
-#ifndef PARSER_DECL_H
-#define PARSER_DECL_H
+#ifndef PARSER_ADDEXP_H
+#define PARSER_ADDEXP_H
 
 
 #include "../GramNode.h"
 
-class Decl : public GramNode {
+class AddExp : public GramNode {
 private:
-
 public:
-
 private:
-    Decl(std::vector<GramNode *>);
+    AddExp(std::vector<GramNode *>);
 
 public:
     static bool create(GramNode *&, std::vector<Token *>::iterator &);
 };
 
 
-#endif //PARSER_DECL_H
+#endif //PARSER_ADDEXP_H

@@ -9,22 +9,29 @@
 #include "ConstDef.h"
 
 
-ConstDecl::ConstDecl(std::vector<GramNode*> sons) {
+ConstDecl::ConstDecl(std::vector<GramNode *> sons) {
     setGramName("ConstDecl");
     setSons(std::move(sons));
 }
 
-bool ConstDecl::create(GramNode **toReturn, std::vector<Token *>::iterator &ite_p) {
+bool ConstDecl::create(GramNode *&toReturn, std::vector<Token *>::iterator &ite_p) {
     auto ite = ite_p;
-    GramNode **nexNode;
+    GramNode *nexNode;
     std::vector<GramNode *> sons;
-    if (!(**ite).isTypeOf(Token::CONSTTK))
+    if (!(**ite).isTypeOf(Token::CONSTTK)) {
+        delete nexNode;
         return false;
+    }
     sons.push_back(new TokenNode(**ite));
     ite++;
-    if (!BType::create(nexNode, ite))
+    if (!BType::create(nexNode, ite)) {
+        delete nexNode;
         return false;
-    sons.push_back(*nexNode);
-    if (!ConstDef::create(nexNode))
+    }
+    sons.push_back(nexNode);
+    if (!ConstDef::create(nexNode, ite)) {
+        delete nexNode;
+        return false;
+    }
 
 }

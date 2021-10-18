@@ -9,9 +9,9 @@ CompUnit::CompUnit(std::vector<GramNode *> sons) {
     setSons(std::move(sons));
 }
 
-bool CompUnit::create(GramNode &toReturn, std::vector<Token *>::iterator &ite_p) {
+bool CompUnit::create(GramNode *&toReturn, std::vector<Token *>::iterator &ite_p) {
     auto ite = ite_p;
-    std::vector<Token> sons;
+    std::vector<Token> son_ps;
     for (;;)
     //todo
 }
