@@ -14,10 +14,10 @@ private:
 public:
 
 private:
-    CompUnit(std::vector<Token>);
+    CompUnit(std::vector<GramNode>);
 
 public:
-    virtual bool create(std::vector<Token *>::iterator &) override;
+    static bool create(GramNode &, std::vector<Token *>::iterator *);
 
 };
 

@@ -9,22 +9,30 @@
 #include <vector>
 #include "../Output/MyOutput.h"
 #include "../Lexer/Token.h"
+#include <utility>
 
 class GramNode : public MyOutput {
 private:
-    std::vector<Token> sons;
     std::string GramName;
+
+protected:
+    std::vector<GramNode> sons;
 public:
 
 private:
 
 protected:
+    GramNode();
+
     void setGramName(std::string);
 
-    void setSons(std::vector<Token>);
+    void setSons(std::vector<GramNode>);
+
+    std::string getGramName();
+
+    std::vector<Token> getSons();
 
 public:
-    virtual bool create(std::vector<Token *>::iterator &) = 0;
 
     virtual void myOutput() override;
 };

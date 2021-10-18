@@ -7,6 +7,7 @@
 
 #include "../Lexer/Lexer.h"
 #include "../Exception/MyException.h"
+#include "GramNode/CompUnit.h"
 
 class Parser {
 public:
@@ -14,28 +15,15 @@ public:
 
 private:
     // private attributes
+    std::vector<Token *> tokenList;
+    GramNode &root;
 
 public:
     // public methods
-    Parser(Lexer);
+    Parser(std::vector<Token*>);
 
 private:
     // private methods
-//    bool CompUnit() {
-//        Decl();
-//        FuncDef();
-//        if (!MainFuncDef()) {
-//            throw MyException();
-//        }
-//        return true;
-//    }
-//
-//    bool Decl() {
-//        if (!ConstDecl() && !VarDecl()) {
-//            throw MyException();
-//        }
-//        return true;
-//    }
 };
 
 

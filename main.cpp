@@ -9,9 +9,9 @@ int main() {
     ofs.open("output.txt", std::ios::out | std::ios::trunc);
     Lexer lexer{std::move(ifs)};
     MyOutput::setOutput(ofs);
-
-    for (auto &i: lexer.getList()) {
-        (*i).myOutput();
-    }
+    Parser parser{};
+//    for (auto &i: lexer.getList()) {
+//        (*i).myOutput();
+//    }
     return 0;
 }
