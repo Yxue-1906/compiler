@@ -11,7 +11,7 @@ CompUnit::CompUnit(std::vector<GramNode *> sons) {
 
 bool CompUnit::create(GramNode *&toReturn, std::vector<Token *>::iterator &ite_p) {
     auto ite = ite_p;
-    std::vector<Token> son_ps;
+    std::vector<GramNode *> son_ps;
     for (;;)
     //todo
 }

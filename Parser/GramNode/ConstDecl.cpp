@@ -17,21 +17,33 @@ ConstDecl::ConstDecl(std::vector<GramNode *> sons) {
 bool ConstDecl::create(GramNode *&toReturn, std::vector<Token *>::iterator &ite_p) {
     auto ite = ite_p;
     GramNode *nexNode;
-    std::vector<GramNode *> sons;
+    std::vector<GramNode *> son_ps;
     if (!(**ite).isTypeOf(Token::CONSTTK)) {
-        delete nexNode;
         return false;
     }
-    sons.push_back(new TokenNode(**ite));
+    son_ps.push_back(new TokenNode(**ite));
     ite++;
     if (!BType::create(nexNode, ite)) {
-        delete nexNode;
         return false;
     }
-    sons.push_back(nexNode);
+    son_ps.push_back(nexNode);
     if (!ConstDef::create(nexNode, ite)) {
-        delete nexNode;
         return false;
     }
-
+    son_ps.push_back(nexNode);
+    for (; (**ite).isTypeOf(Token::COMMA);) {
+        son_ps.push_back(new TokenNode(**ite));
+        ++ite;
+        if (!ConstDef::create(nexNode, ite)) {
+            return false;
+        }
+        son_ps.push_back(nexNode);
+    }
+    if (!(**ite).isTypeOf(Token::SEMICN)) {
+        return false;
+    }
+    son_ps.push_back(new TokenNode(**ite));
+    ++ite;
+    toReturn = new ConstDecl(son_ps);
+    return true;
 }
