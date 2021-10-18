@@ -16,7 +16,7 @@ public:
 private:
     // private attributes
     std::vector<Token *> tokenList;
-    GramNode &root;
+    GramNode *root;
 
 public:
     // public methods

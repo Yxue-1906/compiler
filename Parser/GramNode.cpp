@@ -8,13 +8,13 @@ void GramNode::setGramName(std::string gramName) {
     this->GramName = gramName;
 }
 
-void GramNode::setSons(std::vector<GramNode> sons) {
+void GramNode::setSons(std::vector<GramNode *> sons) {
     this->sons = sons;
 }
 
 void GramNode::myOutput() {
     for (auto &i: sons) {
-        i.myOutput();
+        i->myOutput();
     }
     std::cout << GramName << std::endl;
 }

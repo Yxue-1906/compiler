@@ -9,14 +9,14 @@
 #include "../GramNode.h"
 
 
-class ConstDecl : GramNode {
+class ConstDecl : public GramNode {
 private:
 public:
 private:
-    ConstDecl(std::vector<GramNode>);
+    ConstDecl(std::vector<GramNode *>);
 
 public:
-    static bool create(GramNode &, std::vector<Token *>::iterator &);
+    static bool create(GramNode **, std::vector<Token *>::iterator &);
 };
 
 

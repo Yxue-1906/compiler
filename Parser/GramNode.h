@@ -10,14 +10,13 @@
 #include "../Output/MyOutput.h"
 #include "../Lexer/Token.h"
 #include <utility>
-#include "TokenNode.h"
 
 class GramNode : public MyOutput {
 private:
     std::string GramName;
 
 protected:
-    std::vector<GramNode> sons;
+    std::vector<GramNode *> sons;
 public:
 
 private:
@@ -27,7 +26,7 @@ protected:
 
     void setGramName(std::string);
 
-    void setSons(std::vector<GramNode>);
+    void setSons(std::vector<GramNode *>);
 
     std::string getGramName();
 

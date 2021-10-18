@@ -7,6 +7,9 @@
 Parser::Parser(std::vector<Token *> tokenList) {
     this->tokenList = tokenList;
     auto begin = tokenList.begin();
-    if (CompUnit::create(root, &begin))root->myOutput();
-    else throw new MyException();
+    GramNode **node;
+    if (CompUnit::create(node, begin)) {
+        root = *node;
+        root->myOutput();
+    } else throw new MyException();
 }

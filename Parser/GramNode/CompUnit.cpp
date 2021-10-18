@@ -4,7 +4,7 @@
 
 #include "CompUnit.h"
 
-CompUnit::CompUnit(std::vector<GramNode> sons) {
+CompUnit::CompUnit(std::vector<GramNode *> sons) {
     setGramName("CompUnit");
     setSons(std::move(sons));
 }

@@ -15,6 +15,46 @@ private:
     const int tokenType;
 
 public:
+    static int IDENFR;
+    static int INTCON;
+    static int STRCON;
+    static int MAINTK;
+    static int CONSTTK;
+    static int INTTK;
+    static int BREAKTK;
+    static int CONTINUETK;
+    static int IFTK;
+    static int ELSETK;
+    static int NOT;
+    static int AND;
+    static int OR;
+    static int WHILETK;
+    static int GETINTTK;
+    static int PRINTFTK;
+    static int RETURNTK;
+    static int PLUS;
+    static int MINU;
+    static int VOIDTK;
+    static int MULT;
+    static int DIV;
+    static int MOD;
+    static int LSS;
+    static int LEQ;
+    static int GRE;
+    static int GEQ;
+    static int EQL;
+    static int NEQ;
+    static int ASSIGN;
+    static int SEMICN;
+    static int COMMA;
+    static int LPARENT;
+    static int RPARENT;
+    static int LBRACK;
+    static int RBRACK;
+    static int LBRACE;
+    static int RBRACE;
+    static int COMMENT;
+
     static const std::map<int, std::string> type2Name;
 
 public:
@@ -22,7 +62,9 @@ public:
 
     std::string &getTokenName();
 
-    static int getTokenType(Token&);
+    int getTokenType();
+
+    bool isTypeOf(int type);
 
 private:
 

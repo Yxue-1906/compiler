@@ -8,16 +8,16 @@
 
 #include "../GramNode.h"
 
-class CompUnit : GramNode {
+class CompUnit : public GramNode {
 private:
 
 public:
 
 private:
-    CompUnit(std::vector<GramNode>);
+    CompUnit(std::vector<GramNode *>);
 
 public:
-    static bool create(GramNode &, std::vector<Token *>::iterator &);
+    static bool create(GramNode **, std::vector<Token *>::iterator &);
 
 };
 

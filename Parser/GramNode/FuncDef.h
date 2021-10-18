@@ -12,10 +12,10 @@ class FuncDef : public GramNode {
 private:
 public:
 private:
-    FuncDef(std::vector<GramNode>);
+    FuncDef(std::vector<GramNode *>);
 
 public:
-    static bool create(GramNode *, std::vector<Token *>::iterator &);
+    static bool create(GramNode **, std::vector<Token *>::iterator &);
 };
 
 

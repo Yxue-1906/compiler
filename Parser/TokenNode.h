@@ -8,7 +8,7 @@
 
 #include "GramNode.h"
 
-class TokenNode : GramNode {
+class TokenNode : public GramNode {
 private:
     Token &token;
 public:

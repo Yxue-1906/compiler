@@ -7,15 +7,16 @@
 
 
 #include "../GramNode.h"
+#include "../TokenNode.h"
 
-class BType : GramNode {
+class BType : public GramNode {
 private:
 public:
 private:
-    BType(std::vector<GramNode>);
+    BType(std::vector<GramNode *>);
 
 public:
-    static bool create(GramNode &, std::vector<Token *>::iterator &);
+    static bool create(GramNode **, std::vector<Token *>::iterator &);
 };
 
 
