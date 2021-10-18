@@ -4,6 +4,7 @@
 
 #include "Stmt.h"
 #include "../TokenNode.h"
+#include "Cond.h"
 
 Stmt::Stmt(std::vector<GramNode *> sons) {
     setGramName("Stmt");
@@ -22,7 +23,33 @@ bool Stmt::create(GramNode *&toReturn, std::vector<Token *>::iterator &ite_p) {
         }
         son_ps.push_back(new TokenNode(**ite));
         ++ite;
-        if(!Cond::create())
+        if (!Cond::create(nexNode, ite)) {
+            return false;
+        }
+        if (!(**ite).isTypeOf(Token::RPARENT)) {
+            return false;
+        }
+        son_ps.push_back(new TokenNode(**ite));
+        ++ite;
+        if (!Stmt::create(nexNode, ite)) {
+            return false;
+        }
+        son_ps.push_back(nexNode);
+        if ((**ite).isTypeOf(Token::ELSETK)) {
+            son_ps.push_back(new TokenNode(**ite));
+            ++ite;
+            if (!Stmt::create(nexNode, ite)) {
+                return false;
+            }
+            son_ps.push_back(nexNode);
+        }
+        ite_p = ite;
+        toReturn = new Stmt(son_ps);
+        return true;
+    } else if ((**ite).isTypeOf(Token::WHILETK)) {
+        son_ps.push_back(new TokenNode(**ite));
+        ++ite;
+        if(!)
     }
 
 }
