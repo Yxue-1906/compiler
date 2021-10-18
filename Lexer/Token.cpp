@@ -52,6 +52,6 @@ std::string &Token::getTokenName() {
     return const_cast<std::string &>(this->tokenName);
 }
 
-int Token::getTokenType() {
-    return this->tokenType;
+int Token::getTokenType(Token &token) {
+    return token.tokenType;
 }

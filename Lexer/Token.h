@@ -22,7 +22,7 @@ public:
 
     std::string &getTokenName();
 
-    int getTokenType();
+    static int getTokenType(Token&);
 
 private:
 

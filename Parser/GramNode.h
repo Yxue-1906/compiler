@@ -10,6 +10,7 @@
 #include "../Output/MyOutput.h"
 #include "../Lexer/Token.h"
 #include <utility>
+#include "TokenNode.h"
 
 class GramNode : public MyOutput {
 private:

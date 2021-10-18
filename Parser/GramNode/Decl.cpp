@@ -9,7 +9,7 @@ Decl::Decl(std::vector<GramNode> sons) {
     setSons(std::move(sons));
 }
 
-bool Decl::create(GramNode *toReturn, std::vector<Token *>::iterator *ite_p) {
+bool Decl::create(GramNode *toReturn, std::vector<Token *>::iterator &ite_p) {
     auto ite = *ite_p;
     std::vector<Token> sons;
 

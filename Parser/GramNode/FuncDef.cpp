@@ -9,8 +9,8 @@ FuncDef::FuncDef(std::vector<GramNode> sons) {
     setSons(std::move(sons));
 }
 
-bool FuncDef::create(GramNode *toReturn, std::vector<Token *>::iterator *ite_p) {
-    auto ite = *ite_p;
+bool FuncDef::create(GramNode *toReturn, std::vector<Token *>::iterator &ite_p) {
+    auto ite = ite_p;
     std::vector<Token> sons;
 
 }
