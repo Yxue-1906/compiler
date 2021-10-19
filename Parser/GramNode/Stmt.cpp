@@ -5,6 +5,8 @@
 #include "Stmt.h"
 #include "../TokenNode.h"
 #include "Cond.h"
+#include "Exp.h"
+#include "Block.h"
 
 Stmt::Stmt(std::vector<GramNode *> sons) {
     setGramName("Stmt");
@@ -49,7 +51,90 @@ bool Stmt::create(GramNode *&toReturn, std::vector<Token *>::iterator &ite_p) {
     } else if ((**ite).isTypeOf(Token::WHILETK)) {
         son_ps.push_back(new TokenNode(**ite));
         ++ite;
-        if(!)
+        if (!(**ite).isTypeOf(Token::LPARENT)) {
+            return false;
+        }
+        son_ps.push_back(new TokenNode(**ite));
+        ++ite;
+        if (!Cond::create(nexNode, ite)) {
+            return false;
+        }
+        son_ps.push_back(nexNode);
+        if (!Stmt::create(nexNode, ite)) {
+            return false;
+        }
+        son_ps.push_back(nexNode);
+        ite_p = ite;
+        toReturn = new Stmt(son_ps);
+        return true;
+    } else if ((**ite).isTypeOf(Token::BREAKTK) || (**ite).isTypeOf(Token::CONTINUETK)) {
+        son_ps.push_back(new TokenNode(**ite));
+        ++ite;
+        if (!(**ite).isTypeOf(Token::SEMICN)) {
+            return false;
+        }
+        son_ps.push_back(new TokenNode(**ite));
+        ++ite;
+        ite_p = ite;
+        toReturn = new Stmt(son_ps);
+        return true;
+    } else if ((**ite).isTypeOf(Token::RETURNTK)) {
+        son_ps.push_back(new TokenNode(**ite));
+        ++ite;
+        if (Exp::create(nexNode, ite)) {
+            son_ps.push_back(nexNode);
+        }
+        if (!(**ite).isTypeOf(Token::SEMICN)) {
+            return false;
+        }
+        son_ps.push_back(new TokenNode(**ite));
+        ++ite;
+        ite_p = ite;
+        toReturn = new Stmt(son_ps);
+        return true;
+    } else if ((**ite).isTypeOf(Token::PRINTFTK)) {
+        son_ps.push_back(new TokenNode(**ite));
+        ++ite;
+        if (!(**ite).isTypeOf(Token::LPARENT)) {
+            return false;
+        }
+        son_ps.push_back(new TokenNode(**ite));
+        ++ite;
+        if (!(**ite).isTypeOf(Token::STRCON)) {
+            return false;
+        }
+        son_ps.push_back(new TokenNode(**ite));
+        ++ite;
+        for (; (**ite).isTypeOf(Token::COMMA);) {
+            son_ps.push_back(new TokenNode(**ite));
+            ++ite;
+            if (!Exp::create(nexNode, ite)) {
+                return false;
+            }
+            son_ps.push_back(nexNode);
+        }
+        if (!(**ite).isTypeOf(Token::RPARENT)) {
+            return false;
+        }
+        son_ps.push_back(new TokenNode(**ite));
+        ++ite;
+        if (!(**ite).isTypeOf(Token::SEMICN)) {
+            return false;
+        }
+        son_ps.push_back(new TokenNode(**ite));
+        ++ite;
+        ite_p = ite;
+        toReturn = new Stmt(son_ps);
+        return true;
+    } else if ((**ite).isTypeOf(Token::LBRACE)) {
+        if (!Block::create(nexNode, ite)) {
+            return false;
+        }
+        son_ps.push_back(nexNode);
+        ite_p = ite;
+        toReturn = new Stmt(son_ps);
+        return true;
     }
+    else if()
 
 }
