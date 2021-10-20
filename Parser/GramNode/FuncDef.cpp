@@ -3,6 +3,8 @@
 //
 
 #include "FuncDef.h"
+#include "FuncType.h"
+#include "../TokenNode.h"
 
 FuncDef::FuncDef(std::vector<GramNode *> sons) {
     setGramName("FuncDef");
@@ -12,5 +14,14 @@ FuncDef::FuncDef(std::vector<GramNode *> sons) {
 bool FuncDef::create(std::vector<GramNode *> &toAdd, std::vector<Token *>::iterator &ite_p) {
     auto ite = ite_p;
     std::vector<GramNode *> son_ps;
-
+    if (!FuncType::create(son_ps, ite)) {
+        return false;
+    }
+    if (!TokenNode::create(son_ps, ite, Token::IDENFR)) {
+        return false;
+    }
+    if (!TokenNode::create(son_ps, ite, Token::LPARENT)) {
+        return false;
+    }
+    FuncFParams
 }

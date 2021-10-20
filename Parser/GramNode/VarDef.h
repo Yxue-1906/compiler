@@ -16,6 +16,7 @@ private:
 
 public:
     static bool create(std::vector<GramNode *> &, std::vector<Token *>::iterator &);
+
 };
 
 

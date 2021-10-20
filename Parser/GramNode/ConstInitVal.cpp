@@ -10,7 +10,13 @@ ConstInitVal::ConstInitVal(std::vector<GramNode *> sons) {
     setGramName("ConstInitVal");
     setSons(std::move(sons));
 }
-
+/**
+ * ConstInitVal -> ConstExp |
+ *                  '{' [ ConstInitVal { ',' ConstInitVal } ] '}'
+ * @param toAdd
+ * @param ite_p
+ * @return
+ */
 bool ConstInitVal::create(std::vector<GramNode *> &toAdd, std::vector<Token *>::iterator &ite_p) {
     auto ite = ite_p;
     std::vector<GramNode *> son_ps;

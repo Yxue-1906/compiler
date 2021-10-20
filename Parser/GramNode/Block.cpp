@@ -18,4 +18,10 @@ bool Block::create(std::vector<GramNode *> &toAdd, std::vector<Token *>::iterato
         return false;
     }
     BlockItem::create(son_ps, ite);
+    if (!TokenNode::create(son_ps, ite, Token::RBRACE)) {
+        return false;
+    }
+    ite_p = ite;
+    toAdd.push_back(new Block(son_ps));
+    return true;
 }

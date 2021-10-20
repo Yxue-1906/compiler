@@ -14,6 +14,12 @@ ConstDecl::ConstDecl(std::vector<GramNode *> sons) {
     setSons(std::move(sons));
 }
 
+/**
+ * ConstDecl -> 'const' BType ConstDef { ',' ConstDef } ';'
+ * @param toAdd
+ * @param ite_p
+ * @return
+ */
 bool ConstDecl::create(std::vector<GramNode *> &toAdd, std::vector<Token *>::iterator &ite_p) {
     auto ite = ite_p;
     std::vector<GramNode *> son_ps;
@@ -34,6 +40,6 @@ bool ConstDecl::create(std::vector<GramNode *> &toAdd, std::vector<Token *>::ite
     if (!TokenNode::create(son_ps, ite, Token::SEMICN)) {
         return false;
     }
-    toAdd .push_back(new ConstDecl(son_ps));
+    toAdd.push_back(new ConstDecl(son_ps));
     return true;
 }

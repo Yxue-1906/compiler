@@ -9,7 +9,12 @@ BType::BType(std::vector<GramNode *> sons) {
     setGramName("BType");
     setSons(std::move(sons));
 }
-
+/**
+ * BType -> 'int'
+ * @param toAdd
+ * @param ite_p
+ * @return
+ */
 bool BType::create(std::vector<GramNode *> &toAdd, std::vector<Token *>::iterator &ite_p) {
     auto ite = ite_p;
     std::vector<GramNode *> son_ps;

@@ -15,7 +15,6 @@ VarDef::VarDef(std::vector<GramNode *> sons) {
 bool VarDef::create(std::vector<GramNode *> &toAdd, std::vector<Token *>::iterator &ite_p) {
     auto ite = ite_p;
     std::vector<GramNode *> son_ps;
-    GramNode *nexNode;
     if (!TokenNode::create(son_ps, ite, Token::IDENFR)) {
         return false;
     }

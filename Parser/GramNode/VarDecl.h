@@ -2,21 +2,21 @@
 // Created by unrelated on 2021/10/18.
 //
 
-#ifndef PARSER_VALDECL_H
-#define PARSER_VALDECL_H
+#ifndef PARSER_VARDECL_H
+#define PARSER_VARDECL_H
 
 
 #include "../GramNode.h"
 
-class ValDecl : public GramNode {
+class VarDecl : public GramNode {
 private:
 public:
 private:
-    ValDecl(std::vector<GramNode *>);
+    VarDecl(std::vector<GramNode *>);
 
 public:
     static bool create(std::vector<GramNode *> &, std::vector<Token *>::iterator &);
 };
 
 
-#endif //PARSER_VALDECL_H
+#endif //PARSER_VARDECL_H

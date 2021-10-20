@@ -12,6 +12,12 @@ CompUnit::CompUnit(std::vector<GramNode *> sons) {
     setSons(std::move(sons));
 }
 
+/**
+ * CompUnit -> {Decl} {FuncDef} MainFuncDef
+ * @param toAdd
+ * @param ite_p
+ * @return
+ */
 bool CompUnit::create(std::vector<GramNode *> &toAdd, std::vector<Token *>::iterator &ite_p) {
     auto ite = ite_p;
     std::vector<GramNode *> son_ps;

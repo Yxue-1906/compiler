@@ -3,7 +3,6 @@
 //
 
 #include "LVal.h"
-#include "Ident.h"
 #include "../TokenNode.h"
 #include "Exp.h"
 
@@ -12,10 +11,16 @@ LVal::LVal(std::vector<GramNode *> sons) {
     setSons(std::move(sons));
 }
 
+/**
+ * LVal → Ident {'[' Exp ']'}
+ * @param toAdd
+ * @param ite_p
+ * @return
+ */
 bool LVal::create(std::vector<GramNode *> &toAdd, std::vector<Token *>::iterator &ite_p) {
     auto ite = ite_p;
     std::vector<GramNode *> son_ps;
-    if (!Ident::create(son_ps, ite)) {
+    if (!TokenNode::create(son_ps, ite, Token::IDENFR)) {
         return false;
     }
     for (; TokenNode::create(son_ps, ite, Token::LBRACK);) {

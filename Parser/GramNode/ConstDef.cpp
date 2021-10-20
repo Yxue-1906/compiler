@@ -3,7 +3,6 @@
 //
 
 #include "ConstDef.h"
-#include "Ident.h"
 #include "../TokenNode.h"
 #include "ConstExp.h"
 #include "ConstInitVal.h"
@@ -13,10 +12,16 @@ ConstDef::ConstDef(std::vector<GramNode *> sons) {
     setSons(std::move(sons));
 }
 
+/**
+ * ConstDef -> Ident { '[' ConstExp ']' } '=' ConstInitVal
+ * @param toAdd
+ * @param ite_p
+ * @return
+ */
 bool ConstDef::create(std::vector<GramNode *> &toAdd, std::vector<Token *>::iterator &ite_p) {
     auto ite = ite_p;
     std::vector<GramNode *> son_ps;
-    if (!Ident::create(son_ps, ite)) {
+    if (!TokenNode::create(son_ps, ite, Token::IDENFR)) {
         return false;
     }
     for (; TokenNode::create(son_ps, ite, Token::LBRACK);) {
