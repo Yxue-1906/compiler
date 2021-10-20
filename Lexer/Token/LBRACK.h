@@ -10,7 +10,7 @@ class LBRACK : public Token {
 private:
     const std::string value;
 public:
-    LBRACK() : Token(35), value("[") {}
+    LBRACK() : Token(Token::LBRACK), value("[") {}
 
 public:
     virtual void myOutput() override {

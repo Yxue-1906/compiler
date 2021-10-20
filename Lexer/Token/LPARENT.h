@@ -10,7 +10,7 @@ class LPARENT : public Token {
 private:
     const std::string value;
 public:
-    LPARENT() : Token(33), value("(") {}
+    LPARENT() : Token(Token::LPARENT), value("(") {}
 
 public:
     virtual void myOutput() override {

@@ -10,7 +10,7 @@ class CONSTTK : public Token {
 private:
     const std::string value;
 public:
-    CONSTTK() : Token(5), value("const") {}
+    CONSTTK() : Token(Token::CONSTTK), value("const") {}
 
 public:
     virtual void myOutput() override {

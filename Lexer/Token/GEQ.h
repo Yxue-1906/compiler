@@ -10,7 +10,7 @@ class GEQ : public Token {
 private:
     const std::string value;
 public:
-    GEQ() : Token(27), value(">=") {}
+    GEQ() : Token(Token::GEQ), value(">=") {}
 
 public:
     virtual void myOutput() override {

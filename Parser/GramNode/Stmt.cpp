@@ -106,10 +106,20 @@ bool Stmt::create(std::vector<GramNode *> &toAdd, std::vector<Token *>::iterator
             if (!TokenNode::create(son_ps, ite, Token::RPARENT)) {
                 return false;
             }
-            if
-            //TODO
+            if (!TokenNode::create(son_ps, ite, Token::SEMICN)) {
+                return false;
+            }
+            ite_p = ite;
+            toAdd.push_back(new Stmt(son_ps));
+            return true;
+        } else if (Exp::create(son_ps, ite)) {
+            if (!TokenNode::create(son_ps, ite, Token::SEMICN)) {
+                return false;
+            }
+            ite_p = ite;
+            toAdd.push_back(new Stmt(son_ps));
+            return true;
         }
+        return false;
     }
-
-
 }

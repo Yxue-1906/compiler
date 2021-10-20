@@ -10,7 +10,7 @@ class SEMICN : public Token {
 private:
     const std::string value;
 public:
-    SEMICN() : Token(31), value(";") {}
+    SEMICN() : Token(Token::SEMICN), value(";") {}
 
 public:
     virtual void myOutput() override {

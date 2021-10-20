@@ -10,7 +10,7 @@ class LEQ : public Token {
 private:
     const std::string value;
 public:
-    LEQ() : Token(25), value("<=") {}
+    LEQ() : Token(Token::LEQ), value("<=") {}
 
 public:
     virtual void myOutput() override {

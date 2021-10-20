@@ -10,7 +10,7 @@ class GETINTTK : public Token {
 private:
     const std::string value;
 public:
-    GETINTTK() : Token(15), value("getint") {}
+    GETINTTK() : Token(Token::GETINTTK), value("getint") {}
 
 public:
     virtual void myOutput() override {

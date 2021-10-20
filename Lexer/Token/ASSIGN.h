@@ -10,7 +10,7 @@ class ASSIGN : public Token {
 private:
     const std::string value;
 public:
-    ASSIGN() : Token(30), value("=") {}
+    ASSIGN() : Token(Token::ASSIGN), value("=") {}
 
 public:
     virtual void myOutput() override {

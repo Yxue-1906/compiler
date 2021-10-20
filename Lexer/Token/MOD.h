@@ -10,7 +10,7 @@ class MOD : public Token {
 private:
     const std::string value;
 public:
-    MOD() : Token(23), value("%") {}
+    MOD() : Token(Token::MOD), value("%") {}
 
 public:
     virtual void myOutput() override {

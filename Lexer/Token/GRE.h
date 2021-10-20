@@ -10,7 +10,7 @@ class GRE : public Token {
 private:
     const std::string value;
 public:
-    GRE() : Token(26), value(">") {}
+    GRE() : Token(Token::GRE), value(">") {}
 
 public:
     virtual void myOutput() override {

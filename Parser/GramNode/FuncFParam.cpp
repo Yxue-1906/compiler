@@ -37,5 +37,3 @@ bool FuncFParam::create(std::vector<GramNode *> &toAdd, std::vector<Token *>::it
     toAdd.push_back(new FuncFParam(son_ps));
     return true;
 }
-
-return true;

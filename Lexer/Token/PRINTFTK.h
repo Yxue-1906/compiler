@@ -10,7 +10,7 @@ class PRINTFTK: public Token {
 private:
     const std::string value;
 public:
-    PRINTFTK():Token(16), value("printf"){}
+    PRINTFTK():Token(Token::PRINTFTK), value("printf"){}
 
 public:
     virtual void myOutput() override {

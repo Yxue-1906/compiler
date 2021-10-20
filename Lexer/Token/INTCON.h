@@ -10,7 +10,7 @@ class INTCON : public Token {
 private:
     const int value;
 public:
-    INTCON(int value) : Token(2), value(value) {}
+    INTCON(int value) : Token(Token::INTCON), value(value) {}
 
 public:
     virtual void myOutput() override {

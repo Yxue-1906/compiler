@@ -9,7 +9,7 @@ class MINU : public Token {
 private:
     const std::string value;
 public:
-    MINU() : Token(19), value("-") {}
+    MINU() : Token(Token::MINU), value("-") {}
 
 public:
     virtual void myOutput() override {

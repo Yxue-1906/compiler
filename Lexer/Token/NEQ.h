@@ -10,7 +10,7 @@ class NEQ : public Token {
 private:
     const std::string value;
 public:
-    NEQ() : Token(29), value("!=") {}
+    NEQ() : Token(Token::NEQ), value("!=") {}
 
 public:
     virtual void myOutput() override {

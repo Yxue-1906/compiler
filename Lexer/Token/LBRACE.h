@@ -10,7 +10,7 @@ class LBRACE : public Token {
 private:
     const std::string value;
 public:
-    LBRACE() : Token(37), value("{") {}
+    LBRACE() : Token(Token::LBRACE), value("{") {}
 
 public:
     virtual void myOutput() override {

@@ -7,12 +7,16 @@
 
 
 #include <map>
+#include <vector>
 #include "../Output/MyOutput.h"
 
 class Token : public MyOutput {
 private:
     const std::string tokenName;
     const int tokenType;
+
+    static std::vector<Token *>::iterator end;
+
 
 public:
     static int IDENFR;
@@ -64,7 +68,7 @@ public:
 
     int getTokenType();
 
-    bool isTypeOf(int type);
+    static bool isTypeOf(std::vector<Token *>::iterator &ite, int type);
 
 private:
 

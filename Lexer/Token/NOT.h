@@ -10,7 +10,7 @@ class NOT : public Token {
 private:
     const std::string value;
 public:
-    NOT() : Token(11), value("!") {}
+    NOT() : Token(Token::NOT), value("!") {}
 
 public:
     virtual void myOutput() override {

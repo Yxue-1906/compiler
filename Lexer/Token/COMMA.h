@@ -10,7 +10,7 @@ class COMMA : public Token {
 private:
     const std::string value;
 public:
-    COMMA() : Token(32), value(",") {}
+    COMMA() : Token(Token::COMMA), value(",") {}
 
 public:
     virtual void myOutput() override {

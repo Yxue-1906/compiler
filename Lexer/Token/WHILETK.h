@@ -6,11 +6,11 @@
 #define PARSER_WHILETK_H
 
 
-class WHILETK: public Token {
+class WHILETK : public Token {
 private:
     const std::string value;
 public:
-    WHILETK() : Token(14), value("while") {}
+    WHILETK() : Token(Token::WHILETK), value("while") {}
 
 public:
     virtual void myOutput() override {

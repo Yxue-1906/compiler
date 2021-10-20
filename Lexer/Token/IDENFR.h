@@ -11,7 +11,7 @@ class IDENFR : public Token {
 private:
     const std::string value;
 public:
-    IDENFR(std::string value) : Token(1), value(value) {}
+    IDENFR(std::string value) : Token(Token::IDENFR), value(std::move(value)) {}
 
 public:
     virtual void myOutput() override {

@@ -10,7 +10,7 @@ class EQL : public Token {
 private:
     const std::string value;
 public:
-    EQL() : Token(28), value("==") {}
+    EQL() : Token(Token::EQL), value("==") {}
 
 public:
     virtual void myOutput() override {

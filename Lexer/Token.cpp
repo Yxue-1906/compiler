@@ -44,6 +44,8 @@ int Token::LBRACE = 37;
 int Token::RBRACE = 38;
 int Token::COMMENT = 39;
 
+std::vector<Token *>::iterator end;
+
 const std::map<int, std::string> Token::type2Name = {
         {1,  "IDENFR"},
         {2,  "INTCON"},
@@ -97,6 +99,6 @@ int Token::getTokenType() {
     return this->tokenType;
 }
 
-bool Token::isTypeOf(int type) {
-    return this->tokenType == type;
+bool Token::isTypeOf(std::vector<Token *>::iterator &ite, int type) {
+    return ite < Token::end && (**ite).tokenType == type;
 }

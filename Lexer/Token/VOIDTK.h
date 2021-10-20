@@ -10,7 +10,7 @@ class VOIDTK : public Token {
 private:
     const std::string value;
 public:
-    VOIDTK() : Token(20), value("void") {}
+    VOIDTK() : Token(Token::VOIDTK), value("void") {}
 
 public:
     virtual void myOutput() override {

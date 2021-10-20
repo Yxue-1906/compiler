@@ -10,7 +10,7 @@ class RPARENT : public Token {
 private:
     const std::string value;
 public:
-    RPARENT() : Token(34), value(")") {}
+    RPARENT() : Token(Token::RPARENT), value(")") {}
 
 public:
     virtual void myOutput() override {

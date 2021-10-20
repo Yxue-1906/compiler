@@ -9,7 +9,7 @@ class PLUS : public Token {
 private:
     const std::string value;
 public:
-    PLUS() : Token(18), value("+") {}
+    PLUS() : Token(Token::PLUS), value("+") {}
 
 public:
     virtual void myOutput() override {

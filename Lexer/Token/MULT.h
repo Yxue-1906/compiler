@@ -9,7 +9,7 @@ class MULT : public Token {
 private:
     const std::string value;
 public:
-    MULT() : Token(21), value("*") {}
+    MULT() : Token(Token::MULT), value("*") {}
 
 public:
     virtual void myOutput() override {

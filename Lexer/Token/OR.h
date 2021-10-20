@@ -10,7 +10,7 @@ class OR: public Token {
 private:
     const std::string value;
 public:
-    OR() : Token(13), value("||") {}
+    OR() : Token(Token::OR), value("||") {}
 
 public:
     virtual void myOutput() override {

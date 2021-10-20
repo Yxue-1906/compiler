@@ -10,7 +10,7 @@ class LSS : public Token {
 private:
     const std::string value;
 public:
-    LSS() : Token(24), value("<") {}
+    LSS() : Token(Token::LSS), value("<") {}
 
 public:
     virtual void myOutput() override {

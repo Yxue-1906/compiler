@@ -10,7 +10,7 @@ class IFTK: public Token {
 private:
     const std::string value;
 public:
-    IFTK() : Token(9), value("if") {}
+    IFTK() : Token(Token::IFTK), value("if") {}
 
 public:
     virtual void myOutput() override {

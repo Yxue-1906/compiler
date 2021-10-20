@@ -10,7 +10,7 @@ class ELSETK : public Token {
 private:
     const std::string value;
 public:
-    ELSETK() : Token(10), value("else") {}
+    ELSETK() : Token(Token::ELSETK), value("else") {}
 
 public:
     virtual void myOutput() override {

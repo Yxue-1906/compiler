@@ -5,13 +5,19 @@
 #include "VarDef.h"
 #include "../TokenNode.h"
 #include "ConstExp.h"
-#include "ConstInitVal.h"
+#include "InitVal.h"
 
 VarDef::VarDef(std::vector<GramNode *> sons) {
     setGramName("VarDef");
     setSons(std::move(sons));
 }
-
+/**
+ * VarDef -> Ident { '[' ConstExp ']' } |
+ *           Ident { '[' ConstExp ']' } '=' InitVal
+ * @param toAdd
+ * @param ite_p
+ * @return
+ */
 bool VarDef::create(std::vector<GramNode *> &toAdd, std::vector<Token *>::iterator &ite_p) {
     auto ite = ite_p;
     std::vector<GramNode *> son_ps;
@@ -27,7 +33,7 @@ bool VarDef::create(std::vector<GramNode *> &toAdd, std::vector<Token *>::iterat
         }
     }
     if (TokenNode::create(son_ps, ite, Token::EQL)) {
-        if (!ConstInitVal::create(son_ps, ite)) {
+        if (!InitVal::create(son_ps, ite)) {
             return false;
         }
     }

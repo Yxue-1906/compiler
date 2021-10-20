@@ -10,7 +10,7 @@ class INTTK : public Token {
 private:
     const std::string value;
 public:
-    INTTK() : Token(6), value("int") {}
+    INTTK() : Token(Token::INTTK), value("int") {}
 
 public:
     virtual void myOutput() override {

@@ -10,7 +10,7 @@ class RBRACK : public Token {
 private:
     const std::string value;
 public:
-    RBRACK() : Token(36), value("]") {}
+    RBRACK() : Token(Token::RBRACK), value("]") {}
 
 public:
     virtual void myOutput() override {

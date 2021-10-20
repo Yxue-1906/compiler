@@ -10,7 +10,7 @@ class BREAKTK: public Token {
 private:
     const std::string value;
 public:
-    BREAKTK() : Token(7), value("break") {}
+    BREAKTK() : Token(Token::BREAKTK), value("break") {}
 
 public:
     virtual void myOutput() override {

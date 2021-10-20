@@ -10,7 +10,7 @@ class RBRACE : public Token {
 private:
     const std::string value;
 public:
-    RBRACE() : Token(38), value("}") {}
+    RBRACE() : Token(Token::RBRACE), value("}") {}
 
 public:
     virtual void myOutput() override {

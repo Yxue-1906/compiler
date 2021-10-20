@@ -10,7 +10,7 @@ class MAINTK : public Token {
 private:
     const std::string value;
 public:
-    MAINTK() : Token(4), value("main") {}
+    MAINTK() : Token(Token::MAINTK), value("main") {}
 
 public:
     virtual void myOutput() override {

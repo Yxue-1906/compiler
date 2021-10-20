@@ -10,7 +10,7 @@ class DIV : public Token {
 private:
     const std::string value;
 public:
-    DIV() : Token(22), value("/") {}
+    DIV() : Token(Token::DIV), value("/") {}
 
 public:
     virtual void myOutput() override {

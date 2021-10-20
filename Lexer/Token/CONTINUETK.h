@@ -10,7 +10,7 @@ class CONTINUETK : public Token{
 private:
     const std::string value;
 public:
-    CONTINUETK() : Token(8), value("continue") {}
+    CONTINUETK() : Token(Token::CONTINUETK), value("continue") {}
 
 public:
     virtual void myOutput() override {

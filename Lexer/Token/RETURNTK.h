@@ -10,7 +10,7 @@ class RETURNTK : public Token {
 private:
     const std::string value;
 public:
-    RETURNTK() : Token(17), value("return") {}
+    RETURNTK() : Token(Token::RETURNTK), value("return") {}
 
 public:
     virtual void myOutput() override {

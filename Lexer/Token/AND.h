@@ -10,7 +10,7 @@ class AND: public Token {
 private:
     const std::string value;
 public:
-    AND() : Token(12), value("&&") {}
+    AND() : Token(Token::AND), value("&&") {}
 
 public:
     virtual void myOutput() override {
