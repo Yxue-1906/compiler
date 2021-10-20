@@ -15,18 +15,12 @@ CompUnit::CompUnit(std::vector<GramNode *> sons) {
 bool CompUnit::create(std::vector<GramNode *> &toAdd, std::vector<Token *>::iterator &ite_p) {
     auto ite = ite_p;
     std::vector<GramNode *> son_ps;
-    GramNode *nexNode;
-    if (Decl::create(nexNode, ite)) {
-        son_ps.push_back(nexNode);
-    }
-    if (FuncDef::create(nexNode, ite)) {
-        son_ps.push_back(nexNode);
-    }
-    if (!MainFuncDef::create(nexNode, ite)) {
+    Decl::create(son_ps, ite);
+    FuncDef::create(son_ps, ite);
+    if (!MainFuncDef::create(son_ps, ite)) {
         return false;
     }
-    son_ps.push_back(nexNode);
     ite_p = ite;
-    toAdd = new CompUnit(son_ps);
+    toAdd.push_back(new CompUnit(son_ps));
     return true;
 }

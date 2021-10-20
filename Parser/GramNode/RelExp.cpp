@@ -14,23 +14,18 @@ RelExp::RelExp(std::vector<GramNode *> sons) {
 bool RelExp::create(std::vector<GramNode *> &toAdd, std::vector<Token *>::iterator &ite_p) {
     auto ite = ite_p;
     std::vector<GramNode *> son_ps;
-    GramNode *nexNode;
-    if (!AddExp::create(nexNode, ite)) {
+    if (!AddExp::create(son_ps, ite)) {
         return false;
     }
-    son_ps.push_back(nexNode);
-    for (; (**ite).isTypeOf(Token::LEQ) ||
-           (**ite).isTypeOf(Token::GEQ) ||
-           (**ite).isTypeOf(Token::LSS) ||
-           (**ite).isTypeOf(Token::GRE);) {
-        son_ps.push_back(new TokenNode(**ite));
-        ++ite;
-        if (!AddExp::create(nexNode, ite)) {
+    for (; TokenNode::create(son_ps, ite, Token::LEQ) ||
+           TokenNode::create(son_ps, ite, Token::GEQ) ||
+           TokenNode::create(son_ps, ite, Token::LSS) ||
+           TokenNode::create(son_ps, ite, Token::GRE);) {
+        if (!AddExp::create(son_ps, ite)) {
             return false;
         }
-        son_ps.push_back(nexNode);
     }
     ite_p = ite;
-    toAdd = new RelExp(son_ps);
+    toAdd.push_back(new RelExp(son_ps));
     return true;
 }

@@ -13,16 +13,13 @@ Decl::Decl(std::vector<GramNode *> sons) {
 bool Decl::create(std::vector<GramNode *> &toAdd, std::vector<Token *>::iterator &ite_p) {
     auto ite = ite_p;
     std::vector<GramNode *> son_ps;
-    GramNode *nexNode;
     if ((**ite).isTypeOf(Token::CONSTTK)) {
-        if (!ConstDecl::create(nexNode, ite)) {
+        if (!ConstDecl::create(son_ps, ite)) {
             return false;
         }
-        son_ps.push_back(nexNode);
-        ite_p = ite;
-        toAdd = new Decl(son_ps);
-    }else{
-        if(!VarDecl::create())
+        toAdd.push_back(new Decl(son_ps));
+    } else {
+        if (!VarDecl::create(son_ps, ite))
     }
 
 }

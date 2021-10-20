@@ -15,31 +15,22 @@ bool MainFuncDef::create(std::vector<GramNode *> &toAdd, std::vector<Token *>::i
     auto ite = ite_p;
     std::vector<GramNode *> son_ps;
     GramNode *nexNode;
-    if (!(**ite).isTypeOf(Token::INTTK)) {
+    if (!TokenNode::create(son_ps, ite, Token::INTTK)) {
         return false;
     }
-    son_ps.push_back(new TokenNode(**ite));
-    ++ite;
-    if (!(**ite).isTypeOf(Token::MAINTK)) {
+    if (!TokenNode::create(son_ps, ite, Token::MAINTK)) {
         return false;
     }
-    son_ps.push_back(new TokenNode(**ite));
-    ++ite;
-    if (!(**ite).isTypeOf(Token::LPARENT)) {
+    if (!TokenNode::create(son_ps, ite, Token::LPARENT)) {
         return false;
     }
-    son_ps.push_back(new TokenNode(**ite));
-    ++ite;
-    if (!(**ite).isTypeOf(Token::RPARENT)) {
+    if (!TokenNode::create(son_ps, ite, Token::RPARENT)) {
         return false;
     }
-    son_ps.push_back(new TokenNode(**ite));
-    ++ite;
-    if (!Block::create(nexNode, ite)) {
+    if (!Block::create(son_ps, ite)) {
         return false;
     }
-    son_ps.push_back(nexNode);
     ite_p = ite;
-    toAdd = new MainFuncDef(son_ps);
+    toAdd.push_back(new MainFuncDef(son_ps));
     return true;
 }

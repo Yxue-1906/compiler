@@ -14,12 +14,9 @@ BlockItem::BlockItem(std::vector<GramNode *> sons) {
 bool BlockItem::create(std::vector<GramNode *> &toAdd, std::vector<Token *>::iterator &ite_p) {
     auto ite = ite_p;
     std::vector<GramNode *> son_ps;
-    GramNode *nexNode;
-    if (Decl::create(nexNode, ite) ||
-        Stmt::create(nexNode, ite)) {
-        son_ps.push_back(nexNode);
+    if (Decl::create(son_ps, ite) || Stmt::create(son_ps, ite)) {
         ite_p = ite;
-        toAdd = new BlockItem(son_ps);
+        toAdd .push_back(new BlockItem(son_ps)) ;
         return true;
     } else return false;
 }

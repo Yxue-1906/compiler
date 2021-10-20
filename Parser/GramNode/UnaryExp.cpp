@@ -13,6 +13,5 @@ UnaryExp::UnaryExp(std::vector<GramNode *> sons) {
 bool UnaryExp::create(std::vector<GramNode *> &toAdd, std::vector<Token *>::iterator &ite_p) {
     auto ite = ite_p;
     std::vector<GramNode *> son_ps;
-    GramNode *nexNode;
     if()
 }

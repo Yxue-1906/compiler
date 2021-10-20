@@ -13,12 +13,10 @@ Exp::Exp(std::vector<GramNode *> sons) {
 bool Exp::create(std::vector<GramNode *> &toAdd, std::vector<Token *>::iterator &ite_p) {
     auto ite = ite_p;
     std::vector<GramNode *> son_ps;
-    GramNode *nexNode;
-    if (!AddExp::create(nexNode, ite)) {
+    if (!AddExp::create(son_ps, ite)) {
         return false;
     }
-    son_ps.push_back(nexNode);
-    toAdd = new Exp(son_ps);
     ite_p = ite;
+    toAdd.push_back(new Exp(son_ps));
     return true;
 }

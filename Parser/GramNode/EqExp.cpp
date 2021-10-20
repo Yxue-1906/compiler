@@ -14,20 +14,16 @@ EqExp::EqExp(std::vector<GramNode *> sons) {
 bool EqExp::create(std::vector<GramNode *> &toAdd, std::vector<Token *>::iterator &ite_p) {
     auto ite = ite_p;
     std::vector<GramNode *> son_ps;
-    GramNode *nexNode;
-    if (!RelExp::create(nexNode, ite)) {
+    if (!RelExp::create(son_ps, ite)) {
         return false;
     }
-    son_ps.push_back(nexNode);
-    for (; (**ite).isTypeOf(Token::EQL) ||
-           (**ite).isTypeOf(Token::NEQ);) {
-        son_ps.push_back(new TokenNode(**ite));
-        if (!RelExp::create(nexNode, ite)) {
+    for (; TokenNode::create(son_ps, ite, Token::EQL) ||
+           TokenNode::create(son_ps, ite, Token::NEQ);) {
+        if (!RelExp::create(son_ps, ite)) {
             return false;
         }
-        son_ps.push_back(nexNode);
     }
     ite_p = ite;
-    toAdd = new EqExp(son_ps);
+    toAdd.push_back(new EqExp(son_ps));
     return true;
 }

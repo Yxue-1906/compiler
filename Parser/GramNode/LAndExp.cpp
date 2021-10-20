@@ -15,18 +15,15 @@ bool LAndExp::create(std::vector<GramNode *> &toAdd, std::vector<Token *>::itera
     auto ite = ite_p;
     std::vector<GramNode *> son_ps;
     GramNode *nexNode;
-    if (!EqExp::create(nexNode, ite)) {
+    if (!EqExp::create(son_ps, ite)) {
         return false;
     }
-    for (; (**ite).isTypeOf(Token::AND);) {
-        son_ps.push_back(new TokenNode(**ite));
-        ++ite;
-        if (!EqExp::create(nexNode, ite)) {
+    for (; TokenNode::create(son_ps, ite, Token::AND);) {
+        if (!EqExp::create(son_ps, ite)) {
             return false;
         }
-        son_ps.push_back(nexNode);
     }
     ite_p = ite;
-    toAdd = new LAndExp(son_ps);
+    toAdd.push_back(new LAndExp(son_ps));
     return true;
 }

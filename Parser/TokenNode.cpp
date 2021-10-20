@@ -10,10 +10,10 @@ void TokenNode::myOutput() {
     token.myOutput();
 }
 
-bool TokenNode::create(GramNode *toReturn, std::vector<Token *>::iterator ite_p, int type) {
+bool TokenNode::create(std::vector<GramNode *> &toAdd, std::vector<Token *>::iterator ite_p, int type) {
     auto ite = ite_p;
     if ((**ite).isTypeOf(type)) {
-        toReturn = new TokenNode(**ite);
+        toAdd .push_back(new TokenNode(**ite)) ;
         ite_p = ++ite;
         return true;
     }

@@ -16,34 +16,24 @@ ConstDecl::ConstDecl(std::vector<GramNode *> sons) {
 
 bool ConstDecl::create(std::vector<GramNode *> &toAdd, std::vector<Token *>::iterator &ite_p) {
     auto ite = ite_p;
-    GramNode *nexNode;
     std::vector<GramNode *> son_ps;
-    if (!(**ite).isTypeOf(Token::CONSTTK)) {
+    if (!TokenNode::create(son_ps, ite, Token::CONSTTK)) {
         return false;
     }
-    son_ps.push_back(new TokenNode(**ite));
-    ite++;
-    if (!BType::create(nexNode, ite)) {
+    if (!BType::create(son_ps, ite)) {
         return false;
     }
-    son_ps.push_back(nexNode);
-    if (!ConstDef::create(nexNode, ite)) {
+    if (!ConstDef::create(son_ps, ite)) {
         return false;
     }
-    son_ps.push_back(nexNode);
-    for (; (**ite).isTypeOf(Token::COMMA);) {
-        son_ps.push_back(new TokenNode(**ite));
-        ++ite;
-        if (!ConstDef::create(nexNode, ite)) {
+    for (; TokenNode::create(son_ps, ite, Token::COMMA);) {
+        if (!ConstDef::create(son_ps, ite)) {
             return false;
         }
-        son_ps.push_back(nexNode);
     }
-    if (!(**ite).isTypeOf(Token::SEMICN)) {
+    if (!TokenNode::create(son_ps, ite, Token::SEMICN)) {
         return false;
     }
-    son_ps.push_back(new TokenNode(**ite));
-    ++ite;
-    toAdd = new ConstDecl(son_ps);
+    toAdd .push_back(new ConstDecl(son_ps));
     return true;
 }

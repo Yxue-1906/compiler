@@ -13,10 +13,9 @@ Ident::Ident(std::vector<GramNode *> sons) {
 bool Ident::create(std::vector<GramNode *> &toAdd, std::vector<Token *>::iterator &ite_p) {
     auto ite = ite_p;
     std::vector<GramNode *> son_ps;
-    if (!(**ite).isTypeOf(Token::IDENFR))
+    if (!TokenNode::create(son_ps, ite, Token::IDENFR))
         return false;
-    son_ps.push_back(new TokenNode(**ite));
-    toAdd = new Ident(son_ps);
     ite_p = ite;
+    toAdd .push_back(new Ident(son_ps)) ;
     return true;
 }

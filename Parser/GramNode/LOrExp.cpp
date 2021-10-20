@@ -14,19 +14,15 @@ LOrExp::LOrExp(std::vector<GramNode *> sons) {
 bool LOrExp::create(std::vector<GramNode *> &toAdd, std::vector<Token *>::iterator &ite_p) {
     auto ite = ite_p;
     std::vector<GramNode *> son_ps;
-    GramNode *nexNode;
-    if (!LAndExp::create(nexNode, ite)) {
+    if (!LAndExp::create(son_ps, ite)) {
         return false;
     }
-    for (; (**ite).isTypeOf(Token::OR);) {
-        son_ps.push_back(new TokenNode(**ite));
-        ++ite;
-        if (!LAndExp::create(nexNode, ite)) {
+    for (; TokenNode::create(son_ps, ite, Token::OR);) {
+        if (!LAndExp::create(son_ps, ite)) {
             return false;
         }
-        son_ps.push_back(nexNode);
     }
     ite_p = ite;
-    toAdd = new LOrExp(son_ps);
+    toAdd.push_back(new LOrExp(son_ps));
     return true;
 }

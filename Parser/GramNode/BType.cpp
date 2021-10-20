@@ -13,11 +13,9 @@ BType::BType(std::vector<GramNode *> sons) {
 bool BType::create(std::vector<GramNode *> &toAdd, std::vector<Token *>::iterator &ite_p) {
     auto ite = ite_p;
     std::vector<GramNode *> son_ps;
-    if (!(**ite).isTypeOf(Token::INTTK))
+    if (!TokenNode::create(son_ps, ite, Token::INTTK))
         return false;
-    son_ps.push_back(new TokenNode(**ite));
-    ++ite;
-    toAdd = new BType(son_ps);
     ite_p = ite;
+    toAdd .push_back(new BType(son_ps));
     return true;
 }

@@ -4,6 +4,7 @@
 
 #include "Block.h"
 #include "../TokenNode.h"
+#include "BlockItem.h"
 
 Block::Block(std::vector<GramNode *> sons) {
     setGramName("Block");
@@ -13,13 +14,8 @@ Block::Block(std::vector<GramNode *> sons) {
 bool Block::create(std::vector<GramNode *> &toAdd, std::vector<Token *>::iterator &ite_p) {
     auto ite = ite_p;
     std::vector<GramNode *> son_ps;
-    GramNode *nexNode;
-    if (!(**ite).isTypeOf(Token::LBRACE)) {
+    if (!TokenNode::create(son_ps, ite, Token::LBRACE)) {
         return false;
     }
-    son_ps.push_back(new TokenNode(**ite));
-    ++ite;
-    if (BlockItem::create(nexNode, ite)) {
-        son_ps.push_back(nexNode);
-    }
+    BlockItem::create(son_ps, ite);
 }

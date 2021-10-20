@@ -13,10 +13,7 @@ PrimaryExp::PrimaryExp(std::vector<GramNode *> sons) {
 bool PrimaryExp::create(std::vector<GramNode *> &toAdd, std::vector<Token *>::iterator &ite_p) {
     auto ite = ite_p;
     std::vector<GramNode *> son_ps;
-    GramNode *nexNode;
-    if ((**ite).isTypeOf(Token::LPARENT)) {
-        son_ps.push_back(new TokenNode(**ite));
-        ++ite;
+    if (TokenNode::create(son_ps, ite, Token::LPARENT)) {
         if ()
     }
 }

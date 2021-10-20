@@ -13,11 +13,10 @@ Cond::Cond(std::vector<GramNode *> sons) {
 bool Cond::create(std::vector<GramNode *> &toAdd, std::vector<Token *>::iterator &ite_p) {
     auto ite = ite_p;
     std::vector<GramNode *> son_ps;
-    GramNode *nexNode;
-    if (!LOrExp::create(nexNode, ite)) {
+    if (!LOrExp::create(son_ps, ite)) {
         return false;
     }
     ite_p = ite;
-    toAdd = new Cond(son_ps);
+    toAdd .push_back(new Cond(son_ps));
     return true;
 }

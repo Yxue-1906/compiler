@@ -16,33 +16,23 @@ bool VarDef::create(std::vector<GramNode *> &toAdd, std::vector<Token *>::iterat
     auto ite = ite_p;
     std::vector<GramNode *> son_ps;
     GramNode *nexNode;
-    if (!(**ite).isTypeOf(Token::IDENFR)) {
+    if (!TokenNode::create(son_ps, ite, Token::IDENFR)) {
         return false;
     }
-    son_ps.push_back(new TokenNode(**ite));
-    ++ite;
-    if ((**ite).isTypeOf(Token::LBRACK)) {
-        son_ps.push_back(new TokenNode(**ite));
-        ++ite;
-        if (!ConstExp::create(nexNode, ite)) {
+    if (TokenNode::create(son_ps, ite, Token::LBRACK)) {
+        if (!ConstExp::create(son_ps, ite)) {
             return false;
         }
-        son_ps.push_back(nexNode);
-        if (!(**ite).isTypeOf(Token::RBRACK)) {
+        if (!TokenNode::create(son_ps, ite, Token::RBRACK)) {
             return false;
         }
-        son_ps.push_back(new TokenNode(**ite));
-        ++ite;
     }
-    if ((**ite).isTypeOf(Token::EQL)) {
-        son_ps.push_back(new TokenNode(**ite));
-        ++ite;
-        if (!ConstInitVal::create(nexNode, ite)) {
+    if (TokenNode::create(son_ps, ite, Token::EQL)) {
+        if (!ConstInitVal::create(son_ps, ite)) {
             return false;
         }
-        son_ps.push_back(nexNode);
     }
     ite_p = ite;
-    toAdd = new VarDef(son_ps);
+    toAdd.push_back(new VarDef(son_ps));
     return true;
 }

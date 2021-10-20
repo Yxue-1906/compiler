@@ -13,10 +13,8 @@ ValDecl::ValDecl(std::vector<GramNode *> sons) {
 bool ValDecl::create(std::vector<GramNode *> &toAdd, std::vector<Token *>::iterator &ite_p) {
     auto ite = ite_p;
     std::vector<GramNode *> son_ps;
-    GramNode *nexNode;
-    if (!BType::create(nexNode, ite)) {
+    if (!BType::create(son_ps, ite)) {
         return false;
     }
-    son_ps.push_back(nexNode);
 
 }

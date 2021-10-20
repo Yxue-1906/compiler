@@ -14,42 +14,31 @@ ConstInitVal::ConstInitVal(std::vector<GramNode *> sons) {
 bool ConstInitVal::create(std::vector<GramNode *> &toAdd, std::vector<Token *>::iterator &ite_p) {
     auto ite = ite_p;
     std::vector<GramNode *> son_ps;
-    GramNode *nexNode;
-    if ((**ite).isTypeOf(Token::LBRACE)) {
-        son_ps.push_back(new TokenNode(**ite));
-        ++ite;
-        if ((**ite).isTypeOf(Token::RBRACE)) {
-            son_ps.push_back(new TokenNode(**ite));
-            ++ite;
-            toAdd = new ConstInitVal(son_ps);
+    if (TokenNode::create(son_ps, ite, Token::LBRACE)) {
+        if (TokenNode::create(son_ps, ite, Token::RBRACE)) {
+            toAdd.push_back(new ConstInitVal(son_ps));
             ite_p = ite;
             return true;
         }
-        if (!ConstInitVal::create(nexNode, ite)) {
+        if (!ConstInitVal::create(son_ps, ite)) {
             return false;
         }
-        for (; (**ite).isTypeOf(Token::SEMICN);) {
-            son_ps.push_back(new TokenNode(**ite));
-            ++ite;
-            if (!ConstInitVal::create(nexNode, ite)) {
+        for (; TokenNode::create(son_ps, ite, Token::SEMICN);) {
+            if (!ConstInitVal::create(son_ps, ite)) {
                 return false;
             }
-            son_ps.push_back(nexNode);
         }
-        if (!(**ite).isTypeOf(Token::RBRACE)) {
+        if (!TokenNode::create(son_ps, ite, Token::RBRACK)) {
             return false;
         }
-        son_ps.push_back(new TokenNode(**ite));
-        ++ite;
         ite_p = ite;
-        toAdd = new ConstInitVal(son_ps);
+        toAdd.push_back(new ConstInitVal(son_ps));
         return true;
     } else {
-        if (!ConstExp::create(nexNode, ite)) {
+        if (!ConstExp::create(son_ps, ite)) {
             return false;
         }
-        son_ps.push_back(nexNode);
-        toAdd = new ConstInitVal(son_ps);
+        toAdd.push_back(new ConstInitVal(son_ps));
         ite_p = ite;
         return true;
     }

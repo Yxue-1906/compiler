@@ -16,11 +16,12 @@ public:
 
 private:
     TokenNode(Token &);
+
 public:
 
     virtual void myOutput() override;
 
-    static bool create(GramNode *, std::vector<Token *>::iterator, int);
+    static bool create(std::vector<GramNode *> &, std::vector<Token *>::iterator, int);
 };
 
 

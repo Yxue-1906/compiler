@@ -18,139 +18,94 @@ bool Stmt::create(std::vector<GramNode *> &toAdd, std::vector<Token *>::iterator
     auto ite = ite_p;
     std::vector<GramNode *> son_ps;
     GramNode *nexNode;
-    if ((**ite).isTypeOf(Token::IFTK)) {
-        son_ps.push_back(new TokenNode(**ite));
-        ++ite;
-        if (!(**ite).isTypeOf(Token::LPARENT)) {
+    if (TokenNode::create(son_ps, ite, Token::IFTK)) {
+        if (!TokenNode::create(son_ps, ite, Token::LPARENT)) {
             return false;
         }
-        son_ps.push_back(new TokenNode(**ite));
-        ++ite;
-        if (!Cond::create(nexNode, ite)) {
+        if (!Cond::create(son_ps, ite)) {
             return false;
         }
-        if (!(**ite).isTypeOf(Token::RPARENT)) {
+        if (!TokenNode::create(son_ps, ite, Token::RPARENT)) {
             return false;
         }
-        son_ps.push_back(new TokenNode(**ite));
-        ++ite;
-        if (!Stmt::create(nexNode, ite)) {
+        if (!Stmt::create(son_ps, ite)) {
             return false;
         }
-        son_ps.push_back(nexNode);
-        if ((**ite).isTypeOf(Token::ELSETK)) {
-            son_ps.push_back(new TokenNode(**ite));
-            ++ite;
-            if (!Stmt::create(nexNode, ite)) {
+        if (TokenNode::create(son_ps, ite, Token::ELSETK)) {
+            if (!Stmt::create(son_ps, ite)) {
                 return false;
             }
-            son_ps.push_back(nexNode);
         }
         ite_p = ite;
-        toAdd = new Stmt(son_ps);
+        toAdd.push_back(new Stmt(son_ps));
         return true;
-    } else if ((**ite).isTypeOf(Token::WHILETK)) {
-        son_ps.push_back(new TokenNode(**ite));
-        ++ite;
-        if (!(**ite).isTypeOf(Token::LPARENT)) {
+    } else if (TokenNode::create(son_ps, ite, Token::WHILETK)) {
+        if (!TokenNode::create(son_ps, ite, Token::LPARENT)) {
             return false;
         }
-        son_ps.push_back(new TokenNode(**ite));
-        ++ite;
-        if (!Cond::create(nexNode, ite)) {
+        if (!Cond::create(son_ps, ite)) {
             return false;
         }
-        son_ps.push_back(nexNode);
-        if (!Stmt::create(nexNode, ite)) {
+        if (!Stmt::create(son_ps, ite)) {
             return false;
         }
-        son_ps.push_back(nexNode);
         ite_p = ite;
-        toAdd = new Stmt(son_ps);
+        toAdd.push_back(new Stmt(son_ps));
         return true;
-    } else if ((**ite).isTypeOf(Token::BREAKTK) || (**ite).isTypeOf(Token::CONTINUETK)) {
-        son_ps.push_back(new TokenNode(**ite));
-        ++ite;
-        if (!(**ite).isTypeOf(Token::SEMICN)) {
+    } else if (TokenNode::create(son_ps, ite, Token::BREAKTK) || TokenNode::create(son_ps, ite, Token::CONTINUETK)) {
+        if (!TokenNode::create(son_ps, ite, Token::SEMICN)) {
             return false;
         }
-        son_ps.push_back(new TokenNode(**ite));
-        ++ite;
         ite_p = ite;
-        toAdd = new Stmt(son_ps);
+        toAdd.push_back(new Stmt(son_ps));
         return true;
-    } else if ((**ite).isTypeOf(Token::RETURNTK)) {
-        son_ps.push_back(new TokenNode(**ite));
-        ++ite;
-        if (Exp::create(nexNode, ite)) {
-            son_ps.push_back(nexNode);
-        }
-        if (!(**ite).isTypeOf(Token::SEMICN)) {
+    } else if (TokenNode::create(son_ps, ite, Token::RETURNTK)) {
+        Exp::create(son_ps, ite);
+        if (!TokenNode::create(son_ps, ite, Token::SEMICN)) {
             return false;
         }
-        son_ps.push_back(new TokenNode(**ite));
-        ++ite;
         ite_p = ite;
-        toAdd = new Stmt(son_ps);
+        toAdd.push_back(new Stmt(son_ps));
         return true;
-    } else if ((**ite).isTypeOf(Token::PRINTFTK)) {
-        son_ps.push_back(new TokenNode(**ite));
-        ++ite;
-        if (!(**ite).isTypeOf(Token::LPARENT)) {
+    } else if (TokenNode::create(son_ps, ite, Token::PRINTFTK)) {
+        if (!TokenNode::create(son_ps, ite, Token::LPARENT)) {
             return false;
         }
-        son_ps.push_back(new TokenNode(**ite));
-        ++ite;
-        if (!(**ite).isTypeOf(Token::STRCON)) {
+        if (!TokenNode::create(son_ps, ite, Token::STRCON)) {
             return false;
         }
-        son_ps.push_back(new TokenNode(**ite));
-        ++ite;
-        for (; (**ite).isTypeOf(Token::COMMA);) {
-            son_ps.push_back(new TokenNode(**ite));
-            ++ite;
-            if (!Exp::create(nexNode, ite)) {
+        for (; TokenNode::create(son_ps, ite, Token::COMMA);) {
+            if (!Exp::create(son_ps, ite)) {
                 return false;
             }
-            son_ps.push_back(nexNode);
         }
-        if (!(**ite).isTypeOf(Token::RPARENT)) {
+        if (!TokenNode::create(son_ps, ite, Token::RPARENT)) {
             return false;
         }
-        son_ps.push_back(new TokenNode(**ite));
-        ++ite;
-        if (!(**ite).isTypeOf(Token::SEMICN)) {
+        if (!TokenNode::create(son_ps, ite, Token::SEMICN)) {
             return false;
         }
-        son_ps.push_back(new TokenNode(**ite));
-        ++ite;
         ite_p = ite;
-        toAdd = new Stmt(son_ps);
+        toAdd.push_back(new Stmt(son_ps));
         return true;
-    } else if ((**ite).isTypeOf(Token::LBRACE)) {
-        if (!Block::create(nexNode, ite)) {
+    } else if (TokenNode::create(son_ps, ite, Token::LBRACE)) {
+        if (!Block::create(son_ps, ite)) {
             return false;
         }
-        son_ps.push_back(nexNode);
         ite_p = ite;
-        toAdd = new Stmt(son_ps);
+        toAdd.push_back(new Stmt(son_ps));
         return true;
-    } else if (LVal::create(nexNode, ite)) {
-        son_ps.push_back(nexNode);
-        if (!TokenNode::create(nexNode, ite, Token::EQL)) {
+    } else if (LVal::create(son_ps, ite)) {
+        if (!TokenNode::create(son_ps, ite, Token::EQL)) {
             return false;
         }
-        son_ps.push_back(nexNode);
-        if (TokenNode::create(nexNode, ite, Token::GETINTTK)) {
-            son_ps.push_back(nexNode);
-            if (!TokenNode::create(nexNode, ite, Token::LPARENT)) {
+        if (TokenNode::create(son_ps, ite, Token::GETINTTK)) {
+            if (!TokenNode::create(son_ps, ite, Token::LPARENT)) {
                 return false;
             }
-            son_ps.push_back(nexNode);
-            if (!TokenNode::create(nexNode, ite, Token::RPARENT)) {
+            if (!TokenNode::create(son_ps, ite, Token::RPARENT)) {
                 return false;
             }
-            son_ps.push_back(nexNode);
             if
         }
     }

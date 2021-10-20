@@ -15,24 +15,18 @@ LVal::LVal(std::vector<GramNode *> sons) {
 bool LVal::create(std::vector<GramNode *> &toAdd, std::vector<Token *>::iterator &ite_p) {
     auto ite = ite_p;
     std::vector<GramNode *> son_ps;
-    GramNode *nexNode;
-    if (!Ident::create(nexNode, ite)) {
+    if (!Ident::create(son_ps, ite)) {
         return false;
     }
-    son_ps.push_back(nexNode);
-    for (; (**ite).isTypeOf(Token::LBRACK);) {
-        son_ps.push_back(new TokenNode(**ite));
-        ++ite;
-        if (!Exp::create(nexNode, ite)) {
+    for (; TokenNode::create(son_ps, ite, Token::LBRACK);) {
+        if (!Exp::create(son_ps, ite)) {
             return false;
         }
-        if (!(**ite).isTypeOf(Token::RBRACK)) {
+        if (!TokenNode::create(son_ps, ite, Token::RBRACK)) {
             return false;
         }
-        son_ps.push_back(new TokenNode(**ite));
-        ++ite;
     }
     ite_p = ite;
-    toAdd = new LVal(son_ps);
+    toAdd.push_back(new LVal(son_ps));
     return true;
 }

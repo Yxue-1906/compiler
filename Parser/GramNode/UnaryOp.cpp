@@ -13,12 +13,11 @@ UnaryOp::UnaryOp(std::vector<GramNode *> sons) {
 bool UnaryOp::create(std::vector<GramNode *> &toAdd, std::vector<Token *>::iterator &ite_p) {
     auto ite = ite_p;
     std::vector<GramNode *> son_ps;
-    if ((**ite).isTypeOf(Token::PLUS) ||
-        (**ite).isTypeOf(Token::MINU) ||
-        (**ite).isTypeOf(Token::NOT)) {
-        son_ps.push_back(new TokenNode(**ite));
-        toAdd = new UnaryOp(son_ps);
-        ite_p = ++ite;
+    if (TokenNode::create(son_ps, ite, Token::PLUS) ||
+        TokenNode::create(son_ps, ite, Token::MINU) ||
+        TokenNode::create(son_ps, ite, Token::NOT)) {
+        toAdd.push_back(new UnaryOp(son_ps));
+        ite_p = ite;
         return true;
     } else {
         return false;
