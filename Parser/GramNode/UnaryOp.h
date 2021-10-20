@@ -16,7 +16,7 @@ private:
     UnaryOp(std::vector<GramNode *>);
 
 public:
-    static bool create(GramNode *&, std::vector<Token *>::iterator &);
+    static bool create(std::vector<GramNode *> &, std::vector<Token *>::iterator &);
 
 };
 

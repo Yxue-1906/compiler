@@ -7,13 +7,14 @@
 #include "Cond.h"
 #include "Exp.h"
 #include "Block.h"
+#include "LVal.h"
 
 Stmt::Stmt(std::vector<GramNode *> sons) {
     setGramName("Stmt");
     setSons(std::move(sons));
 }
 
-bool Stmt::create(GramNode *&toReturn, std::vector<Token *>::iterator &ite_p) {
+bool Stmt::create(std::vector<GramNode *> &toAdd, std::vector<Token *>::iterator &ite_p) {
     auto ite = ite_p;
     std::vector<GramNode *> son_ps;
     GramNode *nexNode;
@@ -46,7 +47,7 @@ bool Stmt::create(GramNode *&toReturn, std::vector<Token *>::iterator &ite_p) {
             son_ps.push_back(nexNode);
         }
         ite_p = ite;
-        toReturn = new Stmt(son_ps);
+        toAdd = new Stmt(son_ps);
         return true;
     } else if ((**ite).isTypeOf(Token::WHILETK)) {
         son_ps.push_back(new TokenNode(**ite));
@@ -65,7 +66,7 @@ bool Stmt::create(GramNode *&toReturn, std::vector<Token *>::iterator &ite_p) {
         }
         son_ps.push_back(nexNode);
         ite_p = ite;
-        toReturn = new Stmt(son_ps);
+        toAdd = new Stmt(son_ps);
         return true;
     } else if ((**ite).isTypeOf(Token::BREAKTK) || (**ite).isTypeOf(Token::CONTINUETK)) {
         son_ps.push_back(new TokenNode(**ite));
@@ -76,7 +77,7 @@ bool Stmt::create(GramNode *&toReturn, std::vector<Token *>::iterator &ite_p) {
         son_ps.push_back(new TokenNode(**ite));
         ++ite;
         ite_p = ite;
-        toReturn = new Stmt(son_ps);
+        toAdd = new Stmt(son_ps);
         return true;
     } else if ((**ite).isTypeOf(Token::RETURNTK)) {
         son_ps.push_back(new TokenNode(**ite));
@@ -90,7 +91,7 @@ bool Stmt::create(GramNode *&toReturn, std::vector<Token *>::iterator &ite_p) {
         son_ps.push_back(new TokenNode(**ite));
         ++ite;
         ite_p = ite;
-        toReturn = new Stmt(son_ps);
+        toAdd = new Stmt(son_ps);
         return true;
     } else if ((**ite).isTypeOf(Token::PRINTFTK)) {
         son_ps.push_back(new TokenNode(**ite));
@@ -124,7 +125,7 @@ bool Stmt::create(GramNode *&toReturn, std::vector<Token *>::iterator &ite_p) {
         son_ps.push_back(new TokenNode(**ite));
         ++ite;
         ite_p = ite;
-        toReturn = new Stmt(son_ps);
+        toAdd = new Stmt(son_ps);
         return true;
     } else if ((**ite).isTypeOf(Token::LBRACE)) {
         if (!Block::create(nexNode, ite)) {
@@ -132,9 +133,27 @@ bool Stmt::create(GramNode *&toReturn, std::vector<Token *>::iterator &ite_p) {
         }
         son_ps.push_back(nexNode);
         ite_p = ite;
-        toReturn = new Stmt(son_ps);
+        toAdd = new Stmt(son_ps);
         return true;
+    } else if (LVal::create(nexNode, ite)) {
+        son_ps.push_back(nexNode);
+        if (!TokenNode::create(nexNode, ite, Token::EQL)) {
+            return false;
+        }
+        son_ps.push_back(nexNode);
+        if (TokenNode::create(nexNode, ite, Token::GETINTTK)) {
+            son_ps.push_back(nexNode);
+            if (!TokenNode::create(nexNode, ite, Token::LPARENT)) {
+                return false;
+            }
+            son_ps.push_back(nexNode);
+            if (!TokenNode::create(nexNode, ite, Token::RPARENT)) {
+                return false;
+            }
+            son_ps.push_back(nexNode);
+            if
+        }
     }
-    else if()
+
 
 }

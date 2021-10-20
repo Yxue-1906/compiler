@@ -12,11 +12,15 @@ class TokenNode : public GramNode {
 private:
     Token &token;
 public:
-    TokenNode(Token &);
+
 
 private:
+    TokenNode(Token &);
 public:
+
     virtual void myOutput() override;
+
+    static bool create(GramNode *, std::vector<Token *>::iterator, int);
 };
 
 

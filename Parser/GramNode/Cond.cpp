@@ -10,7 +10,7 @@ Cond::Cond(std::vector<GramNode *> sons) {
     setSons(std::move(sons));
 }
 
-bool Cond::create(GramNode *&toReturn, std::vector<Token *>::iterator &ite_p) {
+bool Cond::create(std::vector<GramNode *> &toAdd, std::vector<Token *>::iterator &ite_p) {
     auto ite = ite_p;
     std::vector<GramNode *> son_ps;
     GramNode *nexNode;
@@ -18,6 +18,6 @@ bool Cond::create(GramNode *&toReturn, std::vector<Token *>::iterator &ite_p) {
         return false;
     }
     ite_p = ite;
-    toReturn = new Cond(son_ps);
+    toAdd = new Cond(son_ps);
     return true;
 }

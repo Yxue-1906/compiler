@@ -10,7 +10,7 @@ Decl::Decl(std::vector<GramNode *> sons) {
     setSons(std::move(sons));
 }
 
-bool Decl::create(GramNode *&toReturn, std::vector<Token *>::iterator &ite_p) {
+bool Decl::create(std::vector<GramNode *> &toAdd, std::vector<Token *>::iterator &ite_p) {
     auto ite = ite_p;
     std::vector<GramNode *> son_ps;
     GramNode *nexNode;
@@ -20,7 +20,7 @@ bool Decl::create(GramNode *&toReturn, std::vector<Token *>::iterator &ite_p) {
         }
         son_ps.push_back(nexNode);
         ite_p = ite;
-        toReturn = new Decl(son_ps);
+        toAdd = new Decl(son_ps);
     }else{
         if(!VarDecl::create())
     }

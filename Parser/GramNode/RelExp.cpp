@@ -7,11 +7,11 @@
 #include "../TokenNode.h"
 
 RelExp::RelExp(std::vector<GramNode *> sons) {
-    setGramName("FuncDef");
+    setGramName("RelExp");
     setSons(std::move(sons));
 }
 
-bool RelExp::create(GramNode *&toReturn, std::vector<Token *>::iterator &ite_p) {
+bool RelExp::create(std::vector<GramNode *> &toAdd, std::vector<Token *>::iterator &ite_p) {
     auto ite = ite_p;
     std::vector<GramNode *> son_ps;
     GramNode *nexNode;
@@ -31,6 +31,6 @@ bool RelExp::create(GramNode *&toReturn, std::vector<Token *>::iterator &ite_p) 
         son_ps.push_back(nexNode);
     }
     ite_p = ite;
-    toReturn = new RelExp(son_ps);
+    toAdd = new RelExp(son_ps);
     return true;
 }

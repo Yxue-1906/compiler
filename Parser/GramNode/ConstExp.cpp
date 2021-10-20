@@ -9,7 +9,7 @@ ConstExp::ConstExp(std::vector<GramNode *> sons) {
     setSons(std::move(sons));
 }
 
-bool ConstExp::create(GramNode *&toReturn, std::vector<Token *>::iterator &ite_p) {
+bool ConstExp::create(std::vector<GramNode *> &toAdd, std::vector<Token *>::iterator &ite_p) {
     auto ite = ite_p;
     std::vector<GramNode *> son_ps;
     GramNode *nexNode;

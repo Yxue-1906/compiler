@@ -10,13 +10,13 @@ Ident::Ident(std::vector<GramNode *> sons) {
     setSons(std::move(sons));
 }
 
-bool Ident::create(GramNode *&toReturn, std::vector<Token *>::iterator &ite_p) {
+bool Ident::create(std::vector<GramNode *> &toAdd, std::vector<Token *>::iterator &ite_p) {
     auto ite = ite_p;
     std::vector<GramNode *> son_ps;
     if (!(**ite).isTypeOf(Token::IDENFR))
         return false;
     son_ps.push_back(new TokenNode(**ite));
-    toReturn = new Ident(son_ps);
+    toAdd = new Ident(son_ps);
     ite_p = ite;
     return true;
 }

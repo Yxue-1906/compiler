@@ -11,7 +11,7 @@ MainFuncDef::MainFuncDef(std::vector<GramNode *> sons) {
     setSons(std::move(sons));
 }
 
-bool MainFuncDef::create(GramNode *&toReturn, std::vector<Token *>::iterator &ite_p) {
+bool MainFuncDef::create(std::vector<GramNode *> &toAdd, std::vector<Token *>::iterator &ite_p) {
     auto ite = ite_p;
     std::vector<GramNode *> son_ps;
     GramNode *nexNode;
@@ -40,6 +40,6 @@ bool MainFuncDef::create(GramNode *&toReturn, std::vector<Token *>::iterator &it
     }
     son_ps.push_back(nexNode);
     ite_p = ite;
-    toReturn = new MainFuncDef(son_ps);
+    toAdd = new MainFuncDef(son_ps);
     return true;
 }

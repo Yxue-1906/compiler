@@ -10,7 +10,7 @@ ValDecl::ValDecl(std::vector<GramNode *> sons) {
     setSons(std::move(sons));
 }
 
-bool ValDecl::create(GramNode *&toReturn, std::vector<Token *>::iterator &ite_p) {
+bool ValDecl::create(std::vector<GramNode *> &toAdd, std::vector<Token *>::iterator &ite_p) {
     auto ite = ite_p;
     std::vector<GramNode *> son_ps;
     GramNode *nexNode;

@@ -11,7 +11,7 @@ BlockItem::BlockItem(std::vector<GramNode *> sons) {
     setSons(std::move(sons));
 }
 
-bool BlockItem::create(GramNode *&toReturn, std::vector<Token *>::iterator &ite_p) {
+bool BlockItem::create(std::vector<GramNode *> &toAdd, std::vector<Token *>::iterator &ite_p) {
     auto ite = ite_p;
     std::vector<GramNode *> son_ps;
     GramNode *nexNode;
@@ -19,7 +19,7 @@ bool BlockItem::create(GramNode *&toReturn, std::vector<Token *>::iterator &ite_
         Stmt::create(nexNode, ite)) {
         son_ps.push_back(nexNode);
         ite_p = ite;
-        toReturn = new BlockItem(son_ps);
+        toAdd = new BlockItem(son_ps);
         return true;
     } else return false;
 }

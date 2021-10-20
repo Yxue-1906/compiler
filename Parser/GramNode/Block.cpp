@@ -10,7 +10,7 @@ Block::Block(std::vector<GramNode *> sons) {
     setSons(std::move(sons));
 }
 
-bool Block::create(GramNode *&toReturn, std::vector<Token *>::iterator &ite_p) {
+bool Block::create(std::vector<GramNode *> &toAdd, std::vector<Token *>::iterator &ite_p) {
     auto ite = ite_p;
     std::vector<GramNode *> son_ps;
     GramNode *nexNode;

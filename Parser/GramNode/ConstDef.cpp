@@ -13,7 +13,7 @@ ConstDef::ConstDef(std::vector<GramNode *> sons) {
     setSons(std::move(sons));
 }
 
-bool ConstDef::create(GramNode *&toReturn, std::vector<Token *>::iterator &ite_p) {
+bool ConstDef::create(std::vector<GramNode *> &toAdd, std::vector<Token *>::iterator &ite_p) {
     auto ite = ite_p;
     GramNode *nexNode;
     std::vector<GramNode *> son_ps;
@@ -44,6 +44,6 @@ bool ConstDef::create(GramNode *&toReturn, std::vector<Token *>::iterator &ite_p
     }
     son_ps.push_back(nexNode);
     ite_p = ite;
-    toReturn = new ConstDef(son_ps);
+    toAdd = new ConstDef(son_ps);
     return true;
 }

@@ -10,7 +10,7 @@ Exp::Exp(std::vector<GramNode *> sons) {
     setSons(std::move(sons));
 }
 
-bool Exp::create(GramNode *&toReturn, std::vector<Token *>::iterator &ite_p) {
+bool Exp::create(std::vector<GramNode *> &toAdd, std::vector<Token *>::iterator &ite_p) {
     auto ite = ite_p;
     std::vector<GramNode *> son_ps;
     GramNode *nexNode;
@@ -18,7 +18,7 @@ bool Exp::create(GramNode *&toReturn, std::vector<Token *>::iterator &ite_p) {
         return false;
     }
     son_ps.push_back(nexNode);
-    toReturn = new Exp(son_ps);
+    toAdd = new Exp(son_ps);
     ite_p = ite;
     return true;
 }
