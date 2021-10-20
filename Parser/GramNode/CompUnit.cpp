@@ -21,8 +21,8 @@ CompUnit::CompUnit(std::vector<GramNode *> sons) : GramNode() {
 bool CompUnit::create(std::vector<GramNode *> &toAdd, std::vector<Token *>::iterator &ite_p) {
     auto ite = ite_p;
     std::vector<GramNode *> son_ps;
-    Decl::create(son_ps, ite);
-    FuncDef::create(son_ps, ite);
+    for (; Decl::create(son_ps, ite););
+    for (; FuncDef::create(son_ps, ite););
     if (!MainFuncDef::create(son_ps, ite)) {
         return false;
     }

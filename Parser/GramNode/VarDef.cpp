@@ -33,7 +33,7 @@ bool VarDef::create(std::vector<GramNode *> &toAdd, std::vector<Token *>::iterat
             return false;
         }
     }
-    if (TokenNode::create(son_ps, ite, Token::EQL)) {
+    if (TokenNode::create(son_ps, ite, Token::ASSIGN)) {
         if (!InitVal::create(son_ps, ite)) {
             return false;
         }

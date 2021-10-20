@@ -46,6 +46,9 @@ bool Stmt::create(std::vector<GramNode *> &toAdd, std::vector<Token *>::iterator
         if (!Cond::create(son_ps, ite)) {
             return false;
         }
+        if (!TokenNode::create(son_ps, ite, Token::RPARENT)) {
+            return false;
+        }
         if (!Stmt::create(son_ps, ite)) {
             return false;
         }
@@ -88,7 +91,7 @@ bool Stmt::create(std::vector<GramNode *> &toAdd, std::vector<Token *>::iterator
         ite_p = ite;
         toAdd.push_back(new Stmt(son_ps));
         return true;
-    } else if (TokenNode::create(son_ps, ite, Token::LBRACE)) {
+    } else if (Token::isTypeOf(ite,Token::LBRACE)) {
         if (!Block::create(son_ps, ite)) {
             return false;
         }

@@ -6,14 +6,15 @@
 #include "../TokenNode.h"
 #include "FuncFParams.h"
 #include "PrimaryExp.h"
+#include "UnaryOp.h"
 
-UnaryExp::UnaryExp(std::vector<GramNode *> sons): GramNode() {
+UnaryExp::UnaryExp(std::vector<GramNode *> sons) : GramNode() {
     setGramName("UnaryExp");
     setSons(std::move(sons));
 }
 
 /**
- * UnaryExp -> PrimaryExp | Ident '(' [FuncRParams] ')'
+ * UnaryExp -> PrimaryExp | Ident '(' [FuncRParams] ')'| UnaryOp UnaryExp
  * @param toAdd
  * @param ite_p
  * @return
@@ -21,7 +22,19 @@ UnaryExp::UnaryExp(std::vector<GramNode *> sons): GramNode() {
 bool UnaryExp::create(std::vector<GramNode *> &toAdd, std::vector<Token *>::iterator &ite_p) {
     auto ite = ite_p;
     std::vector<GramNode *> son_ps;
-    if (Token::isTypeOf(ite + 2, Token::LPARENT)) {
+    if (Token::isTypeOf(ite, Token::PLUS) ||
+        Token::isTypeOf(ite, Token::MINU) ||
+        Token::isTypeOf(ite, Token::NOT)) {
+        if (!UnaryOp::create(son_ps, ite)) {
+            return false;
+        }
+        if (!UnaryExp::create(son_ps, ite)) {
+            return false;
+        }
+        ite_p = ite;
+        toAdd.push_back(new UnaryExp(son_ps));
+        return true;
+    } else if (Token::isTypeOf(ite + 2, Token::LPARENT)) {
         if (!TokenNode::create(son_ps, ite, Token::IDENFR)) {
             return false;
         }
