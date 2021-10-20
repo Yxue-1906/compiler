@@ -6,11 +6,17 @@
 #include "FuncFParam.h"
 #include "../TokenNode.h"
 
-FuncFParams::FuncFParams(std::vector<GramNode *> sons): GramNode() {
+FuncFParams::FuncFParams(std::vector<GramNode *> sons) : GramNode() {
     setGramName("FuncFParams");
     setSons(std::move(sons));
 }
 
+/**
+ * FuncFParams -> Exp { ',' Exp }
+ * @param toAdd
+ * @param ite_p
+ * @return
+ */
 bool FuncFParams::create(std::vector<GramNode *> &toAdd, std::vector<Token *>::iterator &ite_p) {
     auto ite = ite_p;
     std::vector<GramNode *> son_ps;

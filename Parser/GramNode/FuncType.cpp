@@ -5,7 +5,7 @@
 #include "FuncType.h"
 #include "../TokenNode.h"
 
-FuncType::FuncType(std::vector<GramNode *> sons): GramNode() {
+FuncType::FuncType(std::vector<GramNode *> sons) : GramNode() {
     setGramName("FuncType");
     setSons(std::move(sons));
 }
@@ -13,7 +13,7 @@ FuncType::FuncType(std::vector<GramNode *> sons): GramNode() {
 bool FuncType::create(std::vector<GramNode *> &toAdd, std::vector<Token *>::iterator &ite_p) {
     auto ite = ite_p;
     std::vector<GramNode *> son_ps;
-    if (!TokenNode::create(son_ps, ite, Token::VOIDTK) ||
+    if (!TokenNode::create(son_ps, ite, Token::VOIDTK) &&
         !TokenNode::create(son_ps, ite, Token::INTTK)) {
         return false;
     }

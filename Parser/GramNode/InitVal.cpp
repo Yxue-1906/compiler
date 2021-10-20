@@ -6,7 +6,7 @@
 #include "../TokenNode.h"
 #include "Exp.h"
 
-InitVal::InitVal(std::vector<GramNode *> sons) : GramNode(){
+InitVal::InitVal(std::vector<GramNode *> sons) : GramNode() {
     setGramName("InitVal");
     setSons(std::move(sons));
 }
@@ -28,6 +28,9 @@ bool InitVal::create(std::vector<GramNode *> &toAdd, std::vector<Token *>::itera
             if (!InitVal::create(son_ps, ite)) {
                 return false;
             }
+        }
+        if (!TokenNode::create(son_ps, ite, Token::RBRACE)) {
+            return false;
         }
         ite_p = ite;
         toAdd.push_back(new InitVal(son_ps));

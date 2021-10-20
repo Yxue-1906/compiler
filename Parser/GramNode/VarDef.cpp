@@ -25,7 +25,7 @@ bool VarDef::create(std::vector<GramNode *> &toAdd, std::vector<Token *>::iterat
     if (!TokenNode::create(son_ps, ite, Token::IDENFR)) {
         return false;
     }
-    if (TokenNode::create(son_ps, ite, Token::LBRACK)) {
+    for(;TokenNode::create(son_ps, ite, Token::LBRACK);){
         if (!ConstExp::create(son_ps, ite)) {
             return false;
         }

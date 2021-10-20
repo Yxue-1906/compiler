@@ -5,11 +5,17 @@
 #include "Exp.h"
 #include "AddExp.h"
 
-Exp::Exp(std::vector<GramNode *> sons) : GramNode(){
+Exp::Exp(std::vector<GramNode *> sons) : GramNode() {
     setGramName("Exp");
     setSons(std::move(sons));
 }
 
+/**
+ * Exp -> AddExp
+ * @param toAdd
+ * @param ite_p
+ * @return
+ */
 bool Exp::create(std::vector<GramNode *> &toAdd, std::vector<Token *>::iterator &ite_p) {
     auto ite = ite_p;
     std::vector<GramNode *> son_ps;

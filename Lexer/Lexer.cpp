@@ -80,7 +80,6 @@ bool Lexer::jumpSpace() {
 }
 
 bool Lexer::jumpComment(int type) {
-    now_char_p += 2;
     if (type) {
         while (true) {
             if (!jumpSpace()) {
@@ -131,9 +130,11 @@ Token *Lexer::getSymbol() {
         return new MINU();
     } else if (safeLookAhead("//")) {
         jumpComment(LINE_COMMENT);
+        jumpSpace();
         return getSymbol();
     } else if (safeLookAhead("/*")) {
         jumpComment(BLOCK_COMMENT);
+        jumpSpace();
         return getSymbol();
     } else if (safeLookAhead("/")) {
         return new DIV();

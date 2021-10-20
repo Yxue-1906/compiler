@@ -4,7 +4,7 @@
 
 #include "UnaryExp.h"
 #include "../TokenNode.h"
-#include "FuncFParams.h"
+#include "FuncRParams.h"
 #include "PrimaryExp.h"
 #include "UnaryOp.h"
 
@@ -34,14 +34,11 @@ bool UnaryExp::create(std::vector<GramNode *> &toAdd, std::vector<Token *>::iter
         ite_p = ite;
         toAdd.push_back(new UnaryExp(son_ps));
         return true;
-    } else if (Token::isTypeOf(ite + 2, Token::LPARENT)) {
-        if (!TokenNode::create(son_ps, ite, Token::IDENFR)) {
-            return false;
-        }
+    } else if (TokenNode::create(son_ps, ite, Token::IDENFR)) {
         if (!TokenNode::create(son_ps, ite, Token::LPARENT)) {
             return false;
         }
-        FuncFParams::create(son_ps, ite);
+        FuncRParams::create(son_ps, ite);
         if (!TokenNode::create(son_ps, ite, Token::RPARENT)) {
             return false;
         }
