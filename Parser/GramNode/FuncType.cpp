@@ -5,7 +5,7 @@
 #include "FuncType.h"
 #include "../TokenNode.h"
 
-FuncType::FuncType(std::vector<GramNode *> sons) {
+FuncType::FuncType(std::vector<GramNode *> sons): GramNode() {
     setGramName("FuncType");
     setSons(std::move(sons));
 }

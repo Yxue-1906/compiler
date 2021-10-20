@@ -5,7 +5,7 @@
 #include "Exp.h"
 #include "AddExp.h"
 
-Exp::Exp(std::vector<GramNode *> sons) {
+Exp::Exp(std::vector<GramNode *> sons) : GramNode(){
     setGramName("Exp");
     setSons(std::move(sons));
 }

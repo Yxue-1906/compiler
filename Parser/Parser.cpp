@@ -4,12 +4,18 @@
 
 #include "Parser.h"
 
-Parser::Parser(std::vector<Token *> tokenList) {
-    this->tokenList = tokenList;
+Parser::Parser(std::vector<Token *> &tokenList) : tokenList(tokenList) {
     auto begin = tokenList.begin();
-    GramNode **node;
-    if (CompUnit::create(node, begin)) {
-        root = *node;
-        root->myOutput();
+    std::vector<GramNode *> tmp;
+    if (CompUnit::create(tmp, begin)) {
+        root = tmp[0];
     } else throw new MyException();
+}
+
+void Parser::print() {
+    this->myOutput();
+}
+
+void Parser::myOutput() {
+    this->root->myOutput();
 }

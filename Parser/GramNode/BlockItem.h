@@ -15,6 +15,8 @@ public:
 private:
     BlockItem(std::vector<GramNode *>);
 
+    virtual void myOutput() override;
+
 public:
     static bool create(std::vector<GramNode *> &, std::vector<Token *>::iterator &);
 

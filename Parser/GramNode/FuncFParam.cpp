@@ -6,7 +6,7 @@
 #include "BType.h"
 #include "ConstExp.h"
 
-FuncFParam::FuncFParam(std::vector<GramNode *> sons) {
+FuncFParam::FuncFParam(std::vector<GramNode *> sons): GramNode() {
     setGramName("FuncFParam");
     setSons(std::move(sons));
 }

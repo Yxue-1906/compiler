@@ -4,17 +4,22 @@
 
 #include "GramNode.h"
 
+#include <utility>
+
+GramNode::GramNode() = default;
+
 void GramNode::setGramName(std::string gramName) {
-    this->GramName = gramName;
+    this->GramName = std::move(gramName);
 }
 
 void GramNode::setSons(std::vector<GramNode *> sons) {
-    this->sons = sons;
+    this->sons = std::move(sons);
 }
 
 void GramNode::myOutput() {
     for (auto &i: sons) {
         i->myOutput();
     }
-    std::cout << GramName << std::endl;
+    getOfs() << '<' << GramName << '>' << std::endl;
 }
+

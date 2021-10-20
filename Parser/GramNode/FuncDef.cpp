@@ -8,7 +8,7 @@
 #include "FuncFParams.h"
 #include "Block.h"
 
-FuncDef::FuncDef(std::vector<GramNode *> sons) {
+FuncDef::FuncDef(std::vector<GramNode *> sons): GramNode() {
     setGramName("FuncDef");
     setSons(std::move(sons));
 }

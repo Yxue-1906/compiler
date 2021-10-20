@@ -6,7 +6,7 @@
 #include "../TokenNode.h"
 #include "Block.h"
 
-MainFuncDef::MainFuncDef(std::vector<GramNode *> sons) {
+MainFuncDef::MainFuncDef(std::vector<GramNode *> sons) : GramNode(){
     setGramName("MainFuncDef");
     setSons(std::move(sons));
 }

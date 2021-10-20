@@ -8,7 +8,7 @@
 #include "Number.h"
 #include "LVal.h"
 
-PrimaryExp::PrimaryExp(std::vector<GramNode *> sons) {
+PrimaryExp::PrimaryExp(std::vector<GramNode *> sons) : GramNode(){
     setGramName("PrimaryExp");
     setSons(std::move(sons));
 }

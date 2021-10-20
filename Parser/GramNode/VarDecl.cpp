@@ -6,7 +6,7 @@
 #include "BType.h"
 #include "VarDef.h"
 
-VarDecl::VarDecl(std::vector<GramNode *> sons) {
+VarDecl::VarDecl(std::vector<GramNode *> sons) : GramNode() {
     setGramName("VarDecl");
     setSons(std::move(sons));
 }
@@ -30,6 +30,9 @@ bool VarDecl::create(std::vector<GramNode *> &toAdd, std::vector<Token *>::itera
         if (!VarDef::create(son_ps, ite)) {
             return false;
         }
+    }
+    if (!TokenNode::create(son_ps, ite, Token::SEMICN)) {
+        return false;
     }
     ite_p = ite;
     toAdd.push_back(new VarDecl(son_ps));

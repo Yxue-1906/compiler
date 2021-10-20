@@ -5,7 +5,7 @@
 #include "Cond.h"
 #include "LOrExp.h"
 
-Cond::Cond(std::vector<GramNode *> sons) {
+Cond::Cond(std::vector<GramNode *> sons): GramNode() {
     setGramName("Cond");
     setSons(std::move(sons));
 }

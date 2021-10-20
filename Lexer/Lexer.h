@@ -70,7 +70,7 @@ public:
 
     ~Lexer();
 
-    std::vector<Token *> getList();
+    std::vector<Token *> &getList();
 
 private:
     //bool isWhitespace(typeof(std::string::iterator));

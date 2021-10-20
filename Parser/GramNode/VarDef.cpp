@@ -7,10 +7,11 @@
 #include "ConstExp.h"
 #include "InitVal.h"
 
-VarDef::VarDef(std::vector<GramNode *> sons) {
+VarDef::VarDef(std::vector<GramNode *> sons) : GramNode() {
     setGramName("VarDef");
     setSons(std::move(sons));
 }
+
 /**
  * VarDef -> Ident { '[' ConstExp ']' } |
  *           Ident { '[' ConstExp ']' } '=' InitVal

@@ -6,7 +6,7 @@
 #include "ConstDecl.h"
 #include "VarDecl.h"
 
-Decl::Decl(std::vector<GramNode *> sons) {
+Decl::Decl(std::vector<GramNode *> sons) : GramNode() {
     setGramName("Decl");
     setSons(std::move(sons));
 }
@@ -20,7 +20,7 @@ Decl::Decl(std::vector<GramNode *> sons) {
 bool Decl::create(std::vector<GramNode *> &toAdd, std::vector<Token *>::iterator &ite_p) {
     auto ite = ite_p;
     std::vector<GramNode *> son_ps;
-    if ((**ite).isTypeOf(Token::CONSTTK)) {
+    if (Token::isTypeOf(ite, Token::CONSTTK)) {
         if (!ConstDecl::create(son_ps, ite)) {
             return false;
         }
@@ -32,4 +32,10 @@ bool Decl::create(std::vector<GramNode *> &toAdd, std::vector<Token *>::iterator
     ite_p = ite;
     toAdd.push_back(new Decl(son_ps));
     return true;
+}
+
+void Decl::myOutput() {
+    for (auto &i: sons) {
+        i->myOutput();
+    }
 }

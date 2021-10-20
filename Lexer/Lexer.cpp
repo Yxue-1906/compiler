@@ -25,7 +25,7 @@ Lexer::~Lexer() {
     this->ifs.close();
 }
 
-std::vector<Token *> Lexer::getList() {
+std::vector<Token *> &Lexer::getList() {
     if (inited)return this->tokenList;
     else {
         std::cout << "lexer has not inited!" << std::endl;
@@ -250,4 +250,5 @@ void Lexer::init() {
         }
     }
     inited = true;
+    Token::setEnd(this->tokenList.end());
 }

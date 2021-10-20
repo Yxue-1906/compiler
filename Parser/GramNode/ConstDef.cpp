@@ -7,7 +7,7 @@
 #include "ConstExp.h"
 #include "ConstInitVal.h"
 
-ConstDef::ConstDef(std::vector<GramNode *> sons) {
+ConstDef::ConstDef(std::vector<GramNode *> sons) : GramNode() {
     setGramName("ConstDef");
     setSons(std::move(sons));
 }
@@ -32,7 +32,7 @@ bool ConstDef::create(std::vector<GramNode *> &toAdd, std::vector<Token *>::iter
             return false;
         }
     }
-    if (!TokenNode::create(son_ps, ite, Token::EQL)) {
+    if (!TokenNode::create(son_ps, ite, Token::ASSIGN)) {
         return false;
     }
     if (!ConstInitVal::create(son_ps, ite)) {

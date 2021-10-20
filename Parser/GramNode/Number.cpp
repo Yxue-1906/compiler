@@ -5,7 +5,7 @@
 #include "Number.h"
 #include "../TokenNode.h"
 
-Number::Number(std::vector<GramNode *> sons) {
+Number::Number(std::vector<GramNode *> sons) : GramNode(){
     setGramName("Number");
     setSons(std::move(sons));
 }

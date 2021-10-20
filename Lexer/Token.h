@@ -16,6 +16,7 @@ private:
     const int tokenType;
 
     static std::vector<Token *>::iterator end;
+    static bool endSet;
 
 
 public:
@@ -68,7 +69,11 @@ public:
 
     int getTokenType();
 
+    static void setEnd(std::vector<Token *>::iterator);
+
     static bool isTypeOf(std::vector<Token *>::iterator &ite, int type);
+
+    static bool isTypeOf(std::vector<Token *>::iterator &&ite, int type);
 
 private:
 

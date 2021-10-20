@@ -6,7 +6,7 @@
 #include "ConstExp.h"
 #include "../TokenNode.h"
 
-ConstInitVal::ConstInitVal(std::vector<GramNode *> sons) {
+ConstInitVal::ConstInitVal(std::vector<GramNode *> sons): GramNode() {
     setGramName("ConstInitVal");
     setSons(std::move(sons));
 }
@@ -29,12 +29,12 @@ bool ConstInitVal::create(std::vector<GramNode *> &toAdd, std::vector<Token *>::
         if (!ConstInitVal::create(son_ps, ite)) {
             return false;
         }
-        for (; TokenNode::create(son_ps, ite, Token::SEMICN);) {
+        for (; TokenNode::create(son_ps, ite, Token::COMMA);) {
             if (!ConstInitVal::create(son_ps, ite)) {
                 return false;
             }
         }
-        if (!TokenNode::create(son_ps, ite, Token::RBRACK)) {
+        if (!TokenNode::create(son_ps, ite, Token::RBRACE)) {
             return false;
         }
         ite_p = ite;

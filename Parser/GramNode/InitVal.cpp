@@ -6,7 +6,7 @@
 #include "../TokenNode.h"
 #include "Exp.h"
 
-InitVal::InitVal(std::vector<GramNode *> sons) {
+InitVal::InitVal(std::vector<GramNode *> sons) : GramNode(){
     setGramName("InitVal");
     setSons(std::move(sons));
 }

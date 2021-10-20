@@ -6,7 +6,7 @@
 #include "LAndExp.h"
 #include "../TokenNode.h"
 
-LOrExp::LOrExp(std::vector<GramNode *> sons) {
+LOrExp::LOrExp(std::vector<GramNode *> sons): GramNode() {
     setGramName("LOrExp");
     setSons(std::move(sons));
 }

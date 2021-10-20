@@ -5,7 +5,7 @@
 #include "UnaryOp.h"
 #include "../TokenNode.h"
 
-UnaryOp::UnaryOp(std::vector<GramNode *> sons) {
+UnaryOp::UnaryOp(std::vector<GramNode *> sons) : GramNode(){
     setGramName("UnaryOp");
     setSons(std::move(sons));
 }

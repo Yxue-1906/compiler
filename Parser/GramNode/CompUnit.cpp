@@ -7,7 +7,7 @@
 #include "FuncDef.h"
 #include "MainFuncDef.h"
 
-CompUnit::CompUnit(std::vector<GramNode *> sons) {
+CompUnit::CompUnit(std::vector<GramNode *> sons) : GramNode() {
     setGramName("CompUnit");
     setSons(std::move(sons));
 }

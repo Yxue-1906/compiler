@@ -9,7 +9,7 @@
 #include "ConstDef.h"
 
 
-ConstDecl::ConstDecl(std::vector<GramNode *> sons) {
+ConstDecl::ConstDecl(std::vector<GramNode *> sons) : GramNode() {
     setGramName("ConstDecl");
     setSons(std::move(sons));
 }
@@ -40,6 +40,7 @@ bool ConstDecl::create(std::vector<GramNode *> &toAdd, std::vector<Token *>::ite
     if (!TokenNode::create(son_ps, ite, Token::SEMICN)) {
         return false;
     }
+    ite_p = ite;
     toAdd.push_back(new ConstDecl(son_ps));
     return true;
 }

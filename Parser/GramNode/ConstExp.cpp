@@ -5,11 +5,17 @@
 #include "ConstExp.h"
 #include "AddExp.h"
 
-ConstExp::ConstExp(std::vector<GramNode *> sons) {
+ConstExp::ConstExp(std::vector<GramNode *> sons) : GramNode() {
     setGramName("ConstExp");
     setSons(std::move(sons));
 }
 
+/**
+ * ConstExp -> AddExp
+ * @param toAdd
+ * @param ite_p
+ * @return
+ */
 bool ConstExp::create(std::vector<GramNode *> &toAdd, std::vector<Token *>::iterator &ite_p) {
     auto ite = ite_p;
     std::vector<GramNode *> son_ps;

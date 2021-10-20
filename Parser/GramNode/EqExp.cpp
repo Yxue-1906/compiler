@@ -6,7 +6,7 @@
 #include "RelExp.h"
 #include "../TokenNode.h"
 
-EqExp::EqExp(std::vector<GramNode *> sons) {
+EqExp::EqExp(std::vector<GramNode *> sons) : GramNode(){
     setGramName("EqExp");
     setSons(std::move(sons));
 }

@@ -6,7 +6,7 @@
 #include "../TokenNode.h"
 #include "Exp.h"
 
-LVal::LVal(std::vector<GramNode *> sons) {
+LVal::LVal(std::vector<GramNode *> sons) : GramNode(){
     setGramName("LVal");
     setSons(std::move(sons));
 }

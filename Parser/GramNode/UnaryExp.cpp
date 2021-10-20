@@ -7,7 +7,7 @@
 #include "FuncFParams.h"
 #include "PrimaryExp.h"
 
-UnaryExp::UnaryExp(std::vector<GramNode *> sons) {
+UnaryExp::UnaryExp(std::vector<GramNode *> sons): GramNode() {
     setGramName("UnaryExp");
     setSons(std::move(sons));
 }
@@ -21,7 +21,7 @@ UnaryExp::UnaryExp(std::vector<GramNode *> sons) {
 bool UnaryExp::create(std::vector<GramNode *> &toAdd, std::vector<Token *>::iterator &ite_p) {
     auto ite = ite_p;
     std::vector<GramNode *> son_ps;
-    if ((**(ite + 2)).isTypeOf(Token::LPARENT)) {
+    if (Token::isTypeOf(ite + 2, Token::LPARENT)) {
         if (!TokenNode::create(son_ps, ite, Token::IDENFR)) {
             return false;
         }

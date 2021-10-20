@@ -9,21 +9,24 @@
 #include "../Exception/MyException.h"
 #include "GramNode/CompUnit.h"
 
-class Parser {
+class Parser : MyOutput {
 public:
     // public attributes
 
 private:
     // private attributes
-    std::vector<Token *> tokenList;
+    std::vector<Token *> &tokenList;
     GramNode *root;
 
 public:
     // public methods
-    Parser(std::vector<Token*>);
+    Parser(std::vector<Token *> &);
+
+    void print();
 
 private:
     // private methods
+    virtual void myOutput() override;
 };
 
 

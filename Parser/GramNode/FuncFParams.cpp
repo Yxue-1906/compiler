@@ -6,7 +6,7 @@
 #include "FuncFParam.h"
 #include "../TokenNode.h"
 
-FuncFParams::FuncFParams(std::vector<GramNode *> sons) {
+FuncFParams::FuncFParams(std::vector<GramNode *> sons): GramNode() {
     setGramName("FuncFParams");
     setSons(std::move(sons));
 }
