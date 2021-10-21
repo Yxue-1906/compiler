@@ -5,11 +5,17 @@
 #include "Cond.h"
 #include "LOrExp.h"
 
-Cond::Cond(std::vector<GramNode *> sons): GramNode() {
+Cond::Cond(std::vector<GramNode *> sons) : GramNode() {
     setGramName("Cond");
     setSons(std::move(sons));
 }
 
+/**
+ * Cond -> LOrExp
+ * @param toAdd
+ * @param ite_p
+ * @return
+ */
 bool Cond::create(std::vector<GramNode *> &toAdd, std::vector<Token *>::iterator &ite_p) {
     auto ite = ite_p;
     std::vector<GramNode *> son_ps;
@@ -17,6 +23,6 @@ bool Cond::create(std::vector<GramNode *> &toAdd, std::vector<Token *>::iterator
         return false;
     }
     ite_p = ite;
-    toAdd .push_back(new Cond(son_ps));
+    toAdd.push_back(new Cond(son_ps));
     return true;
 }

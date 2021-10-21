@@ -20,17 +20,18 @@ MulExp::MulExp(std::vector<GramNode *> sons) : GramNode() {
 bool MulExp::create(std::vector<GramNode *> &toAdd, std::vector<Token *>::iterator &ite_p) {
     auto ite = ite_p;
     std::vector<GramNode *> son_ps;
+    std::swap(toAdd, son_ps);
     if (!UnaryExp::create(son_ps, ite)) {
         return false;
     }
-    for (; TokenNode::create(son_ps, ite, Token::MULT) ||
-           TokenNode::create(son_ps, ite, Token::DIV) ||
-           TokenNode::create(son_ps, ite, Token::MOD);) {
-        if (!UnaryExp::create(son_ps, ite)) {
+    toAdd.push_back(new MulExp(son_ps));
+    if (TokenNode::create(toAdd, ite, Token::MULT) ||
+        TokenNode::create(toAdd, ite, Token::DIV) ||
+        TokenNode::create(toAdd, ite, Token::MOD)) {
+        if (!MulExp::create(toAdd, ite)) {
             return false;
         }
     }
     ite_p = ite;
-    toAdd.push_back(new MulExp(son_ps));
     return true;
 }

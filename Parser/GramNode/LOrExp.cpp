@@ -6,23 +6,30 @@
 #include "LAndExp.h"
 #include "../TokenNode.h"
 
-LOrExp::LOrExp(std::vector<GramNode *> sons): GramNode() {
+LOrExp::LOrExp(std::vector<GramNode *> sons) : GramNode() {
     setGramName("LOrExp");
     setSons(std::move(sons));
 }
 
+/**
+ * LOrExp -> LAndExp | LOrExp '||' LAndExp
+ * @param toAdd
+ * @param ite_p
+ * @return
+ */
 bool LOrExp::create(std::vector<GramNode *> &toAdd, std::vector<Token *>::iterator &ite_p) {
     auto ite = ite_p;
     std::vector<GramNode *> son_ps;
+    std::swap(toAdd, son_ps);
     if (!LAndExp::create(son_ps, ite)) {
         return false;
     }
-    for (; TokenNode::create(son_ps, ite, Token::OR);) {
-        if (!LAndExp::create(son_ps, ite)) {
+    toAdd.push_back(new LOrExp(son_ps));
+    for (; TokenNode::create(toAdd, ite, Token::OR);) {
+        if (!LOrExp::create(toAdd, ite)) {
             return false;
         }
     }
     ite_p = ite;
-    toAdd.push_back(new LOrExp(son_ps));
     return true;
 }

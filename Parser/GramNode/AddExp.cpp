@@ -20,15 +20,17 @@ AddExp::AddExp(std::vector<GramNode *> sons) : GramNode() {
 bool AddExp::create(std::vector<GramNode *> &toAdd, std::vector<Token *>::iterator &ite_p) {
     auto ite = ite_p;
     std::vector<GramNode *> son_ps;
+    std::swap(toAdd, son_ps);
     if (!MulExp::create(son_ps, ite)) {
         return false;
     }
-    for (; TokenNode::create(son_ps, ite, Token::PLUS) || TokenNode::create(son_ps, ite, Token::MINU);) {
-        if (!MulExp::create(son_ps, ite)) {
+    toAdd.push_back(new AddExp(son_ps));
+    if (TokenNode::create(toAdd, ite, Token::PLUS) ||
+        TokenNode::create(toAdd, ite, Token::MINU)) {
+        if (!AddExp::create(toAdd, ite)) {
             return false;
         }
     }
     ite_p = ite;
-    toAdd.push_back(new AddExp(son_ps));
     return true;
 }
