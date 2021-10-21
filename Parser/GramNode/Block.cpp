@@ -23,7 +23,7 @@ bool Block::create(std::vector<GramNode *> &toAdd, std::vector<Token *>::iterato
     if (!TokenNode::create(son_ps, ite, Token::LBRACE)) {
         return false;
     }
-    for (; BlockItem::create(son_ps, ite););
+    for (; !Token::isTypeOf(ite, Token::RBRACE) && BlockItem::create(son_ps, ite););
     if (!TokenNode::create(son_ps, ite, Token::RBRACE)) {
         return false;
     }
