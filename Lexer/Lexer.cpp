@@ -221,7 +221,6 @@ STRCON *Lexer::getStr() {
     if (now_char_p == now_line.end() || *now_char_p != '"') {
         return nullptr;
     }
-    str.push_back(*(now_char_p++));
     while (now_char_p != now_line.end()) {
         str.push_back(*now_char_p);
         ++now_char_p;

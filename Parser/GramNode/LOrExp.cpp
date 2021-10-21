@@ -25,7 +25,7 @@ bool LOrExp::create(std::vector<GramNode *> &toAdd, std::vector<Token *>::iterat
         return false;
     }
     toAdd.push_back(new LOrExp(son_ps));
-    for (; TokenNode::create(toAdd, ite, Token::OR);) {
+    if (TokenNode::create(toAdd, ite, Token::OR)) {
         if (!LOrExp::create(toAdd, ite)) {
             return false;
         }
