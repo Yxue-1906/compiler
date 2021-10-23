@@ -7,6 +7,7 @@
 
 
 #include "../GramNode.h"
+#include "LVal.h"
 
 class Exp : GramNode {
 private:
@@ -16,6 +17,8 @@ private:
 
 public:
     static bool create(std::vector<GramNode *> &, std::vector<Token *>::iterator &);
+
+    static bool create(std::vector<GramNode *> &, std::vector<Token *>::iterator &, LVal *);
 };
 
 

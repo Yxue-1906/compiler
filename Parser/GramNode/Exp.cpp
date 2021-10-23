@@ -26,3 +26,12 @@ bool Exp::create(std::vector<GramNode *> &toAdd, std::vector<Token *>::iterator 
     toAdd.push_back(new Exp(son_ps));
     return true;
 }
+
+bool Exp::create(std::vector<GramNode *> &toAdd, std::vector<Token *>::iterator &ite_p, LVal *lval) {
+    auto ite = ite_p;
+    std::vector<GramNode *> son_ps;
+    son_ps.push_back(lval);
+    ite_p = ite;
+    toAdd.push_back(new Exp(son_ps));
+    return true;
+}

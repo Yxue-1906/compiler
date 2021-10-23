@@ -14,6 +14,21 @@ Stmt::Stmt(std::vector<GramNode *> sons) : GramNode() {
     setSons(std::move(sons));
 }
 
+/**
+ * Stmt -> 'if' '(' Cond ')' Stmt [ 'else' Stmt ] |
+ *         'while' '(' Cond ')' Stmt |
+ *         'break' ';' | 'continue' ';'|
+ *         'return' [Exp] ';' |
+ *         'printf' '(' FormatString{',' Exp} ')' ';'
+ *         Block |
+ *         LVal '=' Exp ';' |
+ *         [Exp] ';' |
+ *         LVal '=' 'getint' '(' ')' ';' |
+ *
+ * @param toAdd
+ * @param ite_p
+ * @return
+ */
 bool Stmt::create(std::vector<GramNode *> &toAdd, std::vector<Token *>::iterator &ite_p) {
     auto ite = ite_p;
     std::vector<GramNode *> son_ps;
@@ -97,41 +112,57 @@ bool Stmt::create(std::vector<GramNode *> &toAdd, std::vector<Token *>::iterator
         ite_p = ite;
         toAdd.push_back(new Stmt(son_ps));
         return true;
-    } else if (TokenNode::create(son_ps, ite, Token::PRINTFTK)) {
-        if (!TokenNode::create(son_ps, ite, Token::LPARENT)) {
+    } else if (Token::isTypeOf(ite, Token::IDENFR)) {
+//        if ([&ite]() -> bool {
+//            if (!Token::isTypeOf(ite, Token::IDENFR))return false;
+//            for (int i = 1; !Token::isTypeOf(ite + i, Token::SEMICN); ++i)
+//                if (Token::isTypeOf(ite + i, Token::ASSIGN))
+//                    return true;
+//            return false;
+//        }()) {
+//            if (!LVal::create(son_ps, ite)) {
+//                return false;
+//            }
+//            if (!TokenNode::create(son_ps, ite, Token::ASSIGN)) {
+//                return false;
+//            }
+//            if (TokenNode::create(son_ps, ite, Token::GETINTTK)) {
+//                if (!TokenNode::create(son_ps, ite, Token::LPARENT)) {
+//                    return false;
+//                }
+//                if (!TokenNode::create(son_ps, ite, Token::RPARENT)) {
+//                    return false;
+//                }
+//                if (!TokenNode::create(son_ps, ite, Token::SEMICN)) {
+//                    return false;
+//                }
+//                ite_p = ite;
+//                toAdd.push_back(new Stmt(son_ps));
+//                return true;
+//            } else if (Exp::create(son_ps, ite)) {
+//                if (!TokenNode::create(son_ps, ite, Token::SEMICN)) {
+//                    return false;
+//                }
+//                ite_p = ite;
+//                toAdd.push_back(new Stmt(son_ps));
+//                return true;
+//            }
+//            return false;
+//        } else {
+//            Exp::create(son_ps, ite);
+//            if (Token::isTypeOf(ite, Token::SEMICN)) {
+//                TokenNode::create(son_ps, ite, Token::SEMICN);
+//                ite_p = ite;
+//                toAdd.push_back(new Stmt(son_ps));
+//                return true;
+//            }
+//            return false;
+//        }
+        if (!LVal::create(son_ps, ite)) {
             return false;
         }
-        if (!TokenNode::create(son_ps, ite, Token::STRCON)) {
-            return false;
-        }
-        for (; TokenNode::create(son_ps, ite, Token::COMMA);) {
-            if (!Exp::create(son_ps, ite)) {
-                return false;
-            }
-        }
-        if (!TokenNode::create(son_ps, ite, Token::RPARENT)) {
-            return false;
-        }
-        if (!TokenNode::create(son_ps, ite, Token::SEMICN)) {
-            return false;
-        }
-        ite_p = ite;
-        toAdd.push_back(new Stmt(son_ps));
-        return true;
-    } else {
-        if ([&ite]() -> bool {
-            if (!Token::isTypeOf(ite, Token::IDENFR))return false;
-            for (int i = 1; !Token::isTypeOf(ite + i, Token::SEMICN); ++i)
-                if (Token::isTypeOf(ite + i, Token::ASSIGN))
-                    return true;
-            return false;
-        }()) {
-            if (!LVal::create(son_ps, ite)) {
-                return false;
-            }
-            if (!TokenNode::create(son_ps, ite, Token::ASSIGN)) {
-                return false;
-            }
+        if (Token::isTypeOf(ite, Token::ASSIGN)) {
+            TokenNode::create(son_ps, ite, Token::ASSIGN);
             if (TokenNode::create(son_ps, ite, Token::GETINTTK)) {
                 if (!TokenNode::create(son_ps, ite, Token::LPARENT)) {
                     return false;
@@ -145,24 +176,25 @@ bool Stmt::create(std::vector<GramNode *> &toAdd, std::vector<Token *>::iterator
                 ite_p = ite;
                 toAdd.push_back(new Stmt(son_ps));
                 return true;
-            } else if (Exp::create(son_ps, ite)) {
-                if (!TokenNode::create(son_ps, ite, Token::SEMICN)) {
-                    return false;
+            } else {
+                Exp::create(son_ps, ite);
+                if (Token::isTypeOf(ite, Token::SEMICN)) {
+                    TokenNode::create(son_ps, ite, Token::SEMICN);
+                    ite_p = ite;
+                    toAdd.push_back(new Stmt(son_ps));
+                    return true;
                 }
-                ite_p = ite;
-                toAdd.push_back(new Stmt(son_ps));
-                return true;
+                return false;
             }
-            return false;
         } else {
-            Exp::create(son_ps, ite);
-            if (Token::isTypeOf(ite, Token::SEMICN)) {
-                TokenNode::create(son_ps, ite, Token::SEMICN);
-                ite_p = ite;
-                toAdd.push_back(new Stmt(son_ps));
-                return true;
-            }
+            Exp(son_ps, ite, static_cast<LVal *>(son_ps.pop_back()))
+        }
+    } else if (Exp::create(son_ps, ite)) {
+        if (!TokenNode::create(son_ps, ite, Token::SEMICN)) {
             return false;
         }
+        ite_p = ite;
+        toAdd.push_back(new Stmt(son_ps));
+        return true;
     }
 }
