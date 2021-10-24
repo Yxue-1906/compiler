@@ -10,7 +10,7 @@ class NEQ : public Token {
 private:
 public:
     NEQ() : Token(Token::NEQ) {
-        setValue_p(new std::string("!="));
+        this->setValue_p(new std::string("!="));
     }
 
 public:

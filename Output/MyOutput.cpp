@@ -27,12 +27,15 @@ void MyOutput::setOutput(std::ostream *os) {
     }
 }
 
-std::ostream &MyOutput::getOs() {
+std::ostream *MyOutput::getOs() {
+    if (!os->good()) {
+        throw MyException();
+    }
     if (os) {
         if (dynamic_cast<std::ofstream *>(os)) {
-            if (dynamic_cast<std::ofstream *>(os)->is_open())return *os;
+            if (dynamic_cast<std::ofstream *>(os)->is_open())return os;
         }
-        return *os;
+        return os;
     }
     std::cout << "error, os isn't initialized" << std::endl;
     throw MyException();

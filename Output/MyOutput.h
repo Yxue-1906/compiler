@@ -22,7 +22,7 @@ public:
 
 
 protected:
-    std::ostream &getOs();
+    std::ostream *getOs();
 
 };
 

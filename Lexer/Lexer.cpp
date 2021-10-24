@@ -243,8 +243,7 @@ void Lexer::init() {
             if ((nextSym = getSymbol()) || (nextSym = getIdent()) ||
                 (nextSym = getConst()) || (nextSym = getStr())) {
                 this->tokenList.push_back(nextSym);
-                this->tokenList.back()->setLineNumber(line_count);
-                std::cout << line_count << ':';
+                nextSym->setLineNumber(line_count);
                 nextSym->myOutput();
             } else break;
         } catch (MyException e) {

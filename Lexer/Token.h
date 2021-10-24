@@ -68,7 +68,16 @@ public:
     static const std::map<int, std::string> type2Name;
 protected:
     template<class T>
-    T *setValue_p(T *value_p);
+    void setValue_p(T *value_p) {
+        std::cerr << "when generate:" << value_p << std::endl;
+        if (!this->value_p) {
+            valueType = std::is_same<T, int>::value;
+            if (!valueType) {
+                std::cout << *((std::string *) value_p);
+            }
+            this->value_p = value_p;
+        }
+    }
 
 public:
     Token(int);

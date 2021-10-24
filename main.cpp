@@ -10,7 +10,11 @@ int main() {
     ofs.open("output.txt", std::ios::out | std::ios::trunc);
     MyOutput::setOutput(&std::cout);
     Lexer lexer{std::move(ifs)};
-    Parser parser{lexer.getList()};
-    parser.print();
+//    for (auto &i: lexer.getList()) {
+//        std::cout << i->getLineNumber()<<":";
+//        i->myOutput();
+//    }
+//    Parser parser{lexer.getList()};
+//    parser.print();
     return 0;
 }

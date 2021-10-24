@@ -123,21 +123,15 @@ int Token::setLineNumber(int lineNumber) {
     return this->lineNumber;
 }
 
-template<class T>
-T *Token::setValue_p(T *value_p) {
-    if (!this->value_p) {
-        valueType = std::is_same<T, int>::value;
-        return static_cast<T *>(this->value_p = value_p);
-    }
-    return nullptr;
-}
-
 void Token::myOutput() {
-    std::ostream &os = getOs();
+    std::ostream *os = getOs();
+    std::cerr << "when use:" << value_p << std::endl;
     if (valueType) {
-        os << getTokenName() << ' ' << static_cast<int *>(value_p) << std::endl;
+        int value = *((int *) value_p);
+        (*os) << getTokenName() << ' ' << value << std::endl;
     } else {
-        os << getTokenName() << ' ' << static_cast<std::string *>(value_p) << std::endl;
+        std::string value = *((std::string *) value_p);
+        (*os) << getTokenName() << ' ' << value << std::endl;
     }
 }
 

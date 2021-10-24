@@ -20,6 +20,7 @@ void GramNode::myOutput() {
     for (auto &i: sons) {
         i->myOutput();
     }
-    getOfs() << '<' << GramName << '>' << std::endl;
+    std::ostream *os = getOs();
+    (*os) << '<' << GramName << '>' << std::endl;
 }
 
