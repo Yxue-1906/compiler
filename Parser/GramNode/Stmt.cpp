@@ -112,7 +112,8 @@ bool Stmt::create(std::vector<GramNode *> &toAdd, std::vector<Token *>::iterator
         ite_p = ite;
         toAdd.push_back(new Stmt(son_ps));
         return true;
-    } else if (Token::isTypeOf(ite, Token::IDENFR)) {
+    } else if (Token::isTypeOf(ite, Token::IDENFR) &&
+               !Token::isTypeOf(ite + 1, Token::LPARENT)) {
 //        if ([&ite]() -> bool {
 //            if (!Token::isTypeOf(ite, Token::IDENFR))return false;
 //            for (int i = 1; !Token::isTypeOf(ite + i, Token::SEMICN); ++i)
@@ -187,7 +188,13 @@ bool Stmt::create(std::vector<GramNode *> &toAdd, std::vector<Token *>::iterator
                 return false;
             }
         } else {
-            Exp(son_ps, ite, static_cast<LVal *>(son_ps.pop_back()))
+            Exp::create(son_ps, ite, dynamic_cast<LVal *>(son_ps.back()));
+            if (!TokenNode::create(son_ps, ite, Token::SEMICN)) {
+                return false;
+            }
+            ite_p = ite;
+            toAdd.push_back(new Stmt(son_ps));
+            return true;
         }
     } else if (Exp::create(son_ps, ite)) {
         if (!TokenNode::create(son_ps, ite, Token::SEMICN)) {
@@ -197,4 +204,5 @@ bool Stmt::create(std::vector<GramNode *> &toAdd, std::vector<Token *>::iterator
         toAdd.push_back(new Stmt(son_ps));
         return true;
     }
+    return false;
 }
