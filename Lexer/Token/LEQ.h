@@ -9,8 +9,9 @@
 class LEQ : public Token {
 private:
 public:
-    LEQ() : Token(Token::LEQ){
-    setValue_p(new std::string("<="));}
+    LEQ() : Token(Token::LEQ) {
+        setValue_p(new std::string("<="));
+    }
 
 public:
 };

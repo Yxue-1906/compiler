@@ -6,7 +6,7 @@
 #define PARSER_IFTK_H
 
 
-class IFTK: public Token {
+class IFTK : public Token {
 private:
 public:
     IFTK() : Token(Token::IFTK) {

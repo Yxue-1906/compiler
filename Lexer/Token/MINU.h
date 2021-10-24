@@ -9,7 +9,8 @@ class MINU : public Token {
 private:
 public:
     MINU() : Token(Token::MINU) {
-    setValue_p(new std::string("-"));}
+        setValue_p(new std::string("-"));
+    }
 
 public:
 };

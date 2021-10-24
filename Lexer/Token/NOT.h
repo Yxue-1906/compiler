@@ -9,9 +9,9 @@
 class NOT : public Token {
 private:
 public:
-    NOT() : Token(Token::NOT)
-    {
-    setValue_p(new std::string("!"));}
+    NOT() : Token(Token::NOT) {
+        setValue_p(new std::string("!"));
+    }
 
 public:
 };

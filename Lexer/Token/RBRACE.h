@@ -9,9 +9,9 @@
 class RBRACE : public Token {
 private:
 public:
-    RBRACE() : Token(Token::RBRACE)
-    {
-    setValue_p(new std::string("}"));}
+    RBRACE() : Token(Token::RBRACE) {
+        setValue_p(new std::string("}"));
+    }
 
 public:
 };

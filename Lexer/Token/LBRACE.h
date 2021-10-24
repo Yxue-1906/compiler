@@ -9,8 +9,7 @@
 class LBRACE : public Token {
 private:
 public:
-    LBRACE() : Token(Token::LBRACE)
-    {
+    LBRACE() : Token(Token::LBRACE) {
         setValue_p(new std::string("{"));
     }
 

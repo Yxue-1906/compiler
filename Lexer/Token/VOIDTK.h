@@ -9,10 +9,13 @@
 class VOIDTK : public Token {
 private:
 public:
-    VOIDTK() : Token(Token::VOIDTK){
-    setValue_p(new std::string("void"));}
+    VOIDTK() : Token(Token::VOIDTK) {
+        setValue_p(new std::string("void"));
+    }
 
-public:\
+public:
+    \
+
 };
 
 #endif //PARSER_VOIDTK_H

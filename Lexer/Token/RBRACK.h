@@ -9,8 +9,9 @@
 class RBRACK : public Token {
 private:
 public:
-    RBRACK() : Token(Token::RBRACK){
-    setValue_p(new std::string("]"));}
+    RBRACK() : Token(Token::RBRACK) {
+        setValue_p(new std::string("]"));
+    }
 
 public:
 };

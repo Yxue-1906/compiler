@@ -8,8 +8,9 @@
 class MULT : public Token {
 private:
 public:
-    MULT() : Token(Token::MULT){
-    setValue_p(new std::string("*"));}
+    MULT() : Token(Token::MULT) {
+        setValue_p(new std::string("*"));
+    }
 
 public:
 };

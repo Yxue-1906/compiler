@@ -10,7 +10,8 @@ class RPARENT : public Token {
 private:
 public:
     RPARENT() : Token(Token::RPARENT) {
-    setValue_p(new std::string(")"));}
+        setValue_p(new std::string(")"));
+    }
 
 public:
 };

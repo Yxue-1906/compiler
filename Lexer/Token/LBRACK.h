@@ -9,7 +9,7 @@
 class LBRACK : public Token {
 private:
 public:
-    LBRACK() : Token(Token::LBRACK){
+    LBRACK() : Token(Token::LBRACK) {
         setValue_p(new std::string("["));
     }
 

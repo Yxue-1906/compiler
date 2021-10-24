@@ -10,11 +10,11 @@ class MAINTK : public Token {
 private:
 public:
     MAINTK() : Token(Token::MAINTK) {
-    setValue_p(new std::string("main"));}
+        setValue_p(new std::string("main"));
+    }
 
 public:
 };
-
 
 
 #endif //PARSER_MAINTK_H

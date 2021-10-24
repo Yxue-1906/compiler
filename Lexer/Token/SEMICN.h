@@ -10,7 +10,8 @@ class SEMICN : public Token {
 private:
 public:
     SEMICN() : Token(Token::SEMICN) {
-    setValue_p(new std::string(";"));}
+        setValue_p(new std::string(";"));
+    }
 
 public:
 };

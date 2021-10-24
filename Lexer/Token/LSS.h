@@ -9,8 +9,9 @@
 class LSS : public Token {
 private:
 public:
-    LSS() : Token(Token::LSS){
-    setValue_p(new std::string("<"));}
+    LSS() : Token(Token::LSS) {
+        setValue_p(new std::string("<"));
+    }
 
 public:
 };

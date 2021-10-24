@@ -10,7 +10,8 @@ class LPARENT : public Token {
 private:
 public:
     LPARENT() : Token(Token::LPARENT) {
-    setValue_p(new std::string("("));}
+        setValue_p(new std::string("("));
+    }
 
 public:
 };

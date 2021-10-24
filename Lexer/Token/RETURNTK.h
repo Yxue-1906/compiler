@@ -10,7 +10,8 @@ class RETURNTK : public Token {
 private:
 public:
     RETURNTK() : Token(Token::RETURNTK) {
-    setValue_p(new std::string("return"));}
+        setValue_p(new std::string("return"));
+    }
 
 public:
 };

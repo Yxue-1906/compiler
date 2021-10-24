@@ -6,11 +6,12 @@
 #define PARSER_OR_H
 
 
-class OR: public Token {
+class OR : public Token {
 private:
 public:
     OR() : Token(Token::OR) {
-    setValue_p(new std::string("||"));}
+        setValue_p(new std::string("||"));
+    }
 
 public:
 };

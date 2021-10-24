@@ -9,7 +9,7 @@
 class GETINTTK : public Token {
 private:
 public:
-    GETINTTK() : Token(Token::GETINTTK){
+    GETINTTK() : Token(Token::GETINTTK) {
         setValue_p(new std::string("getint"));
     }
 

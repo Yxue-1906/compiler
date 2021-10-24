@@ -12,7 +12,8 @@ class STRCON : public Token {
 private:
 public:
     STRCON(std::string value) : Token(Token::STRCON) {
-    setValue_p(new std::string(std::move(value)));}
+        setValue_p(new std::string(std::move(value)));
+    }
 
 public:
 };

@@ -9,7 +9,8 @@ class PLUS : public Token {
 private:
 public:
     PLUS() : Token(Token::PLUS) {
-    setValue_p(new std::string("+"));}
+        setValue_p(new std::string("+"));
+    }
 
 public:
 };

@@ -10,7 +10,8 @@ class MOD : public Token {
 private:
 public:
     MOD() : Token(Token::MOD) {
-    setValue_p(new std::string("%"));}
+        setValue_p(new std::string("%"));
+    }
 
 public:
 };
