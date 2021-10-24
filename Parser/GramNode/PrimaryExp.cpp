@@ -8,7 +8,7 @@
 #include "Number.h"
 #include "LVal.h"
 
-PrimaryExp::PrimaryExp(std::vector<GramNode *> sons) : GramNode(){
+PrimaryExp::PrimaryExp(std::vector<GramNode *> sons) : GramNode() {
     setGramName("PrimaryExp");
     setSons(std::move(sons));
 }
@@ -22,6 +22,11 @@ PrimaryExp::PrimaryExp(std::vector<GramNode *> sons) : GramNode(){
 bool PrimaryExp::create(std::vector<GramNode *> &toAdd, std::vector<Token *>::iterator &ite_p) {
     auto ite = ite_p;
     std::vector<GramNode *> son_ps;
+    auto detectNumber = [&ite]() -> bool {
+        if (Token::isTypeOf(ite, Token::INTCON))
+            return true;
+        return false;
+    };
     if (TokenNode::create(son_ps, ite, Token::LPARENT)) {
         if (!Exp::create(son_ps, ite)) {
             return false;
@@ -32,11 +37,17 @@ bool PrimaryExp::create(std::vector<GramNode *> &toAdd, std::vector<Token *>::it
         ite_p = ite;
         toAdd.push_back(new PrimaryExp(son_ps));
         return true;
-    } else if (Number::create(son_ps, ite) ||
-               LVal::create(son_ps, ite)) {
+    } else if (detectNumber()) {
+        Number::create(son_ps, ite);
+        ite_p = ite;
+        toAdd.push_back(new PrimaryExp(son_ps));
+        return true;
+    } else {
+        if (!LVal::create(son_ps, ite)) {
+            return false;
+        }
         ite_p = ite;
         toAdd.push_back(new PrimaryExp(son_ps));
         return true;
     }
-    return false;
 }

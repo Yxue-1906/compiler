@@ -38,7 +38,9 @@ bool UnaryExp::create(std::vector<GramNode *> &toAdd, std::vector<Token *>::iter
                Token::isTypeOf(ite + 1, Token::LPARENT)) {
         TokenNode::create(son_ps, ite, Token::IDENFR);
         TokenNode::create(son_ps, ite, Token::LPARENT);
-        FuncRParams::create(son_ps, ite);
+        if (!Token::isTypeOf(ite, Token::RPARENT))
+            if (!FuncRParams::create(son_ps, ite))
+                return false;
         if (!TokenNode::create(son_ps, ite, Token::RPARENT)) {
             return false;
         }

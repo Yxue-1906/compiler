@@ -8,10 +8,11 @@
 #include "FuncFParams.h"
 #include "Block.h"
 
-FuncDef::FuncDef(std::vector<GramNode *> sons): GramNode() {
+FuncDef::FuncDef(std::vector<GramNode *> sons) : GramNode() {
     setGramName("FuncDef");
     setSons(std::move(sons));
 }
+
 /**
  * FuncDef -> FuncType Ident '(' [FuncFParams] ')' Block
  * @param toAdd
@@ -30,7 +31,9 @@ bool FuncDef::create(std::vector<GramNode *> &toAdd, std::vector<Token *>::itera
     if (!TokenNode::create(son_ps, ite, Token::LPARENT)) {
         return false;
     }
-    FuncFParams::create(son_ps, ite);
+    if (!Token::isTypeOf(ite, Token::RPARENT))
+        if (!FuncFParams::create(son_ps, ite))
+            return false;
     if (!TokenNode::create(son_ps, ite, Token::RPARENT)) {
         return false;
     }
