@@ -18,7 +18,12 @@ private:
     static std::vector<Token *>::iterator end;
     static bool endSet;
 
+    int lineNumber = -1;
+    bool lineNumberSet = false;
 
+protected:
+    void *value_p;
+    bool valueType;
 public:
     static int IDENFR;
     static int INTCON;
@@ -61,6 +66,9 @@ public:
     static int COMMENT;
 
     static const std::map<int, std::string> type2Name;
+protected:
+    template<class T>
+    T *setValue_p(T *value_p);
 
 public:
     Token(int);
@@ -74,6 +82,12 @@ public:
     static bool isTypeOf(std::vector<Token *>::iterator &ite, int type);
 
     static bool isTypeOf(std::vector<Token *>::iterator &&ite, int type);
+
+    int setLineNumber(int lineNumber);
+
+    virtual void myOutput() override;
+
+    int getLineNumber();
 
 private:
 

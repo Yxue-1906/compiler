@@ -6,17 +6,15 @@
 #define PARSER_AND_H
 
 
-class AND: public Token {
+class AND : public Token {
 private:
-    const std::string value;
-public:
-    AND() : Token(Token::AND), value("&&") {}
 
 public:
-    virtual void myOutput() override {
-        std::ofstream &ofs = getOfs();
-        ofs << getTokenName() << ' ' << value << std::endl;
+    AND() : Token(Token::AND) {
+        setValue_p(new std::string("&&"));
     }
+
+public:
 };
 
 

@@ -8,15 +8,12 @@
 
 class BREAKTK: public Token {
 private:
-    const std::string value;
 public:
-    BREAKTK() : Token(Token::BREAKTK), value("break") {}
+    BREAKTK() : Token(Token::BREAKTK) {
+        setValue_p(new std::string("break"));
+    }
 
 public:
-    virtual void myOutput() override {
-        std::ofstream &ofs = getOfs();
-        ofs << getTokenName() << ' ' << value << std::endl;
-    }
 };
 
 

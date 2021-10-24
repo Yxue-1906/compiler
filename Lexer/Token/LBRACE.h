@@ -8,15 +8,13 @@
 
 class LBRACE : public Token {
 private:
-    const std::string value;
 public:
-    LBRACE() : Token(Token::LBRACE), value("{") {}
+    LBRACE() : Token(Token::LBRACE)
+    {
+        setValue_p(new std::string("{"));
+    }
 
 public:
-    virtual void myOutput() override {
-        std::ofstream &ofs = getOfs();
-        ofs << getTokenName() << ' ' << value << std::endl;
-    }
 };
 
 

@@ -8,15 +8,11 @@
 
 class NEQ : public Token {
 private:
-    const std::string value;
 public:
-    NEQ() : Token(Token::NEQ), value("!=") {}
+    NEQ() : Token(Token::NEQ) {
+    setValue_p(new std::string("!="));}
 
 public:
-    virtual void myOutput() override {
-        std::ofstream &ofs = getOfs();
-        ofs << getTokenName() << ' ' << value << std::endl;
-    }
 };
 
 #endif //PARSER_NEQ_H

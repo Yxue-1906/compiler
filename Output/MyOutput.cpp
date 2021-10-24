@@ -4,23 +4,36 @@
 
 #include "MyOutput.h"
 
-std::ofstream MyOutput::ofs;
+std::ostream *MyOutput::os = nullptr;
 
-void MyOutput::setOutput(std::string file) {
-    if (!ofs.is_open())
-        ofs.open(file, std::ios::out);
-}
-
-void MyOutput::setOutput(std::ofstream &ofs) {
-    if (!MyOutput::ofs.is_open())
-        MyOutput::ofs = std::move(ofs);
-}
-
-std::ofstream &MyOutput::getOfs() {
-    if (ofs.is_open())
-        return ofs;
-    else {
-        std::cout << "ofs is not initialized!" << std::endl;
-        throw new MyException();
+void MyOutput::setOutput(std::string &file) {
+    if (os) {
+        if (dynamic_cast<std::ofstream *>(os) &&
+            !dynamic_cast<std::ofstream *>(os)->is_open())
+            dynamic_cast<std::ofstream *>(os)->open(file, std::ios::out);
+    } else {
+        auto *ofs_p = new std::ofstream(file, std::ios::out);
+        os = ofs_p;
     }
+}
+
+void MyOutput::setOutput(std::ostream *os) {
+    if (MyOutput::os) {
+        if (dynamic_cast<std::ofstream *>(MyOutput::os) &&
+            !dynamic_cast<std::ofstream *>(MyOutput::os)->is_open())
+            MyOutput::os = os;
+    } else {
+        MyOutput::os = os;
+    }
+}
+
+std::ostream &MyOutput::getOs() {
+    if (os) {
+        if (dynamic_cast<std::ofstream *>(os)) {
+            if (dynamic_cast<std::ofstream *>(os)->is_open())return *os;
+        }
+        return *os;
+    }
+    std::cout << "error, os isn't initialized" << std::endl;
+    throw MyException();
 }

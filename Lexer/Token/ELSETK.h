@@ -8,15 +8,12 @@
 
 class ELSETK : public Token {
 private:
-    const std::string value;
 public:
-    ELSETK() : Token(Token::ELSETK), value("else") {}
+    ELSETK() : Token(Token::ELSETK) {
+        setValue_p(new std::string("else"));
+    }
 
 public:
-    virtual void myOutput() override {
-        std::ofstream &ofs = getOfs();
-        ofs << getTokenName() << ' ' << value << std::endl;
-    }
 };
 
 

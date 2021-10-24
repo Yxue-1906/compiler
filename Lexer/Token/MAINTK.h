@@ -8,15 +8,11 @@
 
 class MAINTK : public Token {
 private:
-    const std::string value;
 public:
-    MAINTK() : Token(Token::MAINTK), value("main") {}
+    MAINTK() : Token(Token::MAINTK) {
+    setValue_p(new std::string("main"));}
 
 public:
-    virtual void myOutput() override {
-        std::ofstream &ofs = getOfs();
-        getOfs() << getTokenName() << ' ' << value << std::endl;
-    }
 };
 
 

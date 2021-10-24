@@ -1,3 +1,5 @@
+#include <utility>
+
 //
 // Created by unrelated on 2021/10/17.
 //
@@ -8,15 +10,11 @@
 
 class STRCON : public Token {
 private:
-    const std::string value;
 public:
-    STRCON(std::string value) : Token(Token::STRCON), value(std::move(value)) {}
+    STRCON(std::string value) : Token(Token::STRCON) {
+    setValue_p(new std::string(std::move(value)));}
 
 public:
-    virtual void myOutput() override {
-        std::ofstream &ofs = getOfs();
-        ofs << getTokenName() << ' ' << value << std::endl;
-    }
 };
 
 

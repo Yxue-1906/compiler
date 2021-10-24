@@ -7,15 +7,11 @@
 
 class PLUS : public Token {
 private:
-    const std::string value;
 public:
-    PLUS() : Token(Token::PLUS), value("+") {}
+    PLUS() : Token(Token::PLUS) {
+    setValue_p(new std::string("+"));}
 
 public:
-    virtual void myOutput() override {
-        std::ofstream &ofs = getOfs();
-        ofs << getTokenName() << ' ' << value << std::endl;
-    }
 };
 
 

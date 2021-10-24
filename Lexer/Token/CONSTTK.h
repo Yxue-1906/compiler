@@ -8,15 +8,12 @@
 
 class CONSTTK : public Token {
 private:
-    const std::string value;
 public:
-    CONSTTK() : Token(Token::CONSTTK), value("const") {}
+    CONSTTK() : Token(Token::CONSTTK) {
+        setValue_p(new std::string("const"));
+    }
 
 public:
-    virtual void myOutput() override {
-        std::ofstream &ofs = getOfs();
-        ofs << getTokenName() << ' ' << value << std::endl;
-    }
 };
 
 

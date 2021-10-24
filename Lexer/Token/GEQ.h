@@ -8,15 +8,12 @@
 
 class GEQ : public Token {
 private:
-    const std::string value;
 public:
-    GEQ() : Token(Token::GEQ), value(">=") {}
+    GEQ() : Token(Token::GEQ) {
+        setValue_p(new std::string(">="));
+    }
 
 public:
-    virtual void myOutput() override {
-        std::ofstream &ofs = getOfs();
-        ofs << getTokenName() << ' ' << value << std::endl;
-    }
 };
 
 #endif //PARSER_GEQ_H

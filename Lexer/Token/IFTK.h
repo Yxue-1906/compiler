@@ -8,15 +8,12 @@
 
 class IFTK: public Token {
 private:
-    const std::string value;
 public:
-    IFTK() : Token(Token::IFTK), value("if") {}
+    IFTK() : Token(Token::IFTK) {
+        setValue_p(new std::string("if"));
+    }
 
 public:
-    virtual void myOutput() override {
-        std::ofstream &ofs = getOfs();
-        ofs << getTokenName() << ' ' << value << std::endl;
-    }
 };
 
 

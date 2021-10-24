@@ -8,15 +8,12 @@
 
 class WHILETK : public Token {
 private:
-    const std::string value;
 public:
-    WHILETK() : Token(Token::WHILETK), value("while") {}
+    WHILETK() : Token(Token::WHILETK) {
+        setValue_p(new std::string("while"));
+    }
 
 public:
-    virtual void myOutput() override {
-        std::ofstream &ofs = getOfs();
-        ofs << getTokenName() << ' ' << value << std::endl;
-    }
 };
 
 

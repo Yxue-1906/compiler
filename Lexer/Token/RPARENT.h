@@ -8,15 +8,11 @@
 
 class RPARENT : public Token {
 private:
-    const std::string value;
 public:
-    RPARENT() : Token(Token::RPARENT), value(")") {}
+    RPARENT() : Token(Token::RPARENT) {
+    setValue_p(new std::string(")"));}
 
 public:
-    virtual void myOutput() override {
-        std::ofstream &ofs = getOfs();
-        ofs << getTokenName() << ' ' << value << std::endl;
-    }
 };
 
 #endif //PARSER_RPARENT_H

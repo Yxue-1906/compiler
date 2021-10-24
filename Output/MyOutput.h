@@ -12,16 +12,17 @@
 class MyOutput {
 public:
 private:
-    static std::ofstream ofs;
+    static std::ostream *os;
 public:
-    static void setOutput(std::string);
+    static void setOutput(std::string &);
 
-    static void setOutput(std::ofstream &);
+    static void setOutput(std::ostream *);
 
     virtual void myOutput() = 0;
 
+
 protected:
-    std::ofstream &getOfs();
+    std::ostream &getOs();
 
 };
 

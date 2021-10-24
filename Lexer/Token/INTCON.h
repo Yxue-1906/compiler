@@ -8,17 +8,13 @@
 
 class INTCON : public Token {
 private:
-    const int value;
 public:
-    INTCON(int value) : Token(Token::INTCON), value(value) {}
-
-public:
-    virtual void myOutput() override {
-        std::ofstream &ofs = getOfs();
-        ofs << getTokenName() << ' ' << value << std::endl;
+    INTCON(int value) : Token(Token::INTCON) {
+        setValue_p(new int{value});
     }
-};
 
+public:
+};
 
 
 #endif //PARSER_INTCON_H

@@ -39,7 +39,7 @@ std::vector<Token *> &Lexer::getList() {
  * @param tailJudge must return ture if tail meets requirement; false if not
  * @return ture if pre-read successful and move ite forward; false if pre-read fail
  */
-bool Lexer::safeLookAhead(const std::string chs, std::function<bool(std::string::iterator)> tailJudge = {}) {
+bool Lexer::safeLookAhead(const std::string &chs, const std::function<bool(std::string::iterator)> &tailJudge = {}) {
     if (now_look_forward_p != now_char_p)now_look_forward_p = now_char_p;
     for (auto ite = chs.begin(); ite != chs.end(); ++ite) {
         if (now_look_forward_p != now_line.end() && *now_look_forward_p == *ite) {
@@ -243,6 +243,9 @@ void Lexer::init() {
             if ((nextSym = getSymbol()) || (nextSym = getIdent()) ||
                 (nextSym = getConst()) || (nextSym = getStr())) {
                 this->tokenList.push_back(nextSym);
+                this->tokenList.back()->setLineNumber(line_count);
+                std::cout << line_count << ':';
+                nextSym->myOutput();
             } else break;
         } catch (MyException e) {
             //e.printStack();

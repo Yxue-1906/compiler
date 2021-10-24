@@ -8,15 +8,12 @@
 
 class INTTK : public Token {
 private:
-    const std::string value;
 public:
-    INTTK() : Token(Token::INTTK), value("int") {}
+    INTTK() : Token(Token::INTTK) {
+        setValue_p(new std::string("int"));
+    }
 
 public:
-    virtual void myOutput() override {
-        std::ofstream &ofs = getOfs();
-        ofs << getTokenName() << ' ' << value << std::endl;
-    }
 };
 
 

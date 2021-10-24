@@ -8,15 +8,11 @@
 
 class MOD : public Token {
 private:
-    const std::string value;
 public:
-    MOD() : Token(Token::MOD), value("%") {}
+    MOD() : Token(Token::MOD) {
+    setValue_p(new std::string("%"));}
 
 public:
-    virtual void myOutput() override {
-        std::ofstream &ofs = getOfs();
-        ofs << getTokenName() << ' ' << value << std::endl;
-    }
 };
 
 #endif //PARSER_MOD_H

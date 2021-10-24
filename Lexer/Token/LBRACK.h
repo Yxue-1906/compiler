@@ -8,15 +8,12 @@
 
 class LBRACK : public Token {
 private:
-    const std::string value;
 public:
-    LBRACK() : Token(Token::LBRACK), value("[") {}
+    LBRACK() : Token(Token::LBRACK){
+        setValue_p(new std::string("["));
+    }
 
 public:
-    virtual void myOutput() override {
-        std::ofstream &ofs = getOfs();
-        ofs << getTokenName() << ' ' << value << std::endl;
-    }
 };
 
 #endif //PARSER_LBRACK_H

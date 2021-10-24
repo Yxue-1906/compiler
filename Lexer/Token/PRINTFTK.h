@@ -8,15 +8,11 @@
 
 class PRINTFTK: public Token {
 private:
-    const std::string value;
 public:
-    PRINTFTK():Token(Token::PRINTFTK), value("printf"){}
+    PRINTFTK():Token(Token::PRINTFTK){
+    setValue_p(new std::string("printf"));}
 
 public:
-    virtual void myOutput() override {
-        std::ofstream &ofs = getOfs();
-        ofs<<getTokenName()<<' ' <<value<<std::endl;
-    }
 };
 
 

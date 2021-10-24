@@ -8,15 +8,11 @@
 
 class SEMICN : public Token {
 private:
-    const std::string value;
 public:
-    SEMICN() : Token(Token::SEMICN), value(";") {}
+    SEMICN() : Token(Token::SEMICN) {
+    setValue_p(new std::string(";"));}
 
 public:
-    virtual void myOutput() override {
-        std::ofstream &ofs = getOfs();
-        ofs << getTokenName() << ' ' << value << std::endl;
-    }
 };
 
 

@@ -8,15 +8,12 @@
 
 class CONTINUETK : public Token{
 private:
-    const std::string value;
 public:
-    CONTINUETK() : Token(Token::CONTINUETK), value("continue") {}
+    CONTINUETK() : Token(Token::CONTINUETK){
+        setValue_p(new std::string("continue"));
+    }
 
 public:
-    virtual void myOutput() override {
-        std::ofstream &ofs = getOfs();
-        ofs << getTokenName() << ' ' << value << std::endl;
-    }
 };
 
 

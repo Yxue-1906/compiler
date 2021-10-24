@@ -7,15 +7,11 @@
 
 class MULT : public Token {
 private:
-    const std::string value;
 public:
-    MULT() : Token(Token::MULT), value("*") {}
+    MULT() : Token(Token::MULT){
+    setValue_p(new std::string("*"));}
 
 public:
-    virtual void myOutput() override {
-        std::ofstream &ofs = getOfs();
-        ofs << getTokenName() << ' ' << value << std::endl;
-    }
 };
 
 #endif //PARSER_MULT_H

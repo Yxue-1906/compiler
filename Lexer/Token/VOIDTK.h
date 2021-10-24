@@ -8,15 +8,11 @@
 
 class VOIDTK : public Token {
 private:
-    const std::string value;
 public:
-    VOIDTK() : Token(Token::VOIDTK), value("void") {}
+    VOIDTK() : Token(Token::VOIDTK){
+    setValue_p(new std::string("void"));}
 
-public:
-    virtual void myOutput() override {
-        std::ofstream &ofs = getOfs();
-        ofs << getTokenName() << ' ' << value << std::endl;
-    }
+public:\
 };
 
 #endif //PARSER_VOIDTK_H

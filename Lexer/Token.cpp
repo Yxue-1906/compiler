@@ -114,3 +114,33 @@ bool Token::isTypeOf(std::vector<Token *>::iterator &ite, int type) {
 bool Token::isTypeOf(std::vector<Token *>::iterator &&ite, int type) {
     return ite < Token::end && (**ite).tokenType == type;
 }
+
+int Token::setLineNumber(int lineNumber) {
+    if (!lineNumberSet) {
+        this->lineNumber = lineNumber;
+        lineNumberSet = true;
+    }
+    return this->lineNumber;
+}
+
+template<class T>
+T *Token::setValue_p(T *value_p) {
+    if (!this->value_p) {
+        valueType = std::is_same<T, int>::value;
+        return static_cast<T *>(this->value_p = value_p);
+    }
+    return nullptr;
+}
+
+void Token::myOutput() {
+    std::ostream &os = getOs();
+    if (valueType) {
+        os << getTokenName() << ' ' << static_cast<int *>(value_p) << std::endl;
+    } else {
+        os << getTokenName() << ' ' << static_cast<std::string *>(value_p) << std::endl;
+    }
+}
+
+int Token::getLineNumber() {
+    return this->lineNumber;
+}

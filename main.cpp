@@ -8,8 +8,8 @@ int main() {
     ifs.open("testfile.txt", std::ios::in);
     std::ofstream ofs;
     ofs.open("output.txt", std::ios::out | std::ios::trunc);
+    MyOutput::setOutput(&std::cout);
     Lexer lexer{std::move(ifs)};
-    MyOutput::setOutput(ofs);
     Parser parser{lexer.getList()};
     parser.print();
     return 0;

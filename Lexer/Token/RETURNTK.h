@@ -8,15 +8,11 @@
 
 class RETURNTK : public Token {
 private:
-    const std::string value;
 public:
-    RETURNTK() : Token(Token::RETURNTK), value("return") {}
+    RETURNTK() : Token(Token::RETURNTK) {
+    setValue_p(new std::string("return"));}
 
 public:
-    virtual void myOutput() override {
-        std::ofstream &ofs = getOfs();
-        ofs << getTokenName() << ' ' << value << std::endl;
-    }
 };
 
 #endif //PARSER_RETURNTK_H

@@ -5,19 +5,18 @@
 #ifndef PARSER_IDENFR_H
 #define PARSER_IDENFR_H
 
+#include <utility>
+
 #include "../Token.h"
 
 class IDENFR : public Token {
 private:
-    const std::string value;
 public:
-    IDENFR(std::string value) : Token(Token::IDENFR), value(std::move(value)) {}
+    IDENFR(std::string value) : Token(Token::IDENFR) {
+        setValue_p(new std::string(std::move(value)));
+    }
 
 public:
-    virtual void myOutput() override {
-        std::ofstream &ofs = getOfs();
-        ofs << getTokenName() << ' ' << value << std::endl;
-    }
 };
 
 
