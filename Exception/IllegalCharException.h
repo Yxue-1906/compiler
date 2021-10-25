@@ -5,8 +5,17 @@
 #ifndef PARSER_ILLEGALCHAREXCEPTION_H
 #define PARSER_ILLEGALCHAREXCEPTION_H
 
+#include "MyException.h"
 
-class IllegalCharException {
+class IllegalCharException : public MyException {
+private:
+
+public:
+private:
+public:
+    IllegalCharException(STRCON *token) {
+        this->token = token;
+    }
 
 };
 

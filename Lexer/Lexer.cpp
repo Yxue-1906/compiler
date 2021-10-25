@@ -244,7 +244,6 @@ void Lexer::init() {
                 (nextSym = getConst()) || (nextSym = getStr())) {
                 this->tokenList.push_back(nextSym);
                 nextSym->setLineNumber(line_count);
-                nextSym->myOutput();
             } else break;
         } catch (MyException e) {
             //e.printStack();

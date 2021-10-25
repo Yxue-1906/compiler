@@ -8,13 +8,13 @@ int main() {
     ifs.open("testfile.txt", std::ios::in);
     std::ofstream ofs;
     ofs.open("output.txt", std::ios::out | std::ios::trunc);
-    MyOutput::setOutput(&std::cout);
+    MyOutput::setOutput(&ofs);
     Lexer lexer{std::move(ifs)};
 //    for (auto &i: lexer.getList()) {
-//        std::cout << i->getLineNumber()<<":";
+//        std::cout << i->getLineNumber() << ":";
 //        i->myOutput();
 //    }
-//    Parser parser{lexer.getList()};
-//    parser.print();
+    Parser parser{lexer.getList()};
+    parser.print();
     return 0;
 }
