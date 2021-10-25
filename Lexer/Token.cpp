@@ -90,7 +90,9 @@ const std::map<int, std::string> Token::type2Name = {
 };
 
 
-Token::Token(int type) : tokenType(type), tokenName(type2Name.at(type)) {}
+Token::Token(int type) : tokenType(type), tokenName(type2Name.at(type)) {
+    value_p = nullptr;
+}
 
 std::string &Token::getTokenName() {
     return const_cast<std::string &>(this->tokenName);
@@ -125,13 +127,10 @@ int Token::setLineNumber(int lineNumber) {
 
 void Token::myOutput() {
     std::ostream *os = getOs();
-    std::cerr << "when use:" << value_p << std::endl;
     if (valueType) {
-        int value = *((int *) value_p);
-        (*os) << getTokenName() << ' ' << value << std::endl;
+        (*os) << getTokenName() << ' ' << *((int *) value_p) << std::endl;
     } else {
-        std::string value = *((std::string *) value_p);
-        (*os) << getTokenName() << ' ' << value << std::endl;
+        (*os) << getTokenName() << ' ' << *((std::string *) value_p) << std::endl;
     }
 }
 

@@ -69,12 +69,8 @@ public:
 protected:
     template<class T>
     void setValue_p(T *value_p) {
-        std::cerr << "when generate:" << value_p << std::endl;
         if (!this->value_p) {
             valueType = std::is_same<T, int>::value;
-            if (!valueType) {
-                std::cout << *((std::string *) value_p);
-            }
             this->value_p = value_p;
         }
     }
