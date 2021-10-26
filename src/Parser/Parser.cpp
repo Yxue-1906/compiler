@@ -9,7 +9,7 @@ Parser::Parser(std::vector<Token *> &tokenList) : tokenList(tokenList) {
     std::vector<GramNode *> tmp;
     if (CompUnit::create(tmp, begin)) {
         root = tmp[0];
-    } else throw new MyException();
+    } else throw MyException(-1, 'g');
 }
 
 void Parser::print() {

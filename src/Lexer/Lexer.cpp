@@ -5,6 +5,7 @@
 #include <iostream>
 #include "Lexer.h"
 #include "../Exception/MyException.h"
+#include "../Exception/IllegalCharException.h"
 
 
 Lexer::Lexer(std::ifstream ifs) {
@@ -29,7 +30,7 @@ std::vector<Token *> &Lexer::getList() {
     if (inited)return this->tokenList;
     else {
         std::cout << "lexer has not inited!" << std::endl;
-        throw new MyException();
+        throw MyException(-1, 'g');
     }
 }
 
@@ -218,20 +219,37 @@ INTCON *Lexer::getConst() {
 
 STRCON *Lexer::getStr() {
     std::string str;
+    int count;
+    bool valid = true;
+    bool backslash = false;
+    bool percent = false;
     if (now_char_p == now_line.end() || *now_char_p != '"') {
         return nullptr;
     }
     while (now_char_p != now_line.end()) {
         str.push_back(*now_char_p);
-        ++now_char_p;
-        if (*now_char_p == '"') {
+        if (backslash) {
+            if (*now_char_p != 'n')valid = false;
+            backslash = false;
+        } else if (percent) {
+            if (*now_char_p != 'd')valid = false;
+            else ++count;
+            percent = false;
+        }
+        if (*now_char_p == '\\') {
+            backslash = true;
+        } else if (*now_char_p == '%') {
+            percent = true;
+        } else if (*now_char_p == '"') {
             str.push_back('"');
             ++now_char_p;
             break;
         }
-        if (now_char_p == now_line.end())throw MyException();
+        ++now_char_p;
+        if (now_char_p == now_line.end())throw MyException(-1, 'g');
     }
-    return new STRCON(str);
+    if (!valid)throw IllegalCharException(line_count).addMessage(new std::string(str));
+    return new STRCON(str, count);
 }
 
 

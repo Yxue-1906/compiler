@@ -13,9 +13,7 @@ private:
 public:
 private:
 public:
-    IllegalCharException(STRCON *token) {
-        this->token = token;
-    }
+    IllegalCharException(int line_number) : MyException(line_number, 'a') {}
 
 };
 

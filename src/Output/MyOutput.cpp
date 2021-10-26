@@ -29,7 +29,7 @@ void MyOutput::setOutput(std::ostream *os) {
 
 std::ostream *MyOutput::getOs() {
     if (!os->good()) {
-        throw MyException();
+        throw MyException(-1, 'g');
     }
     if (os) {
         if (dynamic_cast<std::ofstream *>(os)) {
@@ -38,5 +38,5 @@ std::ostream *MyOutput::getOs() {
         return os;
     }
     std::cout << "error, os isn't initialized" << std::endl;
-    throw MyException();
+    throw MyException(-1, 'g');
 }
