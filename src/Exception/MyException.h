@@ -22,6 +22,7 @@ private:
     const int line_number;
     const char type;
 
+    std::string toReturn;
     std::string message;
 
 public:
@@ -36,17 +37,9 @@ public:
 
     virtual const char *what() const noexcept override;
 
-    MyException *addMessage(char *) {
-        this->message.append(message);
-        this->message.push_back('\n');
-        return this;
-    }
+    MyException *addMessage(char *message);
 
-    MyException *addMessage(std::string *) {
-        this->message.append(*message);
-        this->message.push_back('\n');
-        return this;
-    }
+    MyException *addMessage(std::string *message);
 
 private:
     //private methods

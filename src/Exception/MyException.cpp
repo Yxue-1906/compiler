@@ -29,11 +29,27 @@ bool MyException::setDebug(bool debug) {
 }
 
 const char *MyException::what() const noexcept {
-    if (!os_p) {
-        std::cerr << "os_p isn't init!" << std::endl;
-        return nullptr;
+    this->toReturn.clear();
+    toReturn.append(std::to_string(line_number));
+    toReturn.push_back(' ');
+    toReturn.push_back(type);
+    if (debug) {
+        toReturn.push_back(':');
+        toReturn.append(message);
     }
-    (*os_p) << line_number << ' ' << type;
-    if (debug)(*os_p) << message;
-    (*os_p) << std::endl;
+    toReturn.push_back('\n');
+    return toReturn.c_str();
+}
+
+MyException *MyException::addMessage(char *message) {
+    this->message.append(message);
+    this->message.push_back('\n');
+    return this;
+
+}
+
+MyException *MyException::addMessage(std::string *message) {
+    this->message.append(*message);
+    this->message.push_back('\n');
+    return this;
 }

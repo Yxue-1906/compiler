@@ -1,6 +1,33 @@
 cmake_minimum_required(VERSION 3.16)
-project(Parser)
+project(src/Parser)
 
 set(CMAKE_CXX_STANDARD 11)
 
-add_executable(Parser main.cpp Parser/Parser.cpp Parser/Parser.h Lexer/Lexer.cpp Exception/MyException.cpp Lexer/Token.cpp Lexer/Token.h Output/MyOutput.cpp Output/MyOutput.h Lexer/Token/IDENFR.h Lexer/Token/INTCON.h Lexer/Token/STRCON.h Lexer/Token/MAINTK.h Lexer/Token/CONSTTK.h Lexer/Token/INTTK.h Lexer/Token/BREAKTK.h Lexer/Token/CONTINUETK.h Lexer/Token/IFTK.h Lexer/Token/ELSETK.h Lexer/Token/NOT.h Lexer/Token/AND.h Lexer/Token/OR.h Lexer/Token/WHILETK.h Lexer/Token/GETINTTK.h Lexer/Token/PRINTFTK.h Lexer/Token/RETURNTK.h Lexer/Token/PLUS.h Lexer/Token/MINU.h Lexer/Token/VOIDTK.h Lexer/Token/MULT.h Lexer/Token/DIV.h Lexer/Token/MOD.h Lexer/Token/LSS.h Lexer/Token/LEQ.h Lexer/Token/GRE.h Lexer/Token/GEQ.h Lexer/Token/EQL.h Lexer/Token/NEQ.h Lexer/Token/ASSIGN.h Lexer/Token/SEMICN.h Lexer/Token/COMMA.h Lexer/Token/LPARENT.h Lexer/Token/RPARENT.h Lexer/Token/LBRACK.h Lexer/Token/RBRACK.h Lexer/Token/LBRACE.h Lexer/Token/RBRACE.h Parser/GramNode.cpp Parser/GramNode.h Parser/GramNode/CompUnit.cpp Parser/GramNode/CompUnit.h Parser/GramNode/Decl.cpp Parser/GramNode/Decl.h Parser/GramNode/FuncDef.cpp Parser/GramNode/FuncDef.h Parser/TokenNode.cpp Parser/TokenNode.h Parser/GramNode/ConstDecl.cpp Parser/GramNode/ConstDecl.h Parser/GramNode/BType.cpp Parser/GramNode/BType.h Parser/GramNode/ConstDef.cpp Parser/GramNode/ConstDef.h Parser/GramNode/ConstExp.cpp Parser/GramNode/ConstExp.h Parser/GramNode/AddExp.cpp Parser/GramNode/AddExp.h Parser/GramNode/MulExp.cpp Parser/GramNode/MulExp.h Parser/GramNode/UnaryExp.cpp Parser/GramNode/UnaryExp.h Parser/GramNode/UnaryOp.cpp Parser/GramNode/UnaryOp.h Parser/GramNode/PrimaryExp.cpp Parser/GramNode/PrimaryExp.h Parser/GramNode/Exp.cpp Parser/GramNode/Exp.h Parser/GramNode/ConstInitVal.cpp Parser/GramNode/ConstInitVal.h Parser/GramNode/VarDecl.cpp Parser/GramNode/VarDecl.h Parser/GramNode/VarDef.cpp Parser/GramNode/VarDef.h Parser/GramNode/MainFuncDef.cpp Parser/GramNode/MainFuncDef.h Parser/GramNode/Block.cpp Parser/GramNode/Block.h Parser/GramNode/BlockItem.cpp Parser/GramNode/BlockItem.h Parser/GramNode/Stmt.cpp Parser/GramNode/Stmt.h Parser/GramNode/Cond.cpp Parser/GramNode/Cond.h Parser/GramNode/LOrExp.cpp Parser/GramNode/LOrExp.h Parser/GramNode/LAndExp.cpp Parser/GramNode/LAndExp.h Parser/GramNode/EqExp.cpp Parser/GramNode/EqExp.h Parser/GramNode/RelExp.cpp Parser/GramNode/RelExp.h Parser/GramNode/LVal.cpp Parser/GramNode/LVal.h Parser/GramNode/FuncType.cpp Parser/GramNode/FuncType.h Parser/GramNode/FuncFParams.cpp Parser/GramNode/FuncFParams.h Parser/GramNode/FuncFParam.cpp Parser/GramNode/FuncFParam.h Parser/GramNode/Number.cpp Parser/GramNode/Number.h Parser/GramNode/InitVal.cpp Parser/GramNode/InitVal.h Parser/GramNode/FuncRParams.cpp Parser/GramNode/FuncRParams.h Exception/IllegalCharException.h)
+add_executable(Parser src/main.cpp
+        src/Parser/Parser.cpp
+        src/Parser/Parser.h
+        src/Lexer/Lexer.cpp
+        src/Exception/MyException.cpp
+        src/Lexer/Token.cpp
+        src/Lexer/Token.h
+        src/Output/MyOutput.cpp
+        src/Output/MyOutput.h
+        src/Lexer/Token/IDENFR.h
+        src/Lexer/Token/INTCON.h
+        src/Lexer/Token/STRCON.h
+        src/Lexer/Token/MAINTK.h
+        src/Lexer/Token/CONSTTK.h
+        src/Lexer/Token/INTTK.h
+        src/Lexer/Token/BREAKTK.h
+        src/Lexer/Token/CONTINUETK.h
+        src/Lexer/Token/IFTK.h
+        src/Lexer/Token/ELSETK.h
+        src/Lexer/Token/NOT.h
+        src/Lexer/Token/AND.h
+        src/Lexer/Token/OR.h
+        src/Lexer/Token/WHILETK.h
+        src/Lexer/Token/GETINTTK.h
+        src/Lexer/Token/PRINTFTK.h
+        src/Lexer/Token/RETURNTK.h
+        src/Lexer/Token/PLUS.h
+        src/Lexer/Token/MINU.h src/Lexer/Token/VOIDTK.h src/Lexer/Token/MULT.h src/Lexer/Token/DIV.h src/Lexer/Token/MOD.h src/Lexer/Token/LSS.h src/Lexer/Token/LEQ.h src/Lexer/Token/GRE.h src/Lexer/Token/GEQ.h src/Lexer/Token/EQL.h src/Lexer/Token/NEQ.h src/Lexer/Token/ASSIGN.h src/Lexer/Token/SEMICN.h src/Lexer/Token/COMMA.h src/Lexer/Token/LPARENT.h src/Lexer/Token/RPARENT.h src/Lexer/Token/LBRACK.h src/Lexer/Token/RBRACK.h src/Lexer/Token/LBRACE.h src/Lexer/Token/RBRACE.h src/Parser/GramNode.cpp src/Parser/GramNode.h src/Parser/GramNode/CompUnit.cpp src/Parser/GramNode/CompUnit.h src/Parser/GramNode/Decl.cpp src/Parser/GramNode/Decl.h src/Parser/GramNode/FuncDef.cpp src/Parser/GramNode/FuncDef.h src/Parser/TokenNode.cpp src/Parser/TokenNode.h src/Parser/GramNode/ConstDecl.cpp src/Parser/GramNode/ConstDecl.h src/Parser/GramNode/BType.cpp src/Parser/GramNode/BType.h src/Parser/GramNode/ConstDef.cpp src/Parser/GramNode/ConstDef.h src/Parser/GramNode/ConstExp.cpp src/Parser/GramNode/ConstExp.h src/Parser/GramNode/AddExp.cpp src/Parser/GramNode/AddExp.h src/Parser/GramNode/MulExp.cpp src/Parser/GramNode/MulExp.h src/Parser/GramNode/UnaryExp.cpp src/Parser/GramNode/UnaryExp.h src/Parser/GramNode/UnaryOp.cpp src/Parser/GramNode/UnaryOp.h src/Parser/GramNode/PrimaryExp.cpp src/Parser/GramNode/PrimaryExp.h src/Parser/GramNode/Exp.cpp src/Parser/GramNode/Exp.h src/Parser/GramNode/ConstInitVal.cpp src/Parser/GramNode/ConstInitVal.h src/Parser/GramNode/VarDecl.cpp src/Parser/GramNode/VarDecl.h src/Parser/GramNode/VarDef.cpp src/Parser/GramNode/VarDef.h src/Parser/GramNode/MainFuncDef.cpp src/Parser/GramNode/MainFuncDef.h src/Parser/GramNode/Block.cpp src/Parser/GramNode/Block.h src/Parser/GramNode/BlockItem.cpp src/Parser/GramNode/BlockItem.h src/Parser/GramNode/Stmt.cpp src/Parser/GramNode/Stmt.h src/Parser/GramNode/Cond.cpp src/Parser/GramNode/Cond.h src/Parser/GramNode/LOrExp.cpp src/Parser/GramNode/LOrExp.h src/Parser/GramNode/LAndExp.cpp src/Parser/GramNode/LAndExp.h src/Parser/GramNode/EqExp.cpp src/Parser/GramNode/EqExp.h src/Parser/GramNode/RelExp.cpp src/Parser/GramNode/RelExp.h src/Parser/GramNode/LVal.cpp src/Parser/GramNode/LVal.h src/Parser/GramNode/FuncType.cpp src/Parser/GramNode/FuncType.h src/Parser/GramNode/FuncFParams.cpp src/Parser/GramNode/FuncFParams.h src/Parser/GramNode/FuncFParam.cpp src/Parser/GramNode/FuncFParam.h src/Parser/GramNode/Number.cpp src/Parser/GramNode/Number.h src/Parser/GramNode/InitVal.cpp src/Parser/GramNode/InitVal.h src/Parser/GramNode/FuncRParams.cpp src/Parser/GramNode/FuncRParams.h src/Exception/IllegalCharException.h src/Exception/DupIdentException.h src/SymTable/SymTable.cpp src/SymTable/SymTable.h)
