@@ -13,7 +13,9 @@ private:
 public:
 private:
 public:
-    IllegalCharException(int line_number) : MyException(line_number, 'a') {}
+    IllegalCharException(int line_number, std::string ilstr) : MyException(line_number, 'a') {
+        message.append(ilstr);
+    }
 
 };
 

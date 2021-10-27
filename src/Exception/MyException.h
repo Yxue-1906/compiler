@@ -17,17 +17,18 @@ public:
 private:
     //private attributes
     static std::ostream *os_p;
+protected:
     static bool debug;
-
     const int line_number;
     const char type;
 
-    std::string toReturn;
     std::string message;
 
 public:
     //public methods
-    MyException(int line_number, char type);
+    MyException(int line_number, char type) noexcept;
+
+    MyException(int line_number, char type, std::string message) noexcept;
 
     ~MyException() override;
 
@@ -35,11 +36,11 @@ public:
 
     static bool setDebug(bool debug);
 
-    virtual const char *what() const noexcept override;
-
     MyException *addMessage(char *message);
 
     MyException *addMessage(std::string *message);
+
+    std::string getMessage();
 
 private:
     //private methods
