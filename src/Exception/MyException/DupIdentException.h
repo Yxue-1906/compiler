@@ -5,7 +5,7 @@
 #ifndef PARSER_DUPIDENTEXCEPTION_H
 #define PARSER_DUPIDENTEXCEPTION_H
 
-#include "MyException.h"
+#include "../MyException.h"
 
 class DupIdentException : public MyException {
 private:

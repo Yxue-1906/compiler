@@ -5,7 +5,7 @@
 #ifndef PARSER_ILLEGALCHAREXCEPTION_H
 #define PARSER_ILLEGALCHAREXCEPTION_H
 
-#include "MyException.h"
+#include "../MyException.h"
 
 class IllegalCharException : public MyException {
 private:

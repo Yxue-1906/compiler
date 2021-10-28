@@ -6,8 +6,9 @@
 #define SRC_PARSER_UNDEFIDENTEXCEPTION_H
 
 
-class UndefIdentException :public {
-
+class UndefIdentException : public MyException {
+public:
+    UndefIdentException(int line_number, std::string undefIdentName);
 };
 
 

@@ -5,7 +5,7 @@
 #include <iostream>
 #include "Lexer.h"
 #include "../Exception/MyException.h"
-#include "../Exception/IllegalCharException.h"
+#include "../Exception/MyException/IllegalCharException.h"
 
 
 Lexer::Lexer(std::ifstream ifs) {

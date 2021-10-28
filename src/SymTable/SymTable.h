@@ -11,7 +11,8 @@
 #include <memory>
 #include <iostream>
 #include <vector>
-#include "../Exception/DupIdentException.h"
+#include "../Exception/MyException/DupIdentException.h"
+#include "../Exception/MyException/UndefIdentException.h"
 
 
 class Type {
@@ -68,7 +69,7 @@ private:
     std::shared_ptr<SymTable> former = nullptr;
 
 public:
-    std::shared_ptr<Type> queryIdent(std::string name) throw();
+    std::shared_ptr<Type> queryIdent(std::string name) throw(UndefIdentException);
 
     void addIdent(std::string name, std::shared_ptr<Type> type) throw(DupIdentException);
 };
