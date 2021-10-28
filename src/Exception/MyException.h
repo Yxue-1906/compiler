@@ -6,8 +6,20 @@
 #define SRC_PARSER_MYEXCEPTION_H
 
 
-class MyException: public std::{
+#include <exception>
+#include <string>
 
+class MyException : public std::exception {
+private:
+    const int lineNumber;
+    const char type;
+
+public:
+    MyException(int lineNumber, char type) : lineNumber(lineNumber), type(type) {}
+
+    std::string getBaseInfo();
+
+    virtual std::string getInfo() = 0;
 };
 
 

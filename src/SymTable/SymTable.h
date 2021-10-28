@@ -69,9 +69,23 @@ private:
     std::shared_ptr<SymTable> former = nullptr;
 
 public:
+    SymTable() = default;
+
+    SymTable(const SymTable &) = delete;//forbid copy construct
+    SymTable &operator=(const SymTable &) = delete;
+
+    SymTable(const SymTable &&) = delete;//forbid copy construct
+    SymTable &operator=(const SymTable &&) = delete;
+
+    ~SymTable() = default;
+
     std::shared_ptr<Type> queryIdent(std::string name) throw(UndefIdentException);
 
     void addIdent(std::string name, std::shared_ptr<Type> type) throw(DupIdentException);
+
+    std::shared_ptr<SymTable> getFormer();
+
+
 };
 
 

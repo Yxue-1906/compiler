@@ -28,9 +28,20 @@ bool FuncType::isEqual(Type &info) {
     if (dynamic_cast<FuncType *>(&info)) {
         auto &funcInfo = dynamic_cast<FuncType &>(info);
         if (this->name.empty() ||
-            funcInfo.name.empty())
-        {
+            funcInfo.name.empty()) {
             return
         }
     }
+}
+
+std::shared_ptr<Type> SymTable::queryIdent(std::string name) throw(class UndefIdentException) {
+    try {
+        return symTable.at(name);
+    }catch (std::out_of_range e){
+        throw UndefIdentException()
+    }
+}
+
+std::shared_ptr<SymTable> SymTable::getFormer() {
+    return this->former;
 }

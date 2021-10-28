@@ -8,6 +8,7 @@
 
 #include <map>
 #include <vector>
+#include <memory>
 #include "../Output/MyOutput.h"
 
 class Token : public MyOutput {
@@ -22,8 +23,8 @@ private:
     bool lineNumberSet = false;
 
 protected:
-    void *value_p;
-    bool valueType;
+    std::shared_ptr<void> value_p;
+    bool valueType;//
 public:
     static int IDENFR;
     static int INTCON;
@@ -81,6 +82,11 @@ public:
     std::string &getTokenName();
 
     int getTokenType();
+
+    template<class T>
+    typename std::enable_if<std::is_same<T, std::string *>::value, T>::type getValue() {
+        return static_cast<T>(value_p.get());
+    }
 
     static void setEnd(std::vector<Token *>::iterator);
 
