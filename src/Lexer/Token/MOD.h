@@ -6,12 +6,11 @@
 #define PARSER_MOD_H
 
 
-class MOD : public Token {
+class MOD : public Token<std::string> {
 private:
 public:
-    MOD() : Token(Token::MOD) {
-        setValue_p(new std::string("%"));
-    }
+    MOD() : Token(TokenBase::MOD,
+                  std::make_shared<std::string>("%")) {}
 
 public:
 };

@@ -6,12 +6,11 @@
 #define PARSER_GEQ_H
 
 
-class GEQ : public Token {
+class GEQ : public Token<std::string> {
 private:
 public:
-    GEQ() : Token(Token::GEQ) {
-        setValue_p(new std::string(">="));
-    }
+    GEQ() : Token(TokenBase::GEQ,
+                  std::make_shared<std::string>(">=")) {}
 
 public:
 };

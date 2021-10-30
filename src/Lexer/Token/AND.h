@@ -6,13 +6,12 @@
 #define PARSER_AND_H
 
 
-class AND : public Token {
+class AND : public Token<std::string> {
 private:
 
 public:
-    AND() : Token(Token::AND) {
-        setValue_p(new std::string("&&"));
-    }
+    AND() : Token(TokenBase::AND,
+                  std::make_shared<std::string>("&&")) {}
 
 public:
 };

@@ -6,12 +6,11 @@
 #define PARSER_LEQ_H
 
 
-class LEQ : public Token {
+class LEQ : public Token<std::string> {
 private:
 public:
-    LEQ() : Token(Token::LEQ) {
-        setValue_p(new std::string("<="));
-    }
+    LEQ() : Token(TokenBase::LEQ,
+                  std::make_shared<std::string>("<=")) {}
 
 public:
 };

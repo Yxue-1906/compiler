@@ -7,14 +7,13 @@
 
 #include <utility>
 
-#include "../Token.h"
+#include "../TokenBase.h"
 
-class IDENFR : public Token {
+class IDENFR : public Token<std::string> {
 private:
 public:
-    IDENFR(std::string value) : Token(Token::IDENFR) {
-        setValue_p(new std::string(std::move(value)));
-    }
+    IDENFR(const std::string &value) : Token(TokenBase::IDENFR,
+                                             std::make_shared<std::string>(value)) {}
 
 public:
 };

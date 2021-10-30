@@ -18,21 +18,21 @@ ConstDef::ConstDef(std::vector<GramNode *> sons) : GramNode() {
  * @param ite_p
  * @return
  */
-bool ConstDef::create(std::vector<GramNode *> &toAdd, std::vector<Token *>::iterator &ite_p) {
+bool ConstDef::create(std::vector<GramNode *> &toAdd, std::vector<TokenBase *>::iterator &ite_p) {
     auto ite = ite_p;
     std::vector<GramNode *> son_ps;
-    if (!TokenNode::create(son_ps, ite, Token::IDENFR)) {
+    if (!TokenNode::create(son_ps, ite, TokenBase::IDENFR)) {
         return false;
     }
-    for (; TokenNode::create(son_ps, ite, Token::LBRACK);) {
+    for (; TokenNode::create(son_ps, ite, TokenBase::LBRACK);) {
         if (!ConstExp::create(son_ps, ite)) {
             return false;
         }
-        if (!TokenNode::create(son_ps, ite, Token::RBRACK)) {
+        if (!TokenNode::create(son_ps, ite, TokenBase::RBRACK)) {
             return false;
         }
     }
-    if (!TokenNode::create(son_ps, ite, Token::ASSIGN)) {
+    if (!TokenNode::create(son_ps, ite, TokenBase::ASSIGN)) {
         return false;
     }
     if (!ConstInitVal::create(son_ps, ite)) {

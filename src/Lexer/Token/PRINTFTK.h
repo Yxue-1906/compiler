@@ -6,12 +6,11 @@
 #define PARSER_PRINTFTK_H
 
 
-class PRINTFTK : public Token {
+class PRINTFTK : public Token<std::string> {
 private:
 public:
-    PRINTFTK() : Token(Token::PRINTFTK) {
-        setValue_p(new std::string("printf"));
-    }
+    PRINTFTK() : Token(TokenBase::PRINTFTK,
+                       std::make_shared<std::string>("printf")) {}
 
 public:
 };

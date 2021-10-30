@@ -6,12 +6,11 @@
 #define PARSER_GRE_H
 
 
-class GRE : public Token {
+class GRE : public Token<std::string> {
 private:
 public:
-    GRE() : Token(Token::GRE) {
-        setValue_p(new std::string(">"));
-    }
+    GRE() : Token(TokenBase::GRE,
+                  std::make_shared<std::string>(">")) {}
 
 public:
 };

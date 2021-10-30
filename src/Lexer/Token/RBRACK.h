@@ -6,12 +6,11 @@
 #define PARSER_RBRACK_H
 
 
-class RBRACK : public Token {
+class RBRACK : public Token<std::string> {
 private:
 public:
-    RBRACK() : Token(Token::RBRACK) {
-        setValue_p(new std::string("]"));
-    }
+    RBRACK() : Token(TokenBase::RBRACK,
+                     std::make_shared<std::string>("]")) {}
 
 public:
 };

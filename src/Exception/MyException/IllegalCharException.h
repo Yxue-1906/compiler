@@ -6,15 +6,20 @@
 #define PARSER_ILLEGALCHAREXCEPTION_H
 
 #include "../MyException.h"
+#include "../../Lexer/TokenBase.h"
 
 class IllegalCharException : public MyException {
-private:
+public:
+    IllegalCharException(const TokenBase &token) : MyException(token, 'a') {}
 
-public:
-private:
-public:
-    IllegalCharException(int line_number, std::string ilstr) : MyException(line_number, 'a') {
-        message.append(ilstr);
+    IllegalCharException(int line_number) : MyException(line_number, 'a') {}
+
+    IllegalCharException(const TokenBase &token, std::string message) : MyException(token, 'a') {
+        this->message.append(message);
+    }
+
+    IllegalCharException(int line_number, std::string message) : MyException(line_number, 'a') {
+        this->message.append(message);
     }
 
 };

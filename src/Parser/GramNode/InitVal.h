@@ -8,14 +8,14 @@
 #include "../GramNode.h"
 
 
-class InitVal: public GramNode {
+class InitVal : public GramNode {
 private:
 public:
 private:
     InitVal(std::vector<GramNode *>);
 
 public:
-    static bool create(std::vector<GramNode *> &, std::vector<Token *>::iterator &);
+    static bool create(std::vector<GramNode *> &, std::vector<TokenBase *>::iterator &);
 
 };
 

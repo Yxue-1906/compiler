@@ -6,12 +6,11 @@
 #define PARSER_ELSETK_H
 
 
-class ELSETK : public Token {
+class ELSETK : public Token<std::string> {
 private:
 public:
-    ELSETK() : Token(Token::ELSETK) {
-        setValue_p(new std::string("else"));
-    }
+    ELSETK() : Token(TokenBase::ELSETK,
+                     std::make_shared<std::string>("else")) {}
 
 public:
 };

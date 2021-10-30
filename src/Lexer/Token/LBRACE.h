@@ -6,12 +6,11 @@
 #define PARSER_LBRACE_H
 
 
-class LBRACE : public Token {
+class LBRACE : public Token<std::string> {
 private:
 public:
-    LBRACE() : Token(Token::LBRACE) {
-        setValue_p(new std::string("{"));
-    }
+    LBRACE() : Token(TokenBase::LBRACE,
+                     std::make_shared<std::string>("{")) {}
 
 public:
 };

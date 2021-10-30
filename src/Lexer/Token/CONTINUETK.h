@@ -6,12 +6,11 @@
 #define PARSER_CONTINUETK_H
 
 
-class CONTINUETK : public Token {
+class CONTINUETK : public Token<std::string> {
 private:
 public:
-    CONTINUETK() : Token(Token::CONTINUETK) {
-        setValue_p(new std::string("continue"));
-    }
+    CONTINUETK() : Token(TokenBase::CONTINUETK,
+                         std::make_shared<std::string>("continue")) {}
 
 public:
 };

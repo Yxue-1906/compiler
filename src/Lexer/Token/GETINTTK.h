@@ -6,12 +6,11 @@
 #define PARSER_GETINTTK_H
 
 
-class GETINTTK : public Token {
+class GETINTTK : public Token<std::string> {
 private:
 public:
-    GETINTTK() : Token(Token::GETINTTK) {
-        setValue_p(new std::string("getint"));
-    }
+    GETINTTK() : Token(TokenBase::GETINTTK,
+                       std::make_shared<std::string>("getint")) {}
 
 public:
 };

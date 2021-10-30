@@ -3,8 +3,4 @@
 //
 
 #include "MyException.h"
-
-std::string MyException::getBaseInfo() {
-    std::string toReturn = std::to_string(lineNumber) + ' ' + type;
-    return toReturn;
-}
+#include "../Output/MyOutput.h"

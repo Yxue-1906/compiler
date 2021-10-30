@@ -19,12 +19,12 @@ UnaryExp::UnaryExp(std::vector<GramNode *> sons) : GramNode() {
  * @param ite_p
  * @return
  */
-bool UnaryExp::create(std::vector<GramNode *> &toAdd, std::vector<Token *>::iterator &ite_p) {
+bool UnaryExp::create(std::vector<GramNode *> &toAdd, std::vector<TokenBase *>::iterator &ite_p) {
     auto ite = ite_p;
     std::vector<GramNode *> son_ps;
-    if (Token::isTypeOf(ite, Token::PLUS) ||
-        Token::isTypeOf(ite, Token::MINU) ||
-        Token::isTypeOf(ite, Token::NOT)) {
+    if (TokenBase::isTypeOf(ite, TokenBase::PLUS) ||
+        TokenBase::isTypeOf(ite, TokenBase::MINU) ||
+        TokenBase::isTypeOf(ite, TokenBase::NOT)) {
         if (!UnaryOp::create(son_ps, ite)) {
             return false;
         }
@@ -34,14 +34,14 @@ bool UnaryExp::create(std::vector<GramNode *> &toAdd, std::vector<Token *>::iter
         ite_p = ite;
         toAdd.push_back(new UnaryExp(son_ps));
         return true;
-    } else if (Token::isTypeOf(ite, Token::IDENFR) &&
-               Token::isTypeOf(ite + 1, Token::LPARENT)) {
-        TokenNode::create(son_ps, ite, Token::IDENFR);
-        TokenNode::create(son_ps, ite, Token::LPARENT);
-        if (!Token::isTypeOf(ite, Token::RPARENT))
+    } else if (TokenBase::isTypeOf(ite, TokenBase::IDENFR) &&
+               TokenBase::isTypeOf(ite + 1, TokenBase::LPARENT)) {
+        TokenNode::create(son_ps, ite, TokenBase::IDENFR);
+        TokenNode::create(son_ps, ite, TokenBase::LPARENT);
+        if (!TokenBase::isTypeOf(ite, TokenBase::RPARENT))
             if (!FuncRParams::create(son_ps, ite))
                 return false;
-        if (!TokenNode::create(son_ps, ite, Token::RPARENT)) {
+        if (!TokenNode::create(son_ps, ite, TokenBase::RPARENT)) {
             return false;
         }
         ite_p = ite;

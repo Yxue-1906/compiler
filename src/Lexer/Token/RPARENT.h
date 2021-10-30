@@ -6,12 +6,11 @@
 #define PARSER_RPARENT_H
 
 
-class RPARENT : public Token {
+class RPARENT : public Token<std::string> {
 private:
 public:
-    RPARENT() : Token(Token::RPARENT) {
-        setValue_p(new std::string(")"));
-    }
+    RPARENT() : Token(TokenBase::RPARENT,
+                      std::make_shared<std::string>(")")) {}
 
 public:
 };

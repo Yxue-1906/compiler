@@ -6,12 +6,11 @@
 #define PARSER_LPARENT_H
 
 
-class LPARENT : public Token {
+class LPARENT : public Token<std::string> {
 private:
 public:
-    LPARENT() : Token(Token::LPARENT) {
-        setValue_p(new std::string("("));
-    }
+    LPARENT() : Token(TokenBase::LPARENT,
+                      std::make_shared<std::string>("(")) {}
 
 public:
 };

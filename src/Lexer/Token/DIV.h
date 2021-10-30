@@ -6,12 +6,11 @@
 #define PARSER_DIV_H
 
 
-class DIV : public Token {
+class DIV : public Token<std::string> {
 private:
 public:
-    DIV() : Token(Token::DIV) {
-        setValue_p(new std::string("/"));
-    }
+    DIV() : Token(TokenBase::DIV,
+                  std::make_shared<std::string>("/")) {}
 
 public:
 };

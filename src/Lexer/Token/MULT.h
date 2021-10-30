@@ -5,12 +5,11 @@
 #ifndef PARSER_MULT_H
 #define PARSER_MULT_H
 
-class MULT : public Token {
+class MULT : public Token<std::string> {
 private:
 public:
-    MULT() : Token(Token::MULT) {
-        setValue_p(new std::string("*"));
-    }
+    MULT() : Token(TokenBase::MULT,
+                   std::make_shared<std::string>("*")) {}
 
 public:
 };

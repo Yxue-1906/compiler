@@ -8,14 +8,14 @@
 
 #include "../GramNode.h"
 
-class FuncFParams: public GramNode {
+class FuncFParams : public GramNode {
 private:
 public:
 private:
     FuncFParams(std::vector<GramNode *>);
 
 public:
-    static bool create(std::vector<GramNode *> &, std::vector<Token *>::iterator &);
+    static bool create(std::vector<GramNode *> &, std::vector<TokenBase *>::iterator &);
 
 };
 

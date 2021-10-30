@@ -16,7 +16,7 @@ Cond::Cond(std::vector<GramNode *> sons) : GramNode() {
  * @param ite_p
  * @return
  */
-bool Cond::create(std::vector<GramNode *> &toAdd, std::vector<Token *>::iterator &ite_p) {
+bool Cond::create(std::vector<GramNode *> &toAdd, std::vector<TokenBase *>::iterator &ite_p) {
     auto ite = ite_p;
     std::vector<GramNode *> son_ps;
     if (!LOrExp::create(son_ps, ite)) {

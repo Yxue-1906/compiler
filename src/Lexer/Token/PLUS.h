@@ -5,12 +5,11 @@
 #ifndef PARSER_PLUS_H
 #define PARSER_PLUS_H
 
-class PLUS : public Token {
+class PLUS : public Token<std::string> {
 private:
 public:
-    PLUS() : Token(Token::PLUS) {
-        setValue_p(new std::string("+"));
-    }
+    PLUS() : Token(TokenBase::PLUS,
+                   std::make_shared<std::string>("+")) {}
 
 public:
 };

@@ -6,12 +6,12 @@
 #define PARSER_DUPIDENTEXCEPTION_H
 
 #include "../MyException.h"
+#include "../../Lexer/TokenBase.h"
 
 class DupIdentException : public MyException {
-private:
 public:
-private:
-public:
+    DupIdentException(const TokenBase &token) : MyException(token, 'b') {}
+
     DupIdentException(int line_number) : MyException(line_number, 'b') {}
 
 };

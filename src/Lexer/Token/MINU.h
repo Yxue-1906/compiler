@@ -5,12 +5,11 @@
 #ifndef PARSER_MINU_H
 #define PARSER_MINU_H
 
-class MINU : public Token {
+class MINU : public Token<std::string> {
 private:
 public:
-    MINU() : Token(Token::MINU) {
-        setValue_p(new std::string("-"));
-    }
+    MINU() : Token(TokenBase::MINU,
+                   std::make_shared<std::string>("-")) {}
 
 public:
 };

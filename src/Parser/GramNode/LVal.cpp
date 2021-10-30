@@ -6,7 +6,7 @@
 #include "../TokenNode.h"
 #include "Exp.h"
 
-LVal::LVal(std::vector<GramNode *> sons) : GramNode(){
+LVal::LVal(std::vector<GramNode *> sons) : GramNode() {
     setGramName("LVal");
     setSons(std::move(sons));
 }
@@ -17,17 +17,17 @@ LVal::LVal(std::vector<GramNode *> sons) : GramNode(){
  * @param ite_p
  * @return
  */
-bool LVal::create(std::vector<GramNode *> &toAdd, std::vector<Token *>::iterator &ite_p) {
+bool LVal::create(std::vector<GramNode *> &toAdd, std::vector<TokenBase *>::iterator &ite_p) {
     auto ite = ite_p;
     std::vector<GramNode *> son_ps;
-    if (!TokenNode::create(son_ps, ite, Token::IDENFR)) {
+    if (!TokenNode::create(son_ps, ite, TokenBase::IDENFR)) {
         return false;
     }
-    for (; TokenNode::create(son_ps, ite, Token::LBRACK);) {
+    for (; TokenNode::create(son_ps, ite, TokenBase::LBRACK);) {
         if (!Exp::create(son_ps, ite)) {
             return false;
         }
-        if (!TokenNode::create(son_ps, ite, Token::RBRACK)) {
+        if (!TokenNode::create(son_ps, ite, TokenBase::RBRACK)) {
             return false;
         }
     }

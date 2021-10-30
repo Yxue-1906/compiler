@@ -8,18 +8,35 @@
 
 #include <exception>
 #include <string>
+#include "../Lexer/TokenBase.h"
 
-class MyException : public std::exception {
+class MyException : public std::exception, public MyOutput {
 private:
     const int lineNumber;
     const char type;
 
+protected:
+    std::string message;
+
 public:
-    MyException(int lineNumber, char type) : lineNumber(lineNumber), type(type) {}
+    MyException(const TokenBase &token, char type)
+            : std::exception(), MyOutput(), lineNumber(token.getLineNumber()), type(type) {}
 
-    std::string getBaseInfo();
+    MyException(int lineNumber, char type) : std::exception(), MyOutput(), lineNumber(lineNumber), type(type) {}
 
-    virtual std::string getInfo() = 0;
+    virtual void myOutput() override {
+        auto os = getOs();
+        (*os) << lineNumber << ' ' << type;
+#ifdef DEBUG
+        (*os) << ':' << message;
+#endif // DEBUG
+        (*os) << std::endl;
+    }
+
+    virtual void addMessage(std::string message) {
+        this->message.append(message);
+    }
+
 };
 
 

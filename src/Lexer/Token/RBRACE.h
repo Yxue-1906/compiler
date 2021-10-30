@@ -6,12 +6,11 @@
 #define PARSER_RBRACE_H
 
 
-class RBRACE : public Token {
+class RBRACE : public Token<std::string> {
 private:
 public:
-    RBRACE() : Token(Token::RBRACE) {
-        setValue_p(new std::string("}"));
-    }
+    RBRACE() : Token(TokenBase::RBRACE,
+                     std::make_shared<std::string>("}")) {}
 
 public:
 };

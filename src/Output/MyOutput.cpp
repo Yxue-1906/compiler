@@ -3,6 +3,7 @@
 //
 
 #include "MyOutput.h"
+#include "../Exception/MyException.h"
 
 std::ostream *MyOutput::os = nullptr;
 

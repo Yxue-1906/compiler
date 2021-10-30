@@ -9,22 +9,21 @@
 #include <map>
 #include <vector>
 #include <memory>
+#include <string>
+
 #include "../Output/MyOutput.h"
 
-class Token : public MyOutput {
+class TokenBase : public MyOutput {
 private:
     const std::string tokenName;
     const int tokenType;
 
-    static std::vector<Token *>::iterator end;
+    static std::vector<TokenBase *>::iterator end;
     static bool endSet;
 
     int lineNumber = -1;
     bool lineNumberSet = false;
 
-protected:
-    std::shared_ptr<void> value_p;
-    bool valueType;//
 public:
     static int IDENFR;
     static int INTCON;
@@ -67,43 +66,42 @@ public:
     static int COMMENT;
 
     static const std::map<int, std::string> type2Name;
-protected:
-    template<class T>
-    void setValue_p(T *value_p) {
-        if (!this->value_p) {
-            valueType = std::is_same<T, int>::value;
-            this->value_p = value_p;
-        }
-    }
 
 public:
-    Token(int);
+    TokenBase(int);
 
     std::string &getTokenName();
 
     int getTokenType();
 
-    template<class T>
-    typename std::enable_if<std::is_same<T, std::string *>::value, T>::type getValue() {
-        return static_cast<T>(value_p.get());
-    }
+    static void setEnd(std::vector<TokenBase *>::iterator);
 
-    static void setEnd(std::vector<Token *>::iterator);
+    static bool isTypeOf(std::vector<TokenBase *>::iterator &ite, int type);
 
-    static bool isTypeOf(std::vector<Token *>::iterator &ite, int type);
-
-    static bool isTypeOf(std::vector<Token *>::iterator &&ite, int type);
+    static bool isTypeOf(std::vector<TokenBase *>::iterator &&ite, int type);
 
     int setLineNumber(int lineNumber);
 
-    virtual void myOutput() override;
-
-    int getLineNumber();
-
-private:
-
-
+    int getLineNumber() const;
 };
 
+template<class T>
+class Token : public TokenBase {
+protected:
+    std::shared_ptr<T> const value_p;
+
+public:
+    Token(int type, std::shared_ptr<T> value_p)
+            : TokenBase(type), value_p(value_p) {}
+
+    std::shared_ptr<T> getValue_p() const {
+        return this->value_p;
+    }
+
+    virtual void myOutput() override {
+        std::ostream *os = getOs();
+        (*os) << getTokenName() << ' ' << *value_p << std::endl;
+    }
+};
 
 #endif //LEXER_TOKEN_H

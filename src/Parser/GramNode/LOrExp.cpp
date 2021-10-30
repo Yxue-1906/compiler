@@ -17,7 +17,7 @@ LOrExp::LOrExp(std::vector<GramNode *> sons) : GramNode() {
  * @param ite_p
  * @return
  */
-bool LOrExp::create(std::vector<GramNode *> &toAdd, std::vector<Token *>::iterator &ite_p) {
+bool LOrExp::create(std::vector<GramNode *> &toAdd, std::vector<TokenBase *>::iterator &ite_p) {
     auto ite = ite_p;
     std::vector<GramNode *> son_ps;
     std::swap(toAdd, son_ps);
@@ -25,7 +25,7 @@ bool LOrExp::create(std::vector<GramNode *> &toAdd, std::vector<Token *>::iterat
         return false;
     }
     toAdd.push_back(new LOrExp(son_ps));
-    if (TokenNode::create(toAdd, ite, Token::OR)) {
+    if (TokenNode::create(toAdd, ite, TokenBase::OR)) {
         if (!LOrExp::create(toAdd, ite)) {
             return false;
         }

@@ -16,10 +16,10 @@ BType::BType(std::vector<GramNode *> sons) : GramNode() {
  * @param ite_p
  * @return
  */
-bool BType::create(std::vector<GramNode *> &toAdd, std::vector<Token *>::iterator &ite_p) {
+bool BType::create(std::vector<GramNode *> &toAdd, std::vector<TokenBase *>::iterator &ite_p) {
     auto ite = ite_p;
     std::vector<GramNode *> son_ps;
-    if (!TokenNode::create(son_ps, ite, Token::INTTK))
+    if (!TokenNode::create(son_ps, ite, TokenBase::INTTK))
         return false;
     ite_p = ite;
     toAdd.push_back(new BType(son_ps));

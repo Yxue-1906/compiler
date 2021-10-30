@@ -4,7 +4,7 @@
 
 #include "Parser.h"
 
-Parser::Parser(std::vector<Token *> &tokenList) : tokenList(tokenList) {
+Parser::Parser(std::vector<TokenBase *> &tokenList) : tokenList(tokenList) {
     auto begin = tokenList.begin();
     std::vector<GramNode *> tmp;
     if (CompUnit::create(tmp, begin)) {

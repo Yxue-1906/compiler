@@ -17,7 +17,7 @@ RelExp::RelExp(std::vector<GramNode *> sons) : GramNode() {
  * @param ite_p
  * @return
  */
-bool RelExp::create(std::vector<GramNode *> &toAdd, std::vector<Token *>::iterator &ite_p) {
+bool RelExp::create(std::vector<GramNode *> &toAdd, std::vector<TokenBase *>::iterator &ite_p) {
     auto ite = ite_p;
     std::vector<GramNode *> son_ps;
     std::swap(toAdd, son_ps);
@@ -25,10 +25,10 @@ bool RelExp::create(std::vector<GramNode *> &toAdd, std::vector<Token *>::iterat
         return false;
     }
     toAdd.push_back(new RelExp(son_ps));
-    for (; TokenNode::create(toAdd, ite, Token::LEQ) ||
-           TokenNode::create(toAdd, ite, Token::GEQ) ||
-           TokenNode::create(toAdd, ite, Token::LSS) ||
-           TokenNode::create(toAdd, ite, Token::GRE);) {
+    for (; TokenNode::create(toAdd, ite, TokenBase::LEQ) ||
+           TokenNode::create(toAdd, ite, TokenBase::GEQ) ||
+           TokenNode::create(toAdd, ite, TokenBase::LSS) ||
+           TokenNode::create(toAdd, ite, TokenBase::GRE);) {
         if (!RelExp::create(toAdd, ite)) {
             return false;
         }

@@ -6,12 +6,11 @@
 #define PARSER_INTCON_H
 
 
-class INTCON : public Token {
+class INTCON : public Token<int> {
 private:
 public:
-    INTCON(int value) : Token(Token::INTCON) {
-        setValue_p(new int{value});
-    }
+    INTCON(int value) : Token(TokenBase::INTCON,
+                              std::make_shared<int>(value)) {}
 
 public:
 };

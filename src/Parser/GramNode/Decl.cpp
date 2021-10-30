@@ -17,10 +17,10 @@ Decl::Decl(std::vector<GramNode *> sons) : GramNode() {
  * @param ite_p
  * @return
  */
-bool Decl::create(std::vector<GramNode *> &toAdd, std::vector<Token *>::iterator &ite_p) {
+bool Decl::create(std::vector<GramNode *> &toAdd, std::vector<TokenBase *>::iterator &ite_p) {
     auto ite = ite_p;
     std::vector<GramNode *> son_ps;
-    if (Token::isTypeOf(ite, Token::CONSTTK)) {
+    if (TokenBase::isTypeOf(ite, TokenBase::CONSTTK)) {
         if (!ConstDecl::create(son_ps, ite)) {
             return false;
         }

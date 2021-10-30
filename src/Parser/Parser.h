@@ -15,12 +15,12 @@ public:
 
 private:
     // private attributes
-    std::vector<Token *> &tokenList;
+    std::vector<TokenBase *> &tokenList;
     GramNode *root;
 
 public:
     // public methods
-    Parser(std::vector<Token *> &);
+    Parser(std::vector<TokenBase *> &);
 
     void print();
 

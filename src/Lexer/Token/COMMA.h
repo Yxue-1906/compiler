@@ -6,12 +6,11 @@
 #define PARSER_COMMA_H
 
 
-class COMMA : public Token {
+class COMMA : public Token<std::string> {
 private:
 public:
-    COMMA() : Token(Token::COMMA) {
-        setValue_p(new std::string(","));
-    }
+    COMMA() : Token(TokenBase::COMMA,
+                    std::make_shared<std::string>("&&")) {}
 
 public:
 };

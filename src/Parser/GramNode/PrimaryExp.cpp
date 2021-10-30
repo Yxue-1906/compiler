@@ -19,19 +19,19 @@ PrimaryExp::PrimaryExp(std::vector<GramNode *> sons) : GramNode() {
  * @param ite_p
  * @return
  */
-bool PrimaryExp::create(std::vector<GramNode *> &toAdd, std::vector<Token *>::iterator &ite_p) {
+bool PrimaryExp::create(std::vector<GramNode *> &toAdd, std::vector<TokenBase *>::iterator &ite_p) {
     auto ite = ite_p;
     std::vector<GramNode *> son_ps;
     auto detectNumber = [&ite]() -> bool {
-        if (Token::isTypeOf(ite, Token::INTCON))
+        if (TokenBase::isTypeOf(ite, TokenBase::INTCON))
             return true;
         return false;
     };
-    if (TokenNode::create(son_ps, ite, Token::LPARENT)) {
+    if (TokenNode::create(son_ps, ite, TokenBase::LPARENT)) {
         if (!Exp::create(son_ps, ite)) {
             return false;
         }
-        if (!TokenNode::create(son_ps, ite, Token::RPARENT)) {
+        if (!TokenNode::create(son_ps, ite, TokenBase::RPARENT)) {
             return false;
         }
         ite_p = ite;

@@ -8,7 +8,7 @@
 #include "../GramNode.h"
 
 
-class RelExp : public GramNode{
+class RelExp : public GramNode {
 private:
 
 public:
@@ -17,7 +17,7 @@ private:
     RelExp(std::vector<GramNode *>);
 
 public:
-    static bool create(std::vector<GramNode *> &, std::vector<Token *>::iterator &);
+    static bool create(std::vector<GramNode *> &, std::vector<TokenBase *>::iterator &);
 
 };
 

@@ -17,12 +17,12 @@ BlockItem::BlockItem(std::vector<GramNode *> sons) : GramNode() {
  * @param ite_p
  * @return
  */
-bool BlockItem::create(std::vector<GramNode *> &toAdd, std::vector<Token *>::iterator &ite_p) {
+bool BlockItem::create(std::vector<GramNode *> &toAdd, std::vector<TokenBase *>::iterator &ite_p) {
     auto ite = ite_p;
     std::vector<GramNode *> son_ps;
     auto detectDecl = [&ite]() -> bool {
-        if (Token::isTypeOf(ite, Token::CONSTTK) ||
-            Token::isTypeOf(ite, Token::INTTK))
+        if (TokenBase::isTypeOf(ite, TokenBase::CONSTTK) ||
+            TokenBase::isTypeOf(ite, TokenBase::INTTK))
             return true;
         return false;
     };

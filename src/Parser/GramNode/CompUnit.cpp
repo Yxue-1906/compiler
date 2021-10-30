@@ -18,19 +18,19 @@ CompUnit::CompUnit(std::vector<GramNode *> sons) : GramNode() {
  * @param ite_p
  * @return
  */
-bool CompUnit::create(std::vector<GramNode *> &toAdd, std::vector<Token *>::iterator &ite_p) {
+bool CompUnit::create(std::vector<GramNode *> &toAdd, std::vector<TokenBase *>::iterator &ite_p) {
     auto ite = ite_p;
     std::vector<GramNode *> son_ps;
     auto detectDecl = [&ite]() -> bool {
-        if (Token::isTypeOf(ite, Token::CONSTTK))return true;
-        if (!Token::isTypeOf(ite + 1, Token::IDENFR))return false;
-        if (Token::isTypeOf(ite + 2, Token::LPARENT))return false;
+        if (TokenBase::isTypeOf(ite, TokenBase::CONSTTK))return true;
+        if (!TokenBase::isTypeOf(ite + 1, TokenBase::IDENFR))return false;
+        if (TokenBase::isTypeOf(ite + 2, TokenBase::LPARENT))return false;
         return true;
     };
     auto detectFuncDef = [&ite]() -> bool {
-        if (Token::isTypeOf(ite, Token::VOIDTK))return true;
-        if (!Token::isTypeOf(ite + 1, Token::IDENFR))return false;
-        if (!Token::isTypeOf(ite + 2, Token::LPARENT))return false;
+        if (TokenBase::isTypeOf(ite, TokenBase::VOIDTK))return true;
+        if (!TokenBase::isTypeOf(ite + 1, TokenBase::IDENFR))return false;
+        if (!TokenBase::isTypeOf(ite + 2, TokenBase::LPARENT))return false;
         return true;
     };
     for (; detectDecl() && Decl::create(son_ps, ite););

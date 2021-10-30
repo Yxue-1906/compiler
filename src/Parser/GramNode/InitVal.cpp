@@ -17,19 +17,19 @@ InitVal::InitVal(std::vector<GramNode *> sons) : GramNode() {
  * @param ite_p
  * @return
  */
-bool InitVal::create(std::vector<GramNode *> &toAdd, std::vector<Token *>::iterator &ite_p) {
+bool InitVal::create(std::vector<GramNode *> &toAdd, std::vector<TokenBase *>::iterator &ite_p) {
     auto ite = ite_p;
     std::vector<GramNode *> son_ps;
-    if (TokenNode::create(son_ps, ite, Token::LBRACE)) {
+    if (TokenNode::create(son_ps, ite, TokenBase::LBRACE)) {
         if (!InitVal::create(son_ps, ite)) {
             return false;
         }
-        for (; TokenNode::create(son_ps, ite, Token::COMMA);) {
+        for (; TokenNode::create(son_ps, ite, TokenBase::COMMA);) {
             if (!InitVal::create(son_ps, ite)) {
                 return false;
             }
         }
-        if (!TokenNode::create(son_ps, ite, Token::RBRACE)) {
+        if (!TokenNode::create(son_ps, ite, TokenBase::RBRACE)) {
             return false;
         }
         ite_p = ite;

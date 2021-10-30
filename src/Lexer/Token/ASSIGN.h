@@ -6,12 +6,11 @@
 #define PARSER_ASSIGN_H
 
 
-class ASSIGN : public Token {
+class ASSIGN : public Token<std::string> {
 private:
 public:
-    ASSIGN() : Token(Token::ASSIGN) {
-        setValue_p(new std::string("="));
-    }
+    ASSIGN() : Token(TokenBase::ASSIGN,
+                     std::make_shared<std::string>("=")) {}
 
 public:
 };

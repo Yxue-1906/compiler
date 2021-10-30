@@ -4,9 +4,10 @@
 
 #ifndef PARSER_BLOCK_H
 #define PARSER_BLOCK_H
+
 #include "../GramNode.h"
 
-class Block: public GramNode {
+class Block : public GramNode {
 private:
 
 public:
@@ -15,7 +16,7 @@ private:
     Block(std::vector<GramNode *>);
 
 public:
-    static bool create(std::vector<GramNode *> &, std::vector<Token *>::iterator &);
+    static bool create(std::vector<GramNode *> &, std::vector<TokenBase *>::iterator &);
 
 };
 

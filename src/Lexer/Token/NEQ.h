@@ -6,12 +6,11 @@
 #define PARSER_NEQ_H
 
 
-class NEQ : public Token {
+class NEQ : public Token<std::string> {
 private:
 public:
-    NEQ() : Token(Token::NEQ) {
-        this->setValue_p(new std::string("!="));
-    }
+    NEQ() : Token(TokenBase::NEQ,
+                  std::make_shared<std::string>("!=")) {}
 
 public:
 };

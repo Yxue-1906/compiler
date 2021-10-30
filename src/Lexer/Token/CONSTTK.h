@@ -6,12 +6,11 @@
 #define PARSER_CONSTTK_H
 
 
-class CONSTTK : public Token {
+class CONSTTK : public Token<std::string> {
 private:
 public:
-    CONSTTK() : Token(Token::CONSTTK) {
-        setValue_p(new std::string("const"));
-    }
+    CONSTTK() : Token(TokenBase::CONSTTK,
+                      std::make_shared<std::string>("const")) {}
 
 public:
 };

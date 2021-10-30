@@ -29,38 +29,38 @@ Stmt::Stmt(std::vector<GramNode *> sons) : GramNode() {
  * @param ite_p
  * @return
  */
-bool Stmt::create(std::vector<GramNode *> &toAdd, std::vector<Token *>::iterator &ite_p) {
+bool Stmt::create(std::vector<GramNode *> &toAdd, std::vector<TokenBase *>::iterator &ite_p) {
     auto ite = ite_p;
     std::vector<GramNode *> son_ps;
     auto detectExp = [&ite]() -> bool {
-        if (!Token::isTypeOf(ite, Token::IDENFR))
+        if (!TokenBase::isTypeOf(ite, TokenBase::IDENFR))
             return true;
         int index = 1;
-        for (int leftLBrackets = 0; leftLBrackets != 0 || Token::isTypeOf(ite + index, Token::LBRACK);) {
-            if (Token::isTypeOf(ite + index, Token::RBRACK))
+        for (int leftLBrackets = 0; leftLBrackets != 0 || TokenBase::isTypeOf(ite + index, TokenBase::LBRACK);) {
+            if (TokenBase::isTypeOf(ite + index, TokenBase::RBRACK))
                 leftLBrackets--;
-            else if (Token::isTypeOf(ite + index, Token::LBRACK))
+            else if (TokenBase::isTypeOf(ite + index, TokenBase::LBRACK))
                 leftLBrackets++;
             index++;
         }
-        if (Token::isTypeOf(ite + index, Token::ASSIGN))
+        if (TokenBase::isTypeOf(ite + index, TokenBase::ASSIGN))
             return false;
         return true;
     };
-    if (TokenNode::create(son_ps, ite, Token::IFTK)) {
-        if (!TokenNode::create(son_ps, ite, Token::LPARENT)) {
+    if (TokenNode::create(son_ps, ite, TokenBase::IFTK)) {
+        if (!TokenNode::create(son_ps, ite, TokenBase::LPARENT)) {
             return false;
         }
         if (!Cond::create(son_ps, ite)) {
             return false;
         }
-        if (!TokenNode::create(son_ps, ite, Token::RPARENT)) {
+        if (!TokenNode::create(son_ps, ite, TokenBase::RPARENT)) {
             return false;
         }
         if (!Stmt::create(son_ps, ite)) {
             return false;
         }
-        if (TokenNode::create(son_ps, ite, Token::ELSETK)) {
+        if (TokenNode::create(son_ps, ite, TokenBase::ELSETK)) {
             if (!Stmt::create(son_ps, ite)) {
                 return false;
             }
@@ -68,14 +68,14 @@ bool Stmt::create(std::vector<GramNode *> &toAdd, std::vector<Token *>::iterator
         ite_p = ite;
         toAdd.push_back(new Stmt(son_ps));
         return true;
-    } else if (TokenNode::create(son_ps, ite, Token::WHILETK)) {
-        if (!TokenNode::create(son_ps, ite, Token::LPARENT)) {
+    } else if (TokenNode::create(son_ps, ite, TokenBase::WHILETK)) {
+        if (!TokenNode::create(son_ps, ite, TokenBase::LPARENT)) {
             return false;
         }
         if (!Cond::create(son_ps, ite)) {
             return false;
         }
-        if (!TokenNode::create(son_ps, ite, Token::RPARENT)) {
+        if (!TokenNode::create(son_ps, ite, TokenBase::RPARENT)) {
             return false;
         }
         if (!Stmt::create(son_ps, ite)) {
@@ -84,57 +84,58 @@ bool Stmt::create(std::vector<GramNode *> &toAdd, std::vector<Token *>::iterator
         ite_p = ite;
         toAdd.push_back(new Stmt(son_ps));
         return true;
-    } else if (TokenNode::create(son_ps, ite, Token::BREAKTK) || TokenNode::create(son_ps, ite, Token::CONTINUETK)) {
-        if (!TokenNode::create(son_ps, ite, Token::SEMICN)) {
+    } else if (TokenNode::create(son_ps, ite, TokenBase::BREAKTK) ||
+               TokenNode::create(son_ps, ite, TokenBase::CONTINUETK)) {
+        if (!TokenNode::create(son_ps, ite, TokenBase::SEMICN)) {
             return false;
         }
         ite_p = ite;
         toAdd.push_back(new Stmt(son_ps));
         return true;
-    } else if (TokenNode::create(son_ps, ite, Token::RETURNTK)) {
-        if (!Token::isTypeOf(ite, Token::SEMICN))
+    } else if (TokenNode::create(son_ps, ite, TokenBase::RETURNTK)) {
+        if (!TokenBase::isTypeOf(ite, TokenBase::SEMICN))
             if (!Exp::create(son_ps, ite))
                 return false;
-        if (!TokenNode::create(son_ps, ite, Token::SEMICN)) {
+        if (!TokenNode::create(son_ps, ite, TokenBase::SEMICN)) {
             return false;
         }
         ite_p = ite;
         toAdd.push_back(new Stmt(son_ps));
         return true;
-    } else if (TokenNode::create(son_ps, ite, Token::PRINTFTK)) {
-        if (!TokenNode::create(son_ps, ite, Token::LPARENT)) {
+    } else if (TokenNode::create(son_ps, ite, TokenBase::PRINTFTK)) {
+        if (!TokenNode::create(son_ps, ite, TokenBase::LPARENT)) {
             return false;
         }
-        if (!TokenNode::create(son_ps, ite, Token::STRCON)) {
+        if (!TokenNode::create(son_ps, ite, TokenBase::STRCON)) {
             return false;
         }
-        for (; TokenNode::create(son_ps, ite, Token::COMMA);) {
+        for (; TokenNode::create(son_ps, ite, TokenBase::COMMA);) {
             if (!Exp::create(son_ps, ite)) {
                 return false;
             }
         }
-        if (!TokenNode::create(son_ps, ite, Token::RPARENT)) {
+        if (!TokenNode::create(son_ps, ite, TokenBase::RPARENT)) {
             return false;
         }
-        if (!TokenNode::create(son_ps, ite, Token::SEMICN)) {
+        if (!TokenNode::create(son_ps, ite, TokenBase::SEMICN)) {
             return false;
         }
         ite_p = ite;
         toAdd.push_back(new Stmt(son_ps));
         return true;
-    } else if (Token::isTypeOf(ite, Token::LBRACE)) {
+    } else if (TokenBase::isTypeOf(ite, TokenBase::LBRACE)) {
         if (!Block::create(son_ps, ite)) {
             return false;
         }
         ite_p = ite;
         toAdd.push_back(new Stmt(son_ps));
         return true;
-    } else if (Token::isTypeOf(ite, Token::IDENFR) &&
-               !Token::isTypeOf(ite + 1, Token::LPARENT)) {
+    } else if (TokenBase::isTypeOf(ite, TokenBase::IDENFR) &&
+               !TokenBase::isTypeOf(ite + 1, TokenBase::LPARENT)) {
         if (detectExp()) {
             if (!Exp::create(son_ps, ite))
                 return false;
-            if (!TokenNode::create(son_ps, ite, Token::SEMICN))
+            if (!TokenNode::create(son_ps, ite, TokenBase::SEMICN))
                 return false;
             ite_p = ite;
             toAdd.push_back(new Stmt(son_ps));
@@ -142,16 +143,16 @@ bool Stmt::create(std::vector<GramNode *> &toAdd, std::vector<Token *>::iterator
         } else {
             if (!LVal::create(son_ps, ite))
                 return false;
-            if (!TokenNode::create(son_ps, ite, Token::ASSIGN))
+            if (!TokenNode::create(son_ps, ite, TokenBase::ASSIGN))
                 return false;
-            if (TokenNode::create(son_ps, ite, Token::GETINTTK)) {
-                if (!TokenNode::create(son_ps, ite, Token::LPARENT)) {
+            if (TokenNode::create(son_ps, ite, TokenBase::GETINTTK)) {
+                if (!TokenNode::create(son_ps, ite, TokenBase::LPARENT)) {
                     return false;
                 }
-                if (!TokenNode::create(son_ps, ite, Token::RPARENT)) {
+                if (!TokenNode::create(son_ps, ite, TokenBase::RPARENT)) {
                     return false;
                 }
-                if (!TokenNode::create(son_ps, ite, Token::SEMICN)) {
+                if (!TokenNode::create(son_ps, ite, TokenBase::SEMICN)) {
                     return false;
                 }
                 ite_p = ite;
@@ -159,8 +160,8 @@ bool Stmt::create(std::vector<GramNode *> &toAdd, std::vector<Token *>::iterator
                 return true;
             } else {
                 Exp::create(son_ps, ite);
-                if (Token::isTypeOf(ite, Token::SEMICN)) {
-                    TokenNode::create(son_ps, ite, Token::SEMICN);
+                if (TokenBase::isTypeOf(ite, TokenBase::SEMICN)) {
+                    TokenNode::create(son_ps, ite, TokenBase::SEMICN);
                     ite_p = ite;
                     toAdd.push_back(new Stmt(son_ps));
                     return true;
@@ -169,10 +170,10 @@ bool Stmt::create(std::vector<GramNode *> &toAdd, std::vector<Token *>::iterator
             }
         }
     } else {
-        if (!Token::isTypeOf(ite, Token::SEMICN))
+        if (!TokenBase::isTypeOf(ite, TokenBase::SEMICN))
             if (!Exp::create(son_ps, ite))
                 return false;
-        if (!TokenNode::create(son_ps, ite, Token::SEMICN)) {
+        if (!TokenNode::create(son_ps, ite, TokenBase::SEMICN)) {
             return false;
         }
         ite_p = ite;

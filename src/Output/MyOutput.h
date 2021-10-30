@@ -7,13 +7,17 @@
 
 #include "iostream"
 #include "fstream"
-#include "../Exception/MyException.h"
+
 
 class MyOutput {
 public:
 private:
     static std::ostream *os;
 public:
+    MyOutput() = default;
+
+    ~MyOutput() = default;
+
     static void setOutput(std::string &);
 
     static void setOutput(std::ostream *);

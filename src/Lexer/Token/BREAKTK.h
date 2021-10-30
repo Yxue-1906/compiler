@@ -6,12 +6,11 @@
 #define PARSER_BREAKTK_H
 
 
-class BREAKTK : public Token {
+class BREAKTK : public Token<std::string> {
 private:
 public:
-    BREAKTK() : Token(Token::BREAKTK) {
-        setValue_p(new std::string("break"));
-    }
+    BREAKTK() : Token(TokenBase::BREAKTK,
+                      std::make_shared<std::string>("break")) {}
 
 public:
 };

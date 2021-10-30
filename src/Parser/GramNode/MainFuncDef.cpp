@@ -6,25 +6,25 @@
 #include "../TokenNode.h"
 #include "Block.h"
 
-MainFuncDef::MainFuncDef(std::vector<GramNode *> sons) : GramNode(){
+MainFuncDef::MainFuncDef(std::vector<GramNode *> sons) : GramNode() {
     setGramName("MainFuncDef");
     setSons(std::move(sons));
 }
 
-bool MainFuncDef::create(std::vector<GramNode *> &toAdd, std::vector<Token *>::iterator &ite_p) {
+bool MainFuncDef::create(std::vector<GramNode *> &toAdd, std::vector<TokenBase *>::iterator &ite_p) {
     auto ite = ite_p;
     std::vector<GramNode *> son_ps;
     GramNode *nexNode;
-    if (!TokenNode::create(son_ps, ite, Token::INTTK)) {
+    if (!TokenNode::create(son_ps, ite, TokenBase::INTTK)) {
         return false;
     }
-    if (!TokenNode::create(son_ps, ite, Token::MAINTK)) {
+    if (!TokenNode::create(son_ps, ite, TokenBase::MAINTK)) {
         return false;
     }
-    if (!TokenNode::create(son_ps, ite, Token::LPARENT)) {
+    if (!TokenNode::create(son_ps, ite, TokenBase::LPARENT)) {
         return false;
     }
-    if (!TokenNode::create(son_ps, ite, Token::RPARENT)) {
+    if (!TokenNode::create(son_ps, ite, TokenBase::RPARENT)) {
         return false;
     }
     if (!Block::create(son_ps, ite)) {

@@ -17,14 +17,14 @@ FuncRParams::FuncRParams(std::vector<GramNode *> sons) : GramNode() {
  * @param ite_p
  * @return
  */
-bool FuncRParams::create(std::vector<GramNode *> &toAdd, std::vector<Token *>::iterator &ite_p) {
+bool FuncRParams::create(std::vector<GramNode *> &toAdd, std::vector<TokenBase *>::iterator &ite_p) {
     auto ite = ite_p;
     std::vector<GramNode *> son_ps;
 
     if (!Exp::create(son_ps, ite)) {
         return false;
     }
-    for (; TokenNode::create(son_ps, ite, Token::COMMA);) {
+    for (; TokenNode::create(son_ps, ite, TokenBase::COMMA);) {
         if (!Exp::create(son_ps, ite)) {
             return false;
         }

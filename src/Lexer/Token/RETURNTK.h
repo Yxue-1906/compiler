@@ -6,12 +6,11 @@
 #define PARSER_RETURNTK_H
 
 
-class RETURNTK : public Token {
+class RETURNTK : public Token<std::string> {
 private:
 public:
-    RETURNTK() : Token(Token::RETURNTK) {
-        setValue_p(new std::string("return"));
-    }
+    RETURNTK() : Token(TokenBase::RETURNTK,
+                       std::make_shared<std::string>("return")) {}
 
 public:
 };

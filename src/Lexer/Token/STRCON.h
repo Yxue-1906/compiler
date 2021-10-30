@@ -8,13 +8,10 @@
 #define PARSER_STRCON_H
 
 
-class STRCON : public Token {
-private:
-    const int count = 0;
+class STRCON : public Token<std::string> {
 public:
-    STRCON(std::string value, int count) : Token(Token::STRCON), count(count) {
-        setValue_p(new std::string(std::move(value)));
-    }
+    STRCON(const std::string &value)
+            : Token(TokenBase::STRCON, std::make_shared<std::string>(value)) {}
 
 public:
 };

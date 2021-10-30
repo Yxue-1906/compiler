@@ -8,7 +8,7 @@
 #include <fstream>
 #include <functional>
 #include <vector>
-#include "Token.h"
+#include "TokenBase.h"
 #include "Token/NEQ.h"
 #include "Token/NOT.h"
 #include "Token/LPARENT.h"
@@ -55,7 +55,7 @@ public:
 private:
     static const int LINE_COMMENT = 0;
     static const int BLOCK_COMMENT = 1;
-    std::vector<Token *> tokenList;
+    std::vector<TokenBase *> tokenList;
     bool inited = false;
 
     std::ifstream ifs;
@@ -70,13 +70,13 @@ public:
 
     ~Lexer();
 
-    std::vector<Token *> &getList();
+    std::vector<TokenBase *> &getList();
 
 private:
     //bool isWhitespace(typeof(std::string::iterator));
 
 
-    bool safeLookAhead(const std::string&, const std::function<bool(std::string::iterator)>&);
+    bool safeLookAhead(const std::string &, const std::function<bool(std::string::iterator)> &);
 
     bool isAlNum(int);
 
@@ -84,7 +84,7 @@ private:
 
     bool jumpComment(int type);
 
-    Token *getSymbol();
+    TokenBase *getSymbol();
 
     IDENFR *getIdent();
 

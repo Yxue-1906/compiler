@@ -17,7 +17,7 @@ EqExp::EqExp(std::vector<GramNode *> sons) : GramNode() {
  * @param ite_p
  * @return
  */
-bool EqExp::create(std::vector<GramNode *> &toAdd, std::vector<Token *>::iterator &ite_p) {
+bool EqExp::create(std::vector<GramNode *> &toAdd, std::vector<TokenBase *>::iterator &ite_p) {
     auto ite = ite_p;
     std::vector<GramNode *> son_ps;
     std::swap(toAdd, son_ps);
@@ -25,8 +25,8 @@ bool EqExp::create(std::vector<GramNode *> &toAdd, std::vector<Token *>::iterato
         return false;
     }
     toAdd.push_back(new EqExp(son_ps));
-    if (TokenNode::create(toAdd, ite, Token::EQL) ||
-        TokenNode::create(toAdd, ite, Token::NEQ)) {
+    if (TokenNode::create(toAdd, ite, TokenBase::EQL) ||
+        TokenNode::create(toAdd, ite, TokenBase::NEQ)) {
         if (!EqExp::create(toAdd, ite)) {
             return false;
         }

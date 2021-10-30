@@ -16,9 +16,9 @@ private:
     Exp(std::vector<GramNode *>);
 
 public:
-    static bool create(std::vector<GramNode *> &, std::vector<Token *>::iterator &);
+    static bool create(std::vector<GramNode *> &, std::vector<TokenBase *>::iterator &);
 
-    static bool create(std::vector<GramNode *> &, std::vector<Token *>::iterator &, LVal *);
+    static bool create(std::vector<GramNode *> &, std::vector<TokenBase *>::iterator &, LVal *);
 };
 
 

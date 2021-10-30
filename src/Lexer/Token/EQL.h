@@ -6,12 +6,11 @@
 #define PARSER_EQL_H
 
 
-class EQL : public Token {
+class EQL : public Token<std::string> {
 private:
 public:
-    EQL() : Token(Token::EQL) {
-        setValue_p(new std::string("=="));
-    }
+    EQL() : Token(TokenBase::EQL,
+                  std::make_shared<std::string>("==")) {}
 
 public:
 };

@@ -6,12 +6,11 @@
 #define PARSER_MAINTK_H
 
 
-class MAINTK : public Token {
+class MAINTK : public Token<std::string> {
 private:
 public:
-    MAINTK() : Token(Token::MAINTK) {
-        setValue_p(new std::string("main"));
-    }
+    MAINTK() : Token(TokenBase::MAINTK,
+                     std::make_shared<std::string>("main")) {}
 
 public:
 };

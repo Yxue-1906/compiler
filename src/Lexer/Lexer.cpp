@@ -26,7 +26,7 @@ Lexer::~Lexer() {
     this->ifs.close();
 }
 
-std::vector<Token *> &Lexer::getList() {
+std::vector<TokenBase *> &Lexer::getList() {
     if (inited)return this->tokenList;
     else {
         std::cout << "lexer has not inited!" << std::endl;
@@ -104,7 +104,7 @@ bool Lexer::jumpComment(int type) {
     return false;
 }
 
-Token *Lexer::getSymbol() {
+TokenBase *Lexer::getSymbol() {
     auto generalTailJudge = [this](std::string::iterator ite) {
         if (ite == now_line.end() || !isAlNum(*ite))return true;
         return false;
@@ -248,8 +248,8 @@ STRCON *Lexer::getStr() {
         ++now_char_p;
         if (now_char_p == now_line.end())throw MyException(-1, 'g');
     }
-    if (!valid)throw IllegalCharException(line_count).addMessage(new std::string(str));
-    return new STRCON(str, count);
+    if (!valid)throw IllegalCharException(line_count, str);
+    return new STRCON(str);
 }
 
 
@@ -257,17 +257,18 @@ void Lexer::init() {
     while (true) {
         if (!Lexer::jumpSpace())break;
         try {
-            Token *nextSym = nullptr;
+            TokenBase *nextSym = nullptr;
             if ((nextSym = getSymbol()) || (nextSym = getIdent()) ||
                 (nextSym = getConst()) || (nextSym = getStr())) {
                 this->tokenList.push_back(nextSym);
                 nextSym->setLineNumber(line_count);
             } else break;
-        } catch (MyException e) {
+        }
+        catch (MyException e) {
             //e.printStack();
             std::cout << "error!" << std::endl;
         }
     }
     inited = true;
-    Token::setEnd(this->tokenList.end());
+    TokenBase::setEnd(this->tokenList.end());
 }

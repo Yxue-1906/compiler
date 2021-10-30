@@ -10,18 +10,18 @@
 
 class TokenNode : public GramNode {
 private:
-    Token &token;
+    TokenBase &token;
 public:
 
 
 private:
-    TokenNode(Token &);
+    TokenNode(TokenBase &);
 
 public:
 
     virtual void myOutput() override;
 
-    static bool create(std::vector<GramNode *> &, std::vector<Token *>::iterator &, int);
+    static bool create(std::vector<GramNode *> &, std::vector<TokenBase *>::iterator &, int);
 };
 
 

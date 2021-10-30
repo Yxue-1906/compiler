@@ -6,12 +6,11 @@
 #define PARSER_WHILETK_H
 
 
-class WHILETK : public Token {
+class WHILETK : public Token<std::string> {
 private:
 public:
-    WHILETK() : Token(Token::WHILETK) {
-        setValue_p(new std::string("while"));
-    }
+    WHILETK() : Token(TokenBase::WHILETK,
+                      std::make_shared<std::string>("while")) {}
 
 public:
 };

@@ -6,12 +6,11 @@
 #define PARSER_LSS_H
 
 
-class LSS : public Token {
+class LSS : public Token<std::string> {
 private:
 public:
-    LSS() : Token(Token::LSS) {
-        setValue_p(new std::string("<"));
-    }
+    LSS() : Token(TokenBase::LSS,
+                  std::make_shared<std::string>("<")) {}
 
 public:
 };

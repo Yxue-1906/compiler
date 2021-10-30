@@ -6,12 +6,11 @@
 #define PARSER_LBRACK_H
 
 
-class LBRACK : public Token {
+class LBRACK : public Token<std::string> {
 private:
 public:
-    LBRACK() : Token(Token::LBRACK) {
-        setValue_p(new std::string("["));
-    }
+    LBRACK() : Token(TokenBase::LBRACK,
+                     std::make_shared<std::string>("[")) {}
 
 public:
 };

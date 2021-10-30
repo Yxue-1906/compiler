@@ -6,12 +6,11 @@
 #define PARSER_INTTK_H
 
 
-class INTTK : public Token {
+class INTTK : public Token<std::string> {
 private:
 public:
-    INTTK() : Token(Token::INTTK) {
-        setValue_p(new std::string("int"));
-    }
+    INTTK() : Token(TokenBase::INTTK,
+                    std::make_shared<std::string>("int")) {}
 
 public:
 };

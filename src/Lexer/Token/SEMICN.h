@@ -6,12 +6,11 @@
 #define PARSER_SEMICN_H
 
 
-class SEMICN : public Token {
+class SEMICN : public Token<std::string> {
 private:
 public:
-    SEMICN() : Token(Token::SEMICN) {
-        setValue_p(new std::string(";"));
-    }
+    SEMICN() : Token(TokenBase::SEMICN,
+                     std::make_shared<std::string>(";")) {}
 
 public:
 };

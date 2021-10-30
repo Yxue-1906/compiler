@@ -17,7 +17,7 @@ MulExp::MulExp(std::vector<GramNode *> sons) : GramNode() {
  * @param ite_p
  * @return
  */
-bool MulExp::create(std::vector<GramNode *> &toAdd, std::vector<Token *>::iterator &ite_p) {
+bool MulExp::create(std::vector<GramNode *> &toAdd, std::vector<TokenBase *>::iterator &ite_p) {
     auto ite = ite_p;
     std::vector<GramNode *> son_ps;
     std::swap(toAdd, son_ps);
@@ -25,9 +25,9 @@ bool MulExp::create(std::vector<GramNode *> &toAdd, std::vector<Token *>::iterat
         return false;
     }
     toAdd.push_back(new MulExp(son_ps));
-    if (TokenNode::create(toAdd, ite, Token::MULT) ||
-        TokenNode::create(toAdd, ite, Token::DIV) ||
-        TokenNode::create(toAdd, ite, Token::MOD)) {
+    if (TokenNode::create(toAdd, ite, TokenBase::MULT) ||
+        TokenNode::create(toAdd, ite, TokenBase::DIV) ||
+        TokenNode::create(toAdd, ite, TokenBase::MOD)) {
         if (!MulExp::create(toAdd, ite)) {
             return false;
         }

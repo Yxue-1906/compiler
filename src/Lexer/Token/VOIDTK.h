@@ -6,12 +6,11 @@
 #define PARSER_VOIDTK_H
 
 
-class VOIDTK : public Token {
+class VOIDTK : public Token<std::string> {
 private:
 public:
-    VOIDTK() : Token(Token::VOIDTK) {
-        setValue_p(new std::string("void"));
-    }
+    VOIDTK() : Token(TokenBase::VOIDTK,
+                     std::make_shared<std::string>("void")) {}
 
 public:
     \

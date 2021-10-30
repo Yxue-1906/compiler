@@ -6,12 +6,11 @@
 #define PARSER_NOT_H
 
 
-class NOT : public Token {
+class NOT : public Token<std::string> {
 private:
 public:
-    NOT() : Token(Token::NOT) {
-        setValue_p(new std::string("!"));
-    }
+    NOT() : Token(TokenBase::NOT,
+                  std::make_shared<std::string>("!")) {}
 
 public:
 };

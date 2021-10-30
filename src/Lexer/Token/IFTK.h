@@ -6,12 +6,11 @@
 #define PARSER_IFTK_H
 
 
-class IFTK : public Token {
+class IFTK : public Token<std::string> {
 private:
 public:
-    IFTK() : Token(Token::IFTK) {
-        setValue_p(new std::string("if"));
-    }
+    IFTK() : Token(TokenBase::IFTK,
+                   std::make_shared<std::string>("if")) {}
 
 public:
 };

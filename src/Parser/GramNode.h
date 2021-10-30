@@ -8,7 +8,7 @@
 
 #include <vector>
 #include "../Output/MyOutput.h"
-#include "../Lexer/Token.h"
+#include "../Lexer/TokenBase.h"
 #include <utility>
 
 class GramNode : public MyOutput {
@@ -30,7 +30,7 @@ protected:
 
     std::string getGramName();
 
-    std::vector<Token> getSons();
+    std::vector<TokenBase> getSons();
 
 public:
 

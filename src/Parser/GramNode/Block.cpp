@@ -17,14 +17,14 @@ Block::Block(std::vector<GramNode *> sons) : GramNode() {
  * @param ite_p
  * @return
  */
-bool Block::create(std::vector<GramNode *> &toAdd, std::vector<Token *>::iterator &ite_p) {
+bool Block::create(std::vector<GramNode *> &toAdd, std::vector<TokenBase *>::iterator &ite_p) {
     auto ite = ite_p;
     std::vector<GramNode *> son_ps;
-    if (!TokenNode::create(son_ps, ite, Token::LBRACE)) {
+    if (!TokenNode::create(son_ps, ite, TokenBase::LBRACE)) {
         return false;
     }
-    for (; !Token::isTypeOf(ite, Token::RBRACE) && BlockItem::create(son_ps, ite););
-    if (!TokenNode::create(son_ps, ite, Token::RBRACE)) {
+    for (; !TokenBase::isTypeOf(ite, TokenBase::RBRACE) && BlockItem::create(son_ps, ite););
+    if (!TokenNode::create(son_ps, ite, TokenBase::RBRACE)) {
         return false;
     }
     ite_p = ite;

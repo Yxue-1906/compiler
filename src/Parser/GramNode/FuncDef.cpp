@@ -19,22 +19,22 @@ FuncDef::FuncDef(std::vector<GramNode *> sons) : GramNode() {
  * @param ite_p
  * @return
  */
-bool FuncDef::create(std::vector<GramNode *> &toAdd, std::vector<Token *>::iterator &ite_p) {
+bool FuncDef::create(std::vector<GramNode *> &toAdd, std::vector<TokenBase *>::iterator &ite_p) {
     auto ite = ite_p;
     std::vector<GramNode *> son_ps;
     if (!FuncType::create(son_ps, ite)) {
         return false;
     }
-    if (!TokenNode::create(son_ps, ite, Token::IDENFR)) {
+    if (!TokenNode::create(son_ps, ite, TokenBase::IDENFR)) {
         return false;
     }
-    if (!TokenNode::create(son_ps, ite, Token::LPARENT)) {
+    if (!TokenNode::create(son_ps, ite, TokenBase::LPARENT)) {
         return false;
     }
-    if (!Token::isTypeOf(ite, Token::RPARENT))
+    if (!TokenBase::isTypeOf(ite, TokenBase::RPARENT))
         if (!FuncFParams::create(son_ps, ite))
             return false;
-    if (!TokenNode::create(son_ps, ite, Token::RPARENT)) {
+    if (!TokenNode::create(son_ps, ite, TokenBase::RPARENT)) {
         return false;
     }
     if (!Block::create(son_ps, ite)) {

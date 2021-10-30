@@ -13,14 +13,23 @@
 #include <vector>
 #include "../Exception/MyException/DupIdentException.h"
 #include "../Exception/MyException/UndefIdentException.h"
+#include "../Lexer/Token/IDENFR.h"
 
+class IdentType;
+
+class FuncType;
 
 class Type {
 private:
     virtual void do_init() = 0;
 
 public:
-    virtual bool isEqual(Type &) = 0;
+    virtual bool check(const std::vector<std::shared_ptr<IdentType>> parm_ps) const = 0;
+
+    virtual bool check(const IdentType &identType) const = 0;
+
+    virtual const Type &getReturnType() const = 0;
+
 };
 
 class IdentType : public Type {
@@ -31,11 +40,11 @@ public:
     IdentType(std::string name, bool const isArray, int dimension)
             : name(name), isArray(isArray), dimension(dimension) {}
 
-    const std::string &queryName();
+    virtual bool check(const std::vector<std::shared_ptr<IdentType>> parm_ps) const override;
 
-    int queryDimension();
+    virtual bool check(const IdentType &identType) const override;
 
-    virtual bool isEqual(Type &info) override;
+    virtual const Type &getReturnType() const override;
 
 private:
     std::string name;
@@ -53,7 +62,11 @@ public:
     FuncType(std::shared_ptr<IdentType> returnType, std::vector<std::shared_ptr<IdentType>> parmTypes)
             : returnType(returnType), parmTypes(std::move(parmTypes)) {}
 
-    virtual bool isEqual(Type &info) override;
+    virtual bool check(const std::vector<std::shared_ptr<IdentType>> parm_ps) const override;
+
+    virtual bool check(const IdentType &identType) const override;
+
+    virtual const Type &getReturnType() const override;
 
 public:
     static int VOID_F;
@@ -66,7 +79,7 @@ private:
 class SymTable {
 private:
     std::map<std::string, std::shared_ptr<Type>> symTable;
-    std::shared_ptr<SymTable> former = nullptr;
+    std::shared_ptr<SymTable> formerTable_p = nullptr;
 
 public:
     SymTable() = default;
@@ -79,11 +92,11 @@ public:
 
     ~SymTable() = default;
 
-    std::shared_ptr<Type> queryIdent(std::string name) throw(UndefIdentException);
+    std::shared_ptr<Type> queryIdent(const IDENFR &ident) noexcept(false);
 
-    void addIdent(std::string name, std::shared_ptr<Type> type) throw(DupIdentException);
+    void addIdent(const IDENFR &ident, std::shared_ptr<Type> &type) noexcept(false);
 
-    std::shared_ptr<SymTable> getFormer();
+    std::shared_ptr<SymTable> getFormerTable();
 
 
 };

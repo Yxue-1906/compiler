@@ -10,11 +10,11 @@ FuncType::FuncType(std::vector<GramNode *> sons) : GramNode() {
     setSons(std::move(sons));
 }
 
-bool FuncType::create(std::vector<GramNode *> &toAdd, std::vector<Token *>::iterator &ite_p) {
+bool FuncType::create(std::vector<GramNode *> &toAdd, std::vector<TokenBase *>::iterator &ite_p) {
     auto ite = ite_p;
     std::vector<GramNode *> son_ps;
-    if (!TokenNode::create(son_ps, ite, Token::VOIDTK) &&
-        !TokenNode::create(son_ps, ite, Token::INTTK)) {
+    if (!TokenNode::create(son_ps, ite, TokenBase::VOIDTK) &&
+        !TokenNode::create(son_ps, ite, TokenBase::INTTK)) {
         return false;
     }
     ite_p = ite;
