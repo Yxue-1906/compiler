@@ -5,6 +5,7 @@
 #include "LVal.h"
 #include "../TokenNode.h"
 #include "Exp.h"
+#include "../../Lexer/Token/LBRACK.h"
 
 LVal::LVal(std::vector<std::shared_ptr<GramNode>> sons) : GramNode() {
     setGramName("LVal");
@@ -36,4 +37,24 @@ bool LVal::create(std::vector<std::shared_ptr<GramNode>> &toAdd, std::vector<Tok
     tmp_p.reset(new LVal(son_ps));
     toAdd.push_back(tmp_p);
     return true;
+}
+
+bool LVal::getType(std::shared_ptr<IdentInfo> &toReturn) {
+    auto ite = this->sons.begin();
+    auto ident_p = std::dynamic_pointer_cast<IDENFR>(*ite);
+    ++ite;
+    auto tmp = GramNode::getNowTable()->queryIdent(*ident_p->getValue_p());
+    toReturn = std::dynamic_pointer_cast<IdentInfo>(tmp);
+    if (!toReturn)
+        throw DupIdentException(ident_p->getLineNumber());//todo: finish this func
+    for (; ite != this->sons.end(); ++ite) {
+        if (std::dynamic_pointer_cast<LBRACK>(*ite)) {
+            ++ite;
+            auto exp_p = std::dynamic_pointer_cast<Exp>(*ite);
+            std::shared_ptr<IdentInfo> tmp;
+            if (exp_p && exp_p->getType(tmp) &&) {
+                if (exp_p.)
+            }
+        }
+    }
 }

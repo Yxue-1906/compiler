@@ -14,11 +14,12 @@ private:
 public:
 
 private:
-    Stmt(std::vector<std::shared_ptr<GramNode>>sons);
+    Stmt(std::vector<std::shared_ptr<GramNode>> sons);
 
 public:
-    static bool create(std::vector<std::shared_ptr<GramNode>> &, std::vector<TokenBase *>::iterator &);
+    static bool create(std::vector<std::shared_ptr<GramNode>> &, std::vector<TokenBase *>::iterator &, bool isLoop);
 
+    bool getReturnType(std::shared_ptr<IdentInfo> &toReturn);
 };
 
 

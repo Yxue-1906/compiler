@@ -108,11 +108,11 @@ void TokenBase::setEnd(std::vector<TokenBase *>::iterator end) {
     }
 }
 
-bool TokenBase::isTypeOf(std::vector<TokenBase *>::iterator &ite, int type) {
+bool TokenBase::isTypeOf(const std::vector<TokenBase *>::iterator &ite, int type) {
     return ite < TokenBase::end && (**ite).tokenType == type;
 }
 
-bool TokenBase::isTypeOf(std::vector<TokenBase *>::iterator &&ite, int type) {
+bool TokenBase::isTypeOf(const std::vector<TokenBase *>::iterator &&ite, int type) {
     return ite < TokenBase::end && (**ite).tokenType == type;
 }
 

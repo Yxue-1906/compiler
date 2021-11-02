@@ -17,13 +17,14 @@ Block::Block(std::vector<std::shared_ptr<GramNode>> sons) : GramNode() {
  * @param ite_p
  * @return
  */
-bool Block::create(std::vector<std::shared_ptr<GramNode>> &toAdd, std::vector<TokenBase *>::iterator &ite_p) {
+bool
+Block::create(std::vector<std::shared_ptr<GramNode>> &toAdd, std::vector<TokenBase *>::iterator &ite_p, bool isLoop) {
     auto ite = ite_p;
     std::vector<std::shared_ptr<GramNode>> son_ps;
     if (!TokenNode::create(son_ps, ite, TokenBase::LBRACE)) {
         return false;
     }
-    for (; !TokenBase::isTypeOf(ite, TokenBase::RBRACE) && BlockItem::create(son_ps, ite););
+    for (; !TokenBase::isTypeOf(ite, TokenBase::RBRACE) && BlockItem::create(son_ps, ite, isLoop););
     if (!TokenNode::create(son_ps, ite, TokenBase::RBRACE)) {
         return false;
     }

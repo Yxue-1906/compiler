@@ -36,3 +36,18 @@ bool AddExp::create(std::vector<std::shared_ptr<GramNode>> &toAdd, std::vector<T
     ite_p = ite;
     return true;
 }
+
+bool AddExp::getType(std::shared_ptr<Info> &toReturn) {
+    std::shared_ptr<IdentInfo> tmp;
+    for (auto &i: this->sons) {
+        auto mulExp_p = std::dynamic_pointer_cast<MulExp>(i);
+        if (!mulExp_p)
+            continue;
+        if (!mulExp_p.getType(tmp))
+            return false;
+        if (!tmp)
+            return false;
+    }
+    toReturn = tmp;
+    return true;
+}

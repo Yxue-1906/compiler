@@ -35,3 +35,18 @@ bool FuncRParams::create(std::vector<std::shared_ptr<GramNode>> &toAdd, std::vec
     toAdd.push_back(tmp_p);
     return true;
 }
+
+std::vector<std::shared_ptr<IdentInfo>> FuncRParams::getParamTypes() {
+    std::vector<std::shared_ptr<IdentInfo>> toReturn;
+    for (auto i: this->sons) {
+        auto exp_p = std::dynamic_pointer_cast<Exp>(i);
+        if (exp_p) {
+            std::shared_ptr<IdentInfo> tmp;
+            exp_p->getType(tmp);
+            if (!tmp)
+                throw;//todo:error calling type exception
+            toReturn.push_back(tmp);
+        }
+    }
+    return toReturn;
+}

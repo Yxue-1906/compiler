@@ -12,11 +12,12 @@ class FuncRParams : public GramNode {
 private:
 public:
 private:
-    FuncRParams(std::vector<std::shared_ptr<GramNode>>sons);
+    FuncRParams(std::vector<std::shared_ptr<GramNode>> sons);
 
 public:
     static bool create(std::vector<std::shared_ptr<GramNode>> &, std::vector<TokenBase *>::iterator &);
 
+    std::vector<std::shared_ptr<IdentInfo>> getParamTypes();
 };
 
 

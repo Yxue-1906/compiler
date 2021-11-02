@@ -10,7 +10,7 @@
 
 class MissingSemicolonException : public MyException {
 public:
-    MissingSemicolonException(const TokenBase &token) : MyException(token, 'i') {}
+    MissingSemicolonException(const TokenBase &token) : MyException(token, 'i') {}//todo: edit error no
 
     MissingSemicolonException(int lineNumber) : MyException(lineNumber, 'i') {}
 

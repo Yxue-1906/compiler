@@ -76,9 +76,9 @@ public:
 
     static void setEnd(std::vector<TokenBase *>::iterator);
 
-    static bool isTypeOf(std::vector<TokenBase *>::iterator &ite, int type);
+    static bool isTypeOf(const std::vector<TokenBase *>::iterator &ite, int type);
 
-    static bool isTypeOf(std::vector<TokenBase *>::iterator &&ite, int type);
+    static bool isTypeOf(const std::vector<TokenBase *>::iterator &&ite, int type);
 
     int setLineNumber(int lineNumber);
 

@@ -22,6 +22,7 @@ TokenNode::create(std::vector<std::shared_ptr<GramNode>> &toAdd, std::vector<Tok
     if (TokenBase::isTypeOf(ite, type)) {
         std::shared_ptr<TokenBase> tmp_token_p;
         tmp_token_p.reset(*ite);
+        GramNode::nowLine = tmp_token_p->getLineNumber();
         std::shared_ptr<TokenNode> tmp_p;
         tmp_p.reset(new TokenNode(tmp_token_p));
         toAdd.push_back(tmp_p);

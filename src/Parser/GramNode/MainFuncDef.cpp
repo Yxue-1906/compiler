@@ -27,7 +27,7 @@ bool MainFuncDef::create(std::vector<std::shared_ptr<GramNode>> &toAdd, std::vec
     if (!TokenNode::create(son_ps, ite, TokenBase::RPARENT)) {
         return false;
     }
-    if (!Block::create(son_ps, ite)) {
+    if (!Block::create(son_ps, ite, false)) {
         return false;
     }
     ite_p = ite;

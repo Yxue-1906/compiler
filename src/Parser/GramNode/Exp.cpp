@@ -29,6 +29,13 @@ bool Exp::create(std::vector<std::shared_ptr<GramNode>> &toAdd, std::vector<Toke
     return true;
 }
 
+bool Exp::getType(std::shared_ptr<IdentInfo> &toReturn) {
+    auto addExp_p = std::dynamic_pointer_cast<AddExp>(sons.back());
+    if (!addExp_p)
+        return false;
+    return addExp_p.getTYpe(toReturn);
+}
+
 //bool Exp::create(std::vector<std::shared_ptr<GramNode>> &toAdd, std::vector<TokenBase *>::iterator &ite_p, LVal *lval) {
 //    auto ite = ite_p;
 //    std::vector<std::shared_ptr<GramNode>> son_ps;

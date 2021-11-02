@@ -14,11 +14,12 @@ private:
 public:
 
 private:
-    MulExp(std::vector<std::shared_ptr<GramNode>>sons);
+    MulExp(std::vector<std::shared_ptr<GramNode>> sons);
 
 public:
     static bool create(std::vector<std::shared_ptr<GramNode>> &, std::vector<TokenBase *>::iterator &);
 
+    bool getType(std::shared_ptr<Info> &toReturn);
 };
 
 #endif //PARSER_MULEXP_H

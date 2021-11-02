@@ -9,18 +9,18 @@
 #include <vector>
 #include "../Output/MyOutput.h"
 #include "../Lexer/TokenBase.h"
+#include "../SymTable/SymTable.h"
 #include <utility>
 
 class GramNode : public MyOutput {
 private:
-    std::string GramName;
+    std::string gramName;
 
 protected:
     std::vector<std::shared_ptr<GramNode>> sons;
+    static std::shared_ptr<SymTable> nowTable_p;
 public:
-
-private:
-
+    static int nowLine;
 protected:
     GramNode();
 
@@ -28,11 +28,15 @@ protected:
 
     void setSons(std::vector<std::shared_ptr<GramNode>>);
 
-    std::string getGramName();
+    std::string &getGramName();
 
     std::vector<std::shared_ptr<GramNode>> getSons();
 
+    std::shared_ptr<SymTable> getNowTable();
+
+
 public:
+    std::shared_ptr<GramNode> getSonByIndex(int index);
 
     virtual void myOutput() override;
 };

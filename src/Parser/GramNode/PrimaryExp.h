@@ -12,10 +12,12 @@ class PrimaryExp : public GramNode {
 private:
 public:
 private:
-    PrimaryExp(std::vector<std::shared_ptr<GramNode>>sons);
+    PrimaryExp(std::vector<std::shared_ptr<GramNode>> sons);
 
 public:
     static bool create(std::vector<std::shared_ptr<GramNode>> &, std::vector<TokenBase *>::iterator &);
+
+    bool getType(std::shared_ptr<IdentInfo> &toReturn);
 };
 
 

@@ -7,6 +7,7 @@
 #include "FuncRParams.h"
 #include "PrimaryExp.h"
 #include "UnaryOp.h"
+#include "../../Exception/MyException/MismatchParmNumException.h"
 
 UnaryExp::UnaryExp(std::vector<std::shared_ptr<GramNode>> sons) : GramNode() {
     setGramName("UnaryExp");
@@ -59,4 +60,54 @@ bool UnaryExp::create(std::vector<std::shared_ptr<GramNode>> &toAdd, std::vector
         return true;
     }
     return false;
+}
+
+bool UnaryExp::getType(std::shared_ptr<Info> &toReturn) {
+    std::shared_ptr<IdentInfo> tmp;
+    auto ite = this->sons.begin();
+    for (; ite != this->sons.end(); ++ite) {
+        auto primaryExp_p = std::dynamic_pointer_cast<PrimaryExp>(*ite);
+        if (primaryExp_p) {
+            if (!primaryExp_p->getType(tmp))
+                return false;
+            if (!tmp)
+                return false;
+            continue;
+        }
+        auto ident_p = std::dynamic_pointer_cast<IDENFR>(*ite);
+        if (ident_p) {
+            try {
+                auto info = GramNode::nowTable_p->queryIdent(*ident_p->getValue_p());
+                if (!info) {
+                    // variable with the name does not exist
+                    throw UndefIdentException(ident_p->getLineNumber());
+                }
+                std::shared_ptr<FuncInfo> funcInfo = std::dynamic_pointer_cast<FuncInfo>(info);
+                if (!funcInfo)
+                    throw UndefIdentException(ident_p->getLineNumber());
+                if (!tmp || funcInfo->checkReturnType(tmp))
+                    tmp = funcInfo->getReturnType();
+                else
+                    return false;
+                ite += 2;
+                auto funcRParams_p = std::dynamic_pointer_cast<FuncRParams>(*ite);
+                std::vector<std::shared_ptr<IdentInfo>> toCheck;
+                if (funcRParams_p) {
+                    toCheck = funcRParams_p->getParamTypes();
+                }
+                if (!funcInfo->checkParamTypes(toCheck)) {
+                    int errorno = FuncInfo::getLastError();
+                    switch (errorno) {
+                        case 1:
+                            throw MismatchParmNumException(ident_p->getLineNumber());
+                        case 2:
+                            throw Mism//todo: throw right exception
+                    }
+                }
+            } catch (UndefIdentException &e) {
+                e.myOutput();
+                return false;
+            } catch ()
+        }
+    }
 }

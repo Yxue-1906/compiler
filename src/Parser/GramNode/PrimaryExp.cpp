@@ -57,3 +57,18 @@ bool PrimaryExp::create(std::vector<std::shared_ptr<GramNode>> &toAdd, std::vect
         return true;
     }
 }
+
+bool PrimaryExp::getType(std::shared_ptr<IdentInfo> &toReturn) {
+    auto ite = this->sons.begin();
+    for (; ite != this->sons.end(); ++ite) {
+        auto number_p = std::dynamic_pointer_cast<Number>(*ite);
+        if (number_p) {
+            toReturn = IdentInfo::VARIABLE;
+            return true;
+        }
+        auto lval_p = std::dynamic_pointer_cast<LVal>(*ite);
+        if (lval_p) {
+            return lval_p//todo: complete here
+        }
+    }
+}

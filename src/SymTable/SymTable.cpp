@@ -5,55 +5,148 @@
 #include "SymTable.h"
 
 
-std::shared_ptr<Type> SymTable::queryIdent(const IDENFR &ident) noexcept(false) {
+/**
+ * provide pre-generate instances
+ */
+std::shared_ptr<IdentInfo>IdentInfo::VARIABLE{new IdentInfo(0)};
+std::shared_ptr<IdentInfo>IdentInfo::ARRAY{new IdentInfo(1)};
+std::shared_ptr<IdentInfo>IdentInfo::ARRAY_2D{new IdentInfo(2)};
+
+bool IdentInfo::operator==(Info &a) const {
     try {
-        return symTable.at(*ident.getValue_p());
-    }
-    catch (std::out_of_range &e) {
-        throw UndefIdentException(ident.getLineNumber(), *ident.getValue_p());
+        auto identInfo = dynamic_cast<IdentInfo &>(a);
+        if (this->dimension == identInfo.dimension)
+            return true;
+        return false;
+    } catch (std::bad_cast &e) {
+        std::cout << __FILE__ << ':' << __LINE__ << ':' << e.what() << std::endl;
+        return false;
     }
 }
 
-std::shared_ptr<SymTable> SymTable::getFormerTable() {
-    return this->formerTable_p;
-}
-
-void SymTable::addIdent(const IDENFR &ident, std::shared_ptr<Type> &type) noexcept(false) {
+bool IdentInfo::operator==(Info &&a) const {
     try {
-        this->symTable.at(*ident.getValue_p());
-        throw DupIdentException(ident.getLineNumber());
-    } catch (std::out_of_range &e) {
-        this->symTable[*ident.getValue_p()] = type;
+        auto identInfo = dynamic_cast<IdentInfo &>(a);
+        if (this->dimension == identInfo.dimension)
+            return true;
+        return false;
+    } catch (std::bad_cast &e) {
+        std::cout << __FILE__ << ':' << __LINE__ << ':' << e.what() << std::endl;
+        return false;
     }
 }
 
-bool IdentType::check(const std::vector<std::shared_ptr<IdentType>> parm_ps) const {
-    return false;
+bool IdentInfo::operator!=(Info &a) const {
+    return !(*this == a);
 }
 
-bool IdentType::check(const IdentType &identType) const {
-    if (this->dimension == identType.dimension)
+bool IdentInfo::operator!=(Info &&a) const {
+    return !(*this == a);
+}
+
+IdentInfo::IdentInfo(int dimension) noexcept: dimension(dimension) {}
+
+int FuncInfo::ErrorType = 0;
+
+bool FuncInfo::operator==(Info &a) const {
+    try {
+        auto funcInfo = dynamic_cast<FuncInfo &>(a);
+        return checkReturnType(funcInfo.returnType) && checkParamTypes(funcInfo.parmTypes);
+    } catch (std::bad_cast &e) {
+        std::cout << __FILE__ << ':' << __LINE__ << ':' << e.what() << std::endl;
+        return false;
+    }
+}
+
+bool FuncInfo::operator==(Info &&a) const {
+    try {
+        auto funcInfo = dynamic_cast<FuncInfo &>(a);
+        return checkReturnType(funcInfo.returnType) && checkParamTypes(funcInfo.parmTypes);
+    } catch (std::bad_cast &e) {
+        std::cout << __FILE__ << ':' << __LINE__ << ':' << e.what() << std::endl;
+        return false;
+    }
+}
+
+bool FuncInfo::operator!=(Info &a) const {
+    return !(*this == a);
+}
+
+bool FuncInfo::operator!=(Info &&a) const {
+    return !(*this == a);
+}
+
+FuncInfo::FuncInfo(std::shared_ptr<IdentInfo> identInfo_p,
+                   std::vector<std::shared_ptr<IdentInfo>> parmTypes) noexcept
+        : returnType(identInfo_p), parmTypes(std::move(parmTypes)) {}
+
+/**
+ * check return type of itself equal to toCheck
+ * @param toCheck
+ * @return
+ */
+bool FuncInfo::checkReturnType(std::shared_ptr<IdentInfo> toCheck) const {
+    if (this->returnType)
+        return *this->returnType == *toCheck;
+    else if (toCheck)
+        return false;
+    else
         return true;
-    return false;
 }
 
-const Type &IdentType::getReturnType() const {
-    return *this;
+std::shared_ptr<IdentInfo> FuncInfo::getReturnType() noexcept {
+    return this->returnType;
 }
 
-bool FuncType::check(const std::vector<std::shared_ptr<IdentType>> parm_ps) const {
+bool FuncInfo::checkParamTypes(std::vector<std::shared_ptr<IdentInfo>> &toCheck) const {
+    if (this->parmTypes.size() != toCheck.size()) {
+        FuncInfo::ErrorType = 1;
+        return false;
+    }
     auto ite_a = this->parmTypes.begin();
-    auto ite_b = parm_ps.begin();
-    for (; ite_a != this->parmTypes.end() && ite_b != parm_ps.end(); ++ite_a, ++ite_b) {
-        if (!(*ite_a)->check(**ite_b))return false;
+    auto ite_b = toCheck.begin();
+    for (; ite_a != this->parmTypes.end() && ite_b != toCheck.end(); ++ite_a, ++ite_b) {
+        if (**ite_a != **ite_b) {
+            FuncInfo::ErrorType = 2;
+            return false;
+        }
     }
     return true;
 }
 
-bool FuncType::check(const IdentType &identType) const {
-    return false;
+int FuncInfo::getLastError() const noexcept {
+    int toReturn = FuncInfo::ErrorType;
+    FuncInfo::ErrorType = 0;
+    return toReturn;
 }
 
-const Type &FuncType::getReturnType() const {
-    return *this->returnType;
+
+SymTable::SymTable(std::shared_ptr<SymTable> formerTable_p) {
+    this->formerTable_p = formerTable_p;
 }
+
+std::shared_ptr<Info> SymTable::queryIdent(std::string &name) noexcept {
+    try {
+        return symTable.at(name);
+    } catch (std::out_of_range &e) {
+        return nullptr;
+    }
+}
+
+std::shared_ptr<SymTable> SymTable::getFormerTable_p() {
+    return this->formerTable_p;
+}
+
+bool SymTable::addIdent(std::string name, std::shared_ptr<Info> info) noexcept {
+    try {
+        symTable.at(name);
+        return false;
+    } catch (std::out_of_range &e) {
+        symTable[name] = info;
+        return true;
+    }
+}
+
+
+
+

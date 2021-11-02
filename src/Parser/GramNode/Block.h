@@ -13,10 +13,10 @@ private:
 public:
 
 private:
-    Block(std::vector<std::shared_ptr<GramNode>>sons);
+    Block(std::vector<std::shared_ptr<GramNode>> sons);
 
 public:
-    static bool create(std::vector<std::shared_ptr<GramNode>> &, std::vector<TokenBase *>::iterator &);
+    static bool create(std::vector<std::shared_ptr<GramNode>> &, std::vector<TokenBase *>::iterator &, bool isLoop);
 
 };
 

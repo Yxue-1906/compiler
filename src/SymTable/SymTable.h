@@ -15,89 +15,87 @@
 #include "../Exception/MyException/UndefIdentException.h"
 #include "../Lexer/Token/IDENFR.h"
 
-class IdentType;
-
-class FuncType;
-
-class Type {
-private:
-    virtual void do_init() = 0;
-
+class Info {
 public:
-    virtual bool check(const std::vector<std::shared_ptr<IdentType>> parm_ps) const = 0;
+    virtual bool operator==(Info &a) const = 0;
 
-    virtual bool check(const IdentType &identType) const = 0;
+    virtual bool operator==(Info &&a) const = 0;
 
-    virtual const Type &getReturnType() const = 0;
+    virtual bool operator!=(Info &a) const = 0;
 
+    virtual bool operator!=(Info &&a) const = 0;
 };
 
-class IdentType : public Type {
+class IdentInfo : public Info {
+public:
+    bool operator==(Info &a) const override;
+
+    bool operator==(Info &&a) const override;
+
+    bool operator!=(Info &a) const override;
+
+    bool operator!=(Info &&a) const override;
+
+protected:
+    IdentInfo(int dimension) noexcept;
+
 private:
-    virtual void do_init() override {}
+    const int dimension;
 
 public:
-    IdentType(std::string name, bool const isArray, int dimension)
-            : name(name), isArray(isArray), dimension(dimension) {}
-
-    virtual bool check(const std::vector<std::shared_ptr<IdentType>> parm_ps) const override;
-
-    virtual bool check(const IdentType &identType) const override;
-
-    virtual const Type &getReturnType() const override;
-
-private:
-    std::string name;
-    int dimension;
-
-public:
-    const bool isArray;
+    static std::shared_ptr<IdentInfo> VARIABLE;
+    static std::shared_ptr<IdentInfo> ARRAY;
+    static std::shared_ptr<IdentInfo> ARRAY_2D;
 };
 
-class FuncType : public Type {
-private:
-    void do_init() override {}
+class FuncInfo : public Info {
+public:
+    bool operator==(Info &a) const override;
+
+    bool operator==(Info &&a) const override;
+
+    bool operator!=(Info &a) const override;
+
+    bool operator!=(Info &&a) const override;
+
+    FuncInfo(std::shared_ptr<IdentInfo> identInfo_p, std::vector<std::shared_ptr<IdentInfo>> parmTypes) noexcept;
+
+    bool checkReturnType(std::shared_ptr<IdentInfo> toCheck) const;
+
+    std::shared_ptr<IdentInfo> getReturnType() noexcept;
+
+    bool checkParamTypes(std::vector<std::shared_ptr<IdentInfo>> &toCheck) const;
+
+    static int getLastError()  noexcept;
 
 public:
-    FuncType(std::shared_ptr<IdentType> returnType, std::vector<std::shared_ptr<IdentType>> parmTypes)
-            : returnType(returnType), parmTypes(std::move(parmTypes)) {}
+    static int ErrorType;
 
-    virtual bool check(const std::vector<std::shared_ptr<IdentType>> parm_ps) const override;
-
-    virtual bool check(const IdentType &identType) const override;
-
-    virtual const Type &getReturnType() const override;
-
-public:
-    static int VOID_F;
-    static int INT_F;
 private:
-    std::shared_ptr<IdentType> const returnType;
-    std::vector<std::shared_ptr<IdentType>> parmTypes;
+    std::shared_ptr<IdentInfo> returnType;
+    std::vector<std::shared_ptr<IdentInfo>> parmTypes;
+
 };
 
 class SymTable {
 private:
-    std::map<std::string, std::shared_ptr<Type>> symTable;
+    std::map<std::string, std::shared_ptr<Info>> symTable;
     std::shared_ptr<SymTable> formerTable_p = nullptr;
 
 public:
-    SymTable() = default;
+    SymTable(std::shared_ptr<SymTable> formerTable_p);
 
-    SymTable(const SymTable &) = delete;//forbid copy construct
-    SymTable &operator=(const SymTable &) = delete;
-
-    SymTable(const SymTable &&) = delete;//forbid copy construct
-    SymTable &operator=(const SymTable &&) = delete;
-
+    SymTable(const SymTable &) = delete;//
+    SymTable &operator=(const SymTable &) = delete;//
+    SymTable(const SymTable &&) = delete;//
+    SymTable &operator=(const SymTable &&) = delete;//
     ~SymTable() = default;
 
-    std::shared_ptr<Type> queryIdent(const IDENFR &ident) noexcept(false);
+    std::shared_ptr<Info> queryIdent(std::string &name) noexcept;
 
-    void addIdent(const IDENFR &ident, std::shared_ptr<Type> &type) noexcept(false);
+    bool addIdent(std::string name, std::shared_ptr<Info> info) noexcept;
 
-    std::shared_ptr<SymTable> getFormerTable();
-
+    std::shared_ptr<SymTable> getFormerTable_p();
 
 };
 
