@@ -10,7 +10,7 @@ class COMMA : public Token<std::string> {
 private:
 public:
     COMMA() : Token(TokenBase::COMMA,
-                    std::make_shared<std::string>("&&")) {}
+                    std::make_shared<std::string>(",")) {}
 
 public:
 };

@@ -24,6 +24,9 @@ bool AddExp::create(std::vector<std::shared_ptr<GramNode>> &toAdd, std::vector<T
     if (!MulExp::create(son_ps, ite)) {
         return false;
     }
+    std::shared_ptr<AddExp> tmp_p;
+    tmp_p.reset(new AddExp(son_ps));
+    toAdd.push_back(tmp_p);
     if (TokenNode::create(toAdd, ite, TokenBase::PLUS) ||
         TokenNode::create(toAdd, ite, TokenBase::MINU)) {
         if (!AddExp::create(toAdd, ite)) {
