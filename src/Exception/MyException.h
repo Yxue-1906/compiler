@@ -25,12 +25,12 @@ public:
     MyException(int lineNumber, char type) : std::exception(), MyOutput(), lineNumber(lineNumber), type(type) {}
 
     virtual void myOutput() override {
-        auto os = getOs();
-        (*os) << lineNumber << ' ' << type;
+        auto eos = getEos();
+        (*eos) << lineNumber << ' ' << type;
 #ifdef DEBUG
         (*os) << ':' << message;
 #endif // DEBUG
-        (*os) << std::endl;
+        (*eos) << std::endl;
     }
 
     virtual void addMessage(std::string message) {

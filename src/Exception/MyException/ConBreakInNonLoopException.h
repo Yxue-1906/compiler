@@ -5,8 +5,9 @@
 #ifndef SRC_PARSER_CONBREAKINNONLOOPEXCEPTION_H
 #define SRC_PARSER_CONBREAKINNONLOOPEXCEPTION_H
 
+#include "../MyException.h"
 
-class ConBreakInNonLoopException: public MyException{
+class ConBreakInNonLoopException : public MyException {
 public:
     explicit ConBreakInNonLoopException(const TokenBase &token) : MyException(token, 'k') {}
 

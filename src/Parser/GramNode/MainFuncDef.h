@@ -8,7 +8,7 @@
 
 #include "../GramNode.h"
 
-class MainFuncDef : GramNode {
+class MainFuncDef :public GramNode {
 private:
 
 public:

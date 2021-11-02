@@ -8,11 +8,11 @@
 
 #include "../GramNode.h"
 
-class ConstInitVal : GramNode {
+class ConstInitVal : public GramNode {
 private:
 public:
 private:
-    ConstInitVal(std::vector<std::shared_ptr<GramNode>>sons);
+    ConstInitVal(std::vector<std::shared_ptr<GramNode>> sons);
 
 public:
     static bool create(std::vector<std::shared_ptr<GramNode>> &, std::vector<TokenBase *>::iterator &);

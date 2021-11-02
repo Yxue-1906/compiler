@@ -208,7 +208,9 @@ bool Stmt::create(std::vector<std::shared_ptr<GramNode>> &toAdd, std::vector<Tok
             return false;
         }
         ite_p = ite;
-        toAdd.push_back(new Stmt(son_ps));
+        std::shared_ptr<Stmt> tmp_p;
+        tmp_p.reset(new Stmt(son_ps));
+        toAdd.push_back(tmp_p);
         return true;
     }
 }

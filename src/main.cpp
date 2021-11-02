@@ -9,6 +9,7 @@ int main() {
     std::ofstream ofs;
     ofs.open("output.txt", std::ios::out | std::ios::trunc);
     MyOutput::setOutput(&ofs);
+    MyOutput::setErrorOutput(&std::cout);
     Lexer lexer{std::move(ifs)};
 //    for (auto &i: lexer.getList()) {
 //        std::cout << i->getLineNumber() << ":";

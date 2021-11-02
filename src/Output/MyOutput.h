@@ -13,6 +13,7 @@ class MyOutput {
 public:
 private:
     static std::ostream *os;
+    static std::ostream *eos;
 public:
     MyOutput() = default;
 
@@ -22,11 +23,16 @@ public:
 
     static void setOutput(std::ostream *);
 
+    static void setErrorOutput(std::string &);
+
+    static void setErrorOutput(std::ostream *);
+
     virtual void myOutput() = 0;
 
 
 protected:
     std::ostream *getOs();
+    std::ostream *getEos();
 
 };
 

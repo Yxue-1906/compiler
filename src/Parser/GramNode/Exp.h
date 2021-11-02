@@ -9,11 +9,11 @@
 #include "../GramNode.h"
 #include "LVal.h"
 
-class Exp : GramNode {
+class Exp : public GramNode {
 private:
 public:
 private:
-    Exp(std::vector<std::shared_ptr<GramNode>>sons);
+    Exp(std::vector<std::shared_ptr<GramNode>> sons);
 
 public:
     static bool create(std::vector<std::shared_ptr<GramNode>> &, std::vector<TokenBase *>::iterator &);
