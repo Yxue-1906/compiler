@@ -14,12 +14,12 @@ private:
 public:
 
 private:
-    Decl(std::vector<GramNode *>);
+    Decl(std::vector<std::shared_ptr<GramNode>>sons);
 
     virtual void myOutput() override;
 
 public:
-    static bool create(std::vector<GramNode *> &, std::vector<TokenBase *>::iterator &);
+    static bool create(std::vector<std::shared_ptr<GramNode>> &, std::vector<TokenBase *>::iterator &);
 };
 
 

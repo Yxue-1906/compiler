@@ -6,7 +6,7 @@
 #include "Decl.h"
 #include "Stmt.h"
 
-BlockItem::BlockItem(std::vector<GramNode *> sons) : GramNode() {
+BlockItem::BlockItem(std::vector<std::shared_ptr<GramNode>> sons) : GramNode() {
     setGramName("BlockItem");
     setSons(std::move(sons));
 }
@@ -17,9 +17,9 @@ BlockItem::BlockItem(std::vector<GramNode *> sons) : GramNode() {
  * @param ite_p
  * @return
  */
-bool BlockItem::create(std::vector<GramNode *> &toAdd, std::vector<TokenBase *>::iterator &ite_p) {
+bool BlockItem::create(std::vector<std::shared_ptr<GramNode>> &toAdd, std::vector<TokenBase *>::iterator &ite_p) {
     auto ite = ite_p;
-    std::vector<GramNode *> son_ps;
+    std::vector<std::shared_ptr<GramNode>> son_ps;
     auto detectDecl = [&ite]() -> bool {
         if (TokenBase::isTypeOf(ite, TokenBase::CONSTTK) ||
             TokenBase::isTypeOf(ite, TokenBase::INTTK))
@@ -31,14 +31,18 @@ bool BlockItem::create(std::vector<GramNode *> &toAdd, std::vector<TokenBase *>:
             return false;
         }
         ite_p = ite;
-        toAdd.push_back(new BlockItem(son_ps));
+        std::shared_ptr<BlockItem> tmp_p;
+        tmp_p.reset(new BlockItem(son_ps));
+        toAdd.push_back(tmp_p);
         return true;
     } else {
         if (!Stmt::create(son_ps, ite)) {
             return false;
         }
         ite_p = ite;
-        toAdd.push_back(new BlockItem(son_ps));
+        std::shared_ptr<BlockItem> tmp_p;
+        tmp_p.reset(new BlockItem(son_ps));
+        toAdd.push_back(tmp_p);
         return true;
     }
 }

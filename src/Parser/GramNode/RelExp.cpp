@@ -6,7 +6,7 @@
 #include "AddExp.h"
 #include "../TokenNode.h"
 
-RelExp::RelExp(std::vector<GramNode *> sons) : GramNode() {
+RelExp::RelExp(std::vector<std::shared_ptr<GramNode>> sons) : GramNode() {
     setGramName("RelExp");
     setSons(std::move(sons));
 }
@@ -17,14 +17,16 @@ RelExp::RelExp(std::vector<GramNode *> sons) : GramNode() {
  * @param ite_p
  * @return
  */
-bool RelExp::create(std::vector<GramNode *> &toAdd, std::vector<TokenBase *>::iterator &ite_p) {
+bool RelExp::create(std::vector<std::shared_ptr<GramNode>> &toAdd, std::vector<TokenBase *>::iterator &ite_p) {
     auto ite = ite_p;
-    std::vector<GramNode *> son_ps;
+    std::vector<std::shared_ptr<GramNode>> son_ps;
     std::swap(toAdd, son_ps);
     if (!AddExp::create(son_ps, ite)) {
         return false;
     }
-    toAdd.push_back(new RelExp(son_ps));
+    std::shared_ptr<RelExp> tmp_p;
+    tmp_p.reset(new RelExp(son_ps));
+    toAdd.push_back(tmp_p);
     for (; TokenNode::create(toAdd, ite, TokenBase::LEQ) ||
            TokenNode::create(toAdd, ite, TokenBase::GEQ) ||
            TokenNode::create(toAdd, ite, TokenBase::LSS) ||

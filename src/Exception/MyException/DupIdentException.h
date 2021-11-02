@@ -10,11 +10,17 @@
 
 class DupIdentException : public MyException {
 public:
-    DupIdentException(const TokenBase &token) : MyException(token, 'b') {}
+    explicit DupIdentException(const TokenBase &token) : MyException(token, 'b') {}
 
-    DupIdentException(int line_number) : MyException(line_number, 'b') {}
+    explicit DupIdentException(int lineNumber) : MyException(lineNumber, 'b') {}
 
+    DupIdentException(const TokenBase &token, const std::string &message) : MyException(token, 'b') {
+        this->message.append(message);
+    }
+
+    DupIdentException(int lineNumber, const std::string &message) : MyException(lineNumber, 'b') {
+        this->message.append(message);
+    }
 };
-
 
 #endif //PARSER_DUPIDENTEXCEPTION_H

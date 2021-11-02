@@ -8,7 +8,7 @@
 #include "Number.h"
 #include "LVal.h"
 
-PrimaryExp::PrimaryExp(std::vector<GramNode *> sons) : GramNode() {
+PrimaryExp::PrimaryExp(std::vector<std::shared_ptr<GramNode>> sons) : GramNode() {
     setGramName("PrimaryExp");
     setSons(std::move(sons));
 }
@@ -19,9 +19,9 @@ PrimaryExp::PrimaryExp(std::vector<GramNode *> sons) : GramNode() {
  * @param ite_p
  * @return
  */
-bool PrimaryExp::create(std::vector<GramNode *> &toAdd, std::vector<TokenBase *>::iterator &ite_p) {
+bool PrimaryExp::create(std::vector<std::shared_ptr<GramNode>> &toAdd, std::vector<TokenBase *>::iterator &ite_p) {
     auto ite = ite_p;
-    std::vector<GramNode *> son_ps;
+    std::vector<std::shared_ptr<GramNode>> son_ps;
     auto detectNumber = [&ite]() -> bool {
         if (TokenBase::isTypeOf(ite, TokenBase::INTCON))
             return true;
@@ -35,19 +35,25 @@ bool PrimaryExp::create(std::vector<GramNode *> &toAdd, std::vector<TokenBase *>
             return false;
         }
         ite_p = ite;
-        toAdd.push_back(new PrimaryExp(son_ps));
+        std::shared_ptr<PrimaryExp> tmp_p;
+        tmp_p.reset(new PrimaryExp(son_ps));
+        toAdd.push_back(tmp_p);
         return true;
     } else if (detectNumber()) {
         Number::create(son_ps, ite);
         ite_p = ite;
-        toAdd.push_back(new PrimaryExp(son_ps));
+        std::shared_ptr<PrimaryExp> tmp_p;
+        tmp_p.reset(new PrimaryExp(son_ps));
+        toAdd.push_back(tmp_p);
         return true;
     } else {
         if (!LVal::create(son_ps, ite)) {
             return false;
         }
         ite_p = ite;
-        toAdd.push_back(new PrimaryExp(son_ps));
+        std::shared_ptr<PrimaryExp> tmp_p;
+        tmp_p.reset(new PrimaryExp(son_ps));
+        toAdd.push_back(tmp_p);
         return true;
     }
 }

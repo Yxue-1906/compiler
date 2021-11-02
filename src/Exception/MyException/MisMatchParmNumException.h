@@ -10,15 +10,15 @@
 
 class MisMatchParmNumException : public MyException {
 public:
-    MisMatchParmNumException(const TokenBase &token) : MyException(token, 'd') {}
+    explicit MisMatchParmNumException(const TokenBase &token) : MyException(token, 'd') {}
 
-    MisMatchParmNumException(int lineNumber) : MyException(lineNumber, 'd') {}
+    explicit MisMatchParmNumException(int lineNumber) : MyException(lineNumber, 'd') {}
 
-    MisMatchParmNumException(const TokenBase &token, std::string message) : MyException(token, 'd') {
+    MisMatchParmNumException(const TokenBase &token, const std::string& message) : MyException(token, 'd') {
         this->message.append(message);
     }
 
-    MisMatchParmNumException(int lineNumber, std::string message) : MyException(lineNumber, 'd') {
+    MisMatchParmNumException(int lineNumber, const std::string& message) : MyException(lineNumber, 'd') {
         this->message.append(message);
     }
 

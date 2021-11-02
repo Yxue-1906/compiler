@@ -6,7 +6,7 @@
 #include "FuncFParam.h"
 #include "../TokenNode.h"
 
-FuncFParams::FuncFParams(std::vector<GramNode *> sons) : GramNode() {
+FuncFParams::FuncFParams(std::vector<std::shared_ptr<GramNode>> sons) : GramNode() {
     setGramName("FuncFParams");
     setSons(std::move(sons));
 }
@@ -17,9 +17,9 @@ FuncFParams::FuncFParams(std::vector<GramNode *> sons) : GramNode() {
  * @param ite_p
  * @return
  */
-bool FuncFParams::create(std::vector<GramNode *> &toAdd, std::vector<TokenBase *>::iterator &ite_p) {
+bool FuncFParams::create(std::vector<std::shared_ptr<GramNode>> &toAdd, std::vector<TokenBase *>::iterator &ite_p) {
     auto ite = ite_p;
-    std::vector<GramNode *> son_ps;
+    std::vector<std::shared_ptr<GramNode>> son_ps;
     if (!FuncFParam::create(son_ps, ite)) {
         return false;
     }
@@ -29,6 +29,8 @@ bool FuncFParams::create(std::vector<GramNode *> &toAdd, std::vector<TokenBase *
         }
     }
     ite_p = ite;
-    toAdd.push_back(new FuncFParams(son_ps));
+    std::shared_ptr<FuncFParams> tmp_p;
+    tmp_p.reset(new FuncFParams(son_ps));
+    toAdd.push_back(tmp_p);
     return true;
 }

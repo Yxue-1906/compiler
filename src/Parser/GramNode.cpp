@@ -12,7 +12,7 @@ void GramNode::setGramName(std::string gramName) {
     this->GramName = std::move(gramName);
 }
 
-void GramNode::setSons(std::vector<GramNode *> sons) {
+void GramNode::setSons(std::vector<std::shared_ptr<GramNode>> sons) {
     this->sons = std::move(sons);
 }
 

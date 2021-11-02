@@ -5,18 +5,20 @@
 #include "UnaryOp.h"
 #include "../TokenNode.h"
 
-UnaryOp::UnaryOp(std::vector<GramNode *> sons) : GramNode() {
+UnaryOp::UnaryOp(std::vector<std::shared_ptr<GramNode>> sons) : GramNode() {
     setGramName("UnaryOp");
     setSons(std::move(sons));
 }
 
-bool UnaryOp::create(std::vector<GramNode *> &toAdd, std::vector<TokenBase *>::iterator &ite_p) {
+bool UnaryOp::create(std::vector<std::shared_ptr<GramNode>> &toAdd, std::vector<TokenBase *>::iterator &ite_p) {
     auto ite = ite_p;
-    std::vector<GramNode *> son_ps;
+    std::vector<std::shared_ptr<GramNode>> son_ps;
     if (TokenNode::create(son_ps, ite, TokenBase::PLUS) ||
         TokenNode::create(son_ps, ite, TokenBase::MINU) ||
         TokenNode::create(son_ps, ite, TokenBase::NOT)) {
-        toAdd.push_back(new UnaryOp(son_ps));
+        std::shared_ptr<UnaryOp> tmp_p;
+        tmp_p.reset(new UnaryOp(son_ps));
+        toAdd.push_back(tmp_p);
         ite_p = ite;
         return true;
     } else {

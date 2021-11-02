@@ -8,7 +8,7 @@
 #include "PrimaryExp.h"
 #include "UnaryOp.h"
 
-UnaryExp::UnaryExp(std::vector<GramNode *> sons) : GramNode() {
+UnaryExp::UnaryExp(std::vector<std::shared_ptr<GramNode>> sons) : GramNode() {
     setGramName("UnaryExp");
     setSons(std::move(sons));
 }
@@ -19,9 +19,9 @@ UnaryExp::UnaryExp(std::vector<GramNode *> sons) : GramNode() {
  * @param ite_p
  * @return
  */
-bool UnaryExp::create(std::vector<GramNode *> &toAdd, std::vector<TokenBase *>::iterator &ite_p) {
+bool UnaryExp::create(std::vector<std::shared_ptr<GramNode>> &toAdd, std::vector<TokenBase *>::iterator &ite_p) {
     auto ite = ite_p;
-    std::vector<GramNode *> son_ps;
+    std::vector<std::shared_ptr<GramNode>> son_ps;
     if (TokenBase::isTypeOf(ite, TokenBase::PLUS) ||
         TokenBase::isTypeOf(ite, TokenBase::MINU) ||
         TokenBase::isTypeOf(ite, TokenBase::NOT)) {
@@ -32,7 +32,9 @@ bool UnaryExp::create(std::vector<GramNode *> &toAdd, std::vector<TokenBase *>::
             return false;
         }
         ite_p = ite;
-        toAdd.push_back(new UnaryExp(son_ps));
+        std::shared_ptr<UnaryExp> tmp_p;
+        tmp_p.reset(new UnaryExp(son_ps));
+        toAdd.push_back(tmp_p);
         return true;
     } else if (TokenBase::isTypeOf(ite, TokenBase::IDENFR) &&
                TokenBase::isTypeOf(ite + 1, TokenBase::LPARENT)) {
@@ -45,11 +47,15 @@ bool UnaryExp::create(std::vector<GramNode *> &toAdd, std::vector<TokenBase *>::
             return false;
         }
         ite_p = ite;
-        toAdd.push_back(new UnaryExp(son_ps));
+        std::shared_ptr<UnaryExp> tmp_p;
+        tmp_p.reset(new UnaryExp(son_ps));
+        toAdd.push_back(tmp_p);
         return true;
     } else if (PrimaryExp::create(son_ps, ite)) {
         ite_p = ite;
-        toAdd.push_back(new UnaryExp(son_ps));
+        std::shared_ptr<UnaryExp> tmp_p;
+        tmp_p.reset(new UnaryExp(son_ps));
+        toAdd.push_back(tmp_p);
         return true;
     }
     return false;

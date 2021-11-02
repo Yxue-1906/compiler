@@ -10,18 +10,20 @@
 
 class TokenNode : public GramNode {
 private:
-    TokenBase &token;
+    std::shared_ptr<TokenBase> token_p;
 public:
 
 
 private:
-    TokenNode(TokenBase &);
+    TokenNode(std::shared_ptr<TokenBase>);
 
 public:
 
     virtual void myOutput() override;
 
-    static bool create(std::vector<GramNode *> &, std::vector<TokenBase *>::iterator &, int);
+    std::shared_ptr<TokenBase> getToken_p();
+
+    static bool create(std::vector<std::shared_ptr<GramNode>> &, std::vector<TokenBase *>::iterator &, int);
 };
 
 

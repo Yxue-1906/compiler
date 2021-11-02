@@ -7,7 +7,7 @@
 #include "ConstExp.h"
 #include "InitVal.h"
 
-VarDef::VarDef(std::vector<GramNode *> sons) : GramNode() {
+VarDef::VarDef(std::vector<std::shared_ptr<GramNode>> sons) : GramNode() {
     setGramName("VarDef");
     setSons(std::move(sons));
 }
@@ -19,9 +19,9 @@ VarDef::VarDef(std::vector<GramNode *> sons) : GramNode() {
  * @param ite_p
  * @return
  */
-bool VarDef::create(std::vector<GramNode *> &toAdd, std::vector<TokenBase *>::iterator &ite_p) {
+bool VarDef::create(std::vector<std::shared_ptr<GramNode>> &toAdd, std::vector<TokenBase *>::iterator &ite_p) {
     auto ite = ite_p;
-    std::vector<GramNode *> son_ps;
+    std::vector<std::shared_ptr<GramNode>> son_ps;
     if (!TokenNode::create(son_ps, ite, TokenBase::IDENFR)) {
         return false;
     }
@@ -39,6 +39,8 @@ bool VarDef::create(std::vector<GramNode *> &toAdd, std::vector<TokenBase *>::it
         }
     }
     ite_p = ite;
-    toAdd.push_back(new VarDef(son_ps));
+    std::shared_ptr<VarDef> tmp_p;
+    tmp_p.reset(new VarDef(son_ps));
+    toAdd.push_back(tmp_p);
     return true;
 }

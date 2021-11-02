@@ -5,7 +5,7 @@
 #include "ConstExp.h"
 #include "AddExp.h"
 
-ConstExp::ConstExp(std::vector<GramNode *> sons) : GramNode() {
+ConstExp::ConstExp(std::vector<std::shared_ptr<GramNode>> sons) : GramNode() {
     setGramName("ConstExp");
     setSons(std::move(sons));
 }
@@ -16,13 +16,15 @@ ConstExp::ConstExp(std::vector<GramNode *> sons) : GramNode() {
  * @param ite_p
  * @return
  */
-bool ConstExp::create(std::vector<GramNode *> &toAdd, std::vector<TokenBase *>::iterator &ite_p) {
+bool ConstExp::create(std::vector<std::shared_ptr<GramNode>> &toAdd, std::vector<TokenBase *>::iterator &ite_p) {
     auto ite = ite_p;
-    std::vector<GramNode *> son_ps;
+    std::vector<std::shared_ptr<GramNode>> son_ps;
     if (!AddExp::create(son_ps, ite)) {
         return false;
     }
     ite_p = ite;
-    toAdd.push_back(new ConstExp(son_ps));
+    std::shared_ptr<ConstExp> tmp_p;
+    tmp_p.reset(new ConstExp(son_ps));
+    toAdd.push_back(tmp_p);
     return true;
 }

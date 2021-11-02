@@ -10,9 +10,9 @@
 
 class IllegalCharException : public MyException {
 public:
-    IllegalCharException(const TokenBase &token) : MyException(token, 'a') {}
+    explicit IllegalCharException(const TokenBase &token) : MyException(token, 'a') {}
 
-    IllegalCharException(int line_number) : MyException(line_number, 'a') {}
+    explicit IllegalCharException(int line_number) : MyException(line_number, 'a') {}
 
     IllegalCharException(const TokenBase &token, std::string message) : MyException(token, 'a') {
         this->message.append(message);

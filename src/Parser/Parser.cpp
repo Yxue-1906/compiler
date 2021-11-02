@@ -6,7 +6,7 @@
 
 Parser::Parser(std::vector<TokenBase *> &tokenList) : tokenList(tokenList) {
     auto begin = tokenList.begin();
-    std::vector<GramNode *> tmp;
+    std::vector<std::shared_ptr<GramNode>> tmp;
     if (CompUnit::create(tmp, begin)) {
         root = tmp[0];
     } else throw MyException(-1, 'g');

@@ -16,7 +16,7 @@ private:
     std::string GramName;
 
 protected:
-    std::vector<GramNode *> sons;
+    std::vector<std::shared_ptr<GramNode>> sons;
 public:
 
 private:
@@ -26,11 +26,11 @@ protected:
 
     void setGramName(std::string);
 
-    void setSons(std::vector<GramNode *>);
+    void setSons(std::vector<std::shared_ptr<GramNode>>);
 
     std::string getGramName();
 
-    std::vector<TokenBase> getSons();
+    std::vector<std::shared_ptr<GramNode>> getSons();
 
 public:
 

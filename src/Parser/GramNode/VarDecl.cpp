@@ -6,7 +6,7 @@
 #include "BType.h"
 #include "VarDef.h"
 
-VarDecl::VarDecl(std::vector<GramNode *> sons) : GramNode() {
+VarDecl::VarDecl(std::vector<std::shared_ptr<GramNode>> sons) : GramNode() {
     setGramName("VarDecl");
     setSons(std::move(sons));
 }
@@ -17,9 +17,9 @@ VarDecl::VarDecl(std::vector<GramNode *> sons) : GramNode() {
  * @param ite_p
  * @return
  */
-bool VarDecl::create(std::vector<GramNode *> &toAdd, std::vector<TokenBase *>::iterator &ite_p) {
+bool VarDecl::create(std::vector<std::shared_ptr<GramNode>> &toAdd, std::vector<TokenBase *>::iterator &ite_p) {
     auto ite = ite_p;
-    std::vector<GramNode *> son_ps;
+    std::vector<std::shared_ptr<GramNode>> son_ps;
     if (!BType::create(son_ps, ite)) {
         return false;
     }
@@ -35,6 +35,8 @@ bool VarDecl::create(std::vector<GramNode *> &toAdd, std::vector<TokenBase *>::i
         return false;
     }
     ite_p = ite;
-    toAdd.push_back(new VarDecl(son_ps));
+    std::shared_ptr<VarDecl> tmp_p;
+    tmp_p.reset(new VarDecl(son_ps));
+    toAdd.push_back(tmp_p);
     return true;
 }

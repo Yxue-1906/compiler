@@ -16,7 +16,7 @@ public:
 private:
     // private attributes
     std::vector<TokenBase *> &tokenList;
-    GramNode *root;
+    std::shared_ptr<GramNode> root;
 
 public:
     // public methods

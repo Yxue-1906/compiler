@@ -7,7 +7,7 @@
 #include "ConstExp.h"
 #include "ConstInitVal.h"
 
-ConstDef::ConstDef(std::vector<GramNode *> sons) : GramNode() {
+ConstDef::ConstDef(std::vector<std::shared_ptr<GramNode>> sons) : GramNode() {
     setGramName("ConstDef");
     setSons(std::move(sons));
 }
@@ -18,9 +18,9 @@ ConstDef::ConstDef(std::vector<GramNode *> sons) : GramNode() {
  * @param ite_p
  * @return
  */
-bool ConstDef::create(std::vector<GramNode *> &toAdd, std::vector<TokenBase *>::iterator &ite_p) {
+bool ConstDef::create(std::vector<std::shared_ptr<GramNode>> &toAdd, std::vector<TokenBase *>::iterator &ite_p) {
     auto ite = ite_p;
-    std::vector<GramNode *> son_ps;
+    std::vector<std::shared_ptr<GramNode>> son_ps;
     if (!TokenNode::create(son_ps, ite, TokenBase::IDENFR)) {
         return false;
     }
@@ -39,6 +39,8 @@ bool ConstDef::create(std::vector<GramNode *> &toAdd, std::vector<TokenBase *>::
         return false;
     }
     ite_p = ite;
-    toAdd.push_back(new ConstDef(son_ps));
+    std::shared_ptr<ConstDef> tmp_p;
+    tmp_p.reset(new ConstDef(son_ps));
+    toAdd.push_back(tmp_p);
     return true;
 }

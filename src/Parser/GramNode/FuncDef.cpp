@@ -8,7 +8,7 @@
 #include "FuncFParams.h"
 #include "Block.h"
 
-FuncDef::FuncDef(std::vector<GramNode *> sons) : GramNode() {
+FuncDef::FuncDef(std::vector<std::shared_ptr<GramNode>> sons) : GramNode() {
     setGramName("FuncDef");
     setSons(std::move(sons));
 }
@@ -19,9 +19,9 @@ FuncDef::FuncDef(std::vector<GramNode *> sons) : GramNode() {
  * @param ite_p
  * @return
  */
-bool FuncDef::create(std::vector<GramNode *> &toAdd, std::vector<TokenBase *>::iterator &ite_p) {
+bool FuncDef::create(std::vector<std::shared_ptr<GramNode>> &toAdd, std::vector<TokenBase *>::iterator &ite_p) {
     auto ite = ite_p;
-    std::vector<GramNode *> son_ps;
+    std::vector<std::shared_ptr<GramNode>> son_ps;
     if (!FuncType::create(son_ps, ite)) {
         return false;
     }
@@ -41,6 +41,8 @@ bool FuncDef::create(std::vector<GramNode *> &toAdd, std::vector<TokenBase *>::i
         return false;
     }
     ite_p = ite;
-    toAdd.push_back(new FuncDef(son_ps));
+    std::shared_ptr<FuncDef> tmp_p;
+    tmp_p.reset(new FuncDef(son_ps));
+    toAdd.push_back(tmp_p);
     return true;
 }

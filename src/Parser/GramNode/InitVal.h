@@ -12,10 +12,10 @@ class InitVal : public GramNode {
 private:
 public:
 private:
-    InitVal(std::vector<GramNode *>);
+    InitVal(std::vector<std::shared_ptr<GramNode>>sons);
 
 public:
-    static bool create(std::vector<GramNode *> &, std::vector<TokenBase *>::iterator &);
+    static bool create(std::vector<std::shared_ptr<GramNode>> &, std::vector<TokenBase *>::iterator &);
 
 };
 

@@ -8,8 +8,10 @@
 #include "Exp.h"
 #include "Block.h"
 #include "LVal.h"
+#include "../../Lexer/Token/STRCON.h"
+#include "../../Exception/MyException/IllegalCharException.h"
 
-Stmt::Stmt(std::vector<GramNode *> sons) : GramNode() {
+Stmt::Stmt(std::vector<std::shared_ptr<GramNode>> sons) : GramNode() {
     setGramName("Stmt");
     setSons(std::move(sons));
 }
@@ -29,9 +31,9 @@ Stmt::Stmt(std::vector<GramNode *> sons) : GramNode() {
  * @param ite_p
  * @return
  */
-bool Stmt::create(std::vector<GramNode *> &toAdd, std::vector<TokenBase *>::iterator &ite_p) {
+bool Stmt::create(std::vector<std::shared_ptr<GramNode>> &toAdd, std::vector<TokenBase *>::iterator &ite_p) {
     auto ite = ite_p;
-    std::vector<GramNode *> son_ps;
+    std::vector<std::shared_ptr<GramNode>> son_ps;
     auto detectExp = [&ite]() -> bool {
         if (!TokenBase::isTypeOf(ite, TokenBase::IDENFR))
             return true;
@@ -66,7 +68,9 @@ bool Stmt::create(std::vector<GramNode *> &toAdd, std::vector<TokenBase *>::iter
             }
         }
         ite_p = ite;
-        toAdd.push_back(new Stmt(son_ps));
+        std::shared_ptr<Stmt> tmp_p;
+        tmp_p.reset(new Stmt(son_ps));
+        toAdd.push_back(tmp_p);
         return true;
     } else if (TokenNode::create(son_ps, ite, TokenBase::WHILETK)) {
         if (!TokenNode::create(son_ps, ite, TokenBase::LPARENT)) {
@@ -82,7 +86,9 @@ bool Stmt::create(std::vector<GramNode *> &toAdd, std::vector<TokenBase *>::iter
             return false;
         }
         ite_p = ite;
-        toAdd.push_back(new Stmt(son_ps));
+        std::shared_ptr<Stmt> tmp_p;
+        tmp_p.reset(new Stmt(son_ps));
+        toAdd.push_back(tmp_p);
         return true;
     } else if (TokenNode::create(son_ps, ite, TokenBase::BREAKTK) ||
                TokenNode::create(son_ps, ite, TokenBase::CONTINUETK)) {
@@ -90,7 +96,9 @@ bool Stmt::create(std::vector<GramNode *> &toAdd, std::vector<TokenBase *>::iter
             return false;
         }
         ite_p = ite;
-        toAdd.push_back(new Stmt(son_ps));
+        std::shared_ptr<Stmt> tmp_p;
+        tmp_p.reset(new Stmt(son_ps));
+        toAdd.push_back(tmp_p);
         return true;
     } else if (TokenNode::create(son_ps, ite, TokenBase::RETURNTK)) {
         if (!TokenBase::isTypeOf(ite, TokenBase::SEMICN))
@@ -100,7 +108,9 @@ bool Stmt::create(std::vector<GramNode *> &toAdd, std::vector<TokenBase *>::iter
             return false;
         }
         ite_p = ite;
-        toAdd.push_back(new Stmt(son_ps));
+        std::shared_ptr<Stmt> tmp_p;
+        tmp_p.reset(new Stmt(son_ps));
+        toAdd.push_back(tmp_p);
         return true;
     } else if (TokenNode::create(son_ps, ite, TokenBase::PRINTFTK)) {
         if (!TokenNode::create(son_ps, ite, TokenBase::LPARENT)) {
@@ -108,6 +118,17 @@ bool Stmt::create(std::vector<GramNode *> &toAdd, std::vector<TokenBase *>::iter
         }
         if (!TokenNode::create(son_ps, ite, TokenBase::STRCON)) {
             return false;
+        }
+        try {
+            auto tokenNode = std::dynamic_pointer_cast<TokenNode>(son_ps.back());
+            auto strcon = std::dynamic_pointer_cast<STRCON>(tokenNode->getToken_p());//todo:check nullptr
+            if (!strcon->checkValid()) {
+                auto printfNode = std::dynamic_pointer_cast<TokenNode>(son_ps[0]);
+                int lineNumber = printfNode->getToken_p()->getLineNumber();
+                throw IllegalCharException(lineNumber);
+            }
+        } catch (IllegalCharException &e) {//todo
+            e.myOutput();
         }
         for (; TokenNode::create(son_ps, ite, TokenBase::COMMA);) {
             if (!Exp::create(son_ps, ite)) {
@@ -121,14 +142,18 @@ bool Stmt::create(std::vector<GramNode *> &toAdd, std::vector<TokenBase *>::iter
             return false;
         }
         ite_p = ite;
-        toAdd.push_back(new Stmt(son_ps));
+        std::shared_ptr<Stmt> tmp_p;
+        tmp_p.reset(new Stmt(son_ps));
+        toAdd.push_back(tmp_p);
         return true;
     } else if (TokenBase::isTypeOf(ite, TokenBase::LBRACE)) {
         if (!Block::create(son_ps, ite)) {
             return false;
         }
         ite_p = ite;
-        toAdd.push_back(new Stmt(son_ps));
+        std::shared_ptr<Stmt> tmp_p;
+        tmp_p.reset(new Stmt(son_ps));
+        toAdd.push_back(tmp_p);
         return true;
     } else if (TokenBase::isTypeOf(ite, TokenBase::IDENFR) &&
                !TokenBase::isTypeOf(ite + 1, TokenBase::LPARENT)) {
@@ -138,7 +163,9 @@ bool Stmt::create(std::vector<GramNode *> &toAdd, std::vector<TokenBase *>::iter
             if (!TokenNode::create(son_ps, ite, TokenBase::SEMICN))
                 return false;
             ite_p = ite;
-            toAdd.push_back(new Stmt(son_ps));
+            std::shared_ptr<Stmt> tmp_p;
+            tmp_p.reset(new Stmt(son_ps));
+            toAdd.push_back(tmp_p);
             return true;
         } else {
             if (!LVal::create(son_ps, ite))
@@ -156,14 +183,18 @@ bool Stmt::create(std::vector<GramNode *> &toAdd, std::vector<TokenBase *>::iter
                     return false;
                 }
                 ite_p = ite;
-                toAdd.push_back(new Stmt(son_ps));
+                std::shared_ptr<Stmt> tmp_p;
+                tmp_p.reset(new Stmt(son_ps));
+                toAdd.push_back(tmp_p);
                 return true;
             } else {
                 Exp::create(son_ps, ite);
                 if (TokenBase::isTypeOf(ite, TokenBase::SEMICN)) {
                     TokenNode::create(son_ps, ite, TokenBase::SEMICN);
                     ite_p = ite;
-                    toAdd.push_back(new Stmt(son_ps));
+                    std::shared_ptr<Stmt> tmp_p;
+                    tmp_p.reset(new Stmt(son_ps));
+                    toAdd.push_back(tmp_p);
                     return true;
                 }
                 return false;

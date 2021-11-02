@@ -9,7 +9,7 @@
 #include "ConstDef.h"
 
 
-ConstDecl::ConstDecl(std::vector<GramNode *> sons) : GramNode() {
+ConstDecl::ConstDecl(std::vector<std::shared_ptr<GramNode>> sons) : GramNode() {
     setGramName("ConstDecl");
     setSons(std::move(sons));
 }
@@ -20,9 +20,9 @@ ConstDecl::ConstDecl(std::vector<GramNode *> sons) : GramNode() {
  * @param ite_p
  * @return
  */
-bool ConstDecl::create(std::vector<GramNode *> &toAdd, std::vector<TokenBase *>::iterator &ite_p) {
+bool ConstDecl::create(std::vector<std::shared_ptr<GramNode>> &toAdd, std::vector<TokenBase *>::iterator &ite_p) {
     auto ite = ite_p;
-    std::vector<GramNode *> son_ps;
+    std::vector<std::shared_ptr<GramNode>> son_ps;
     if (!TokenNode::create(son_ps, ite, TokenBase::CONSTTK)) {
         return false;
     }
@@ -41,6 +41,8 @@ bool ConstDecl::create(std::vector<GramNode *> &toAdd, std::vector<TokenBase *>:
         return false;
     }
     ite_p = ite;
-    toAdd.push_back(new ConstDecl(son_ps));
+    std::shared_ptr<ConstDecl> tmp_p;
+    tmp_p.reset(new ConstDecl(son_ps));
+    toAdd.push_back(tmp_p);
     return true;
 }

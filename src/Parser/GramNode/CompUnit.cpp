@@ -7,7 +7,7 @@
 #include "FuncDef.h"
 #include "MainFuncDef.h"
 
-CompUnit::CompUnit(std::vector<GramNode *> sons) : GramNode() {
+CompUnit::CompUnit(std::vector<std::shared_ptr<GramNode>> sons) : GramNode() {
     setGramName("CompUnit");
     setSons(std::move(sons));
 }
@@ -18,9 +18,9 @@ CompUnit::CompUnit(std::vector<GramNode *> sons) : GramNode() {
  * @param ite_p
  * @return
  */
-bool CompUnit::create(std::vector<GramNode *> &toAdd, std::vector<TokenBase *>::iterator &ite_p) {
+bool CompUnit::create(std::vector<std::shared_ptr<GramNode>> &toAdd, std::vector<TokenBase *>::iterator &ite_p) {
     auto ite = ite_p;
-    std::vector<GramNode *> son_ps;
+    std::vector<std::shared_ptr<GramNode>> son_ps;
     auto detectDecl = [&ite]() -> bool {
         if (TokenBase::isTypeOf(ite, TokenBase::CONSTTK))return true;
         if (!TokenBase::isTypeOf(ite + 1, TokenBase::IDENFR))return false;
@@ -39,6 +39,8 @@ bool CompUnit::create(std::vector<GramNode *> &toAdd, std::vector<TokenBase *>::
         return false;
     }
     ite_p = ite;
-    toAdd.push_back(new CompUnit(son_ps));
+    std::shared_ptr<CompUnit> tmp_p;
+    tmp_p.reset(new CompUnit(son_ps));
+    toAdd.push_back(tmp_p);
     return true;
 }

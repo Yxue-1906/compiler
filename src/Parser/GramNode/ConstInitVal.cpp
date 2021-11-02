@@ -6,7 +6,7 @@
 #include "ConstExp.h"
 #include "../TokenNode.h"
 
-ConstInitVal::ConstInitVal(std::vector<GramNode *> sons) : GramNode() {
+ConstInitVal::ConstInitVal(std::vector<std::shared_ptr<GramNode>> sons) : GramNode() {
     setGramName("ConstInitVal");
     setSons(std::move(sons));
 }
@@ -18,12 +18,14 @@ ConstInitVal::ConstInitVal(std::vector<GramNode *> sons) : GramNode() {
  * @param ite_p
  * @return
  */
-bool ConstInitVal::create(std::vector<GramNode *> &toAdd, std::vector<TokenBase *>::iterator &ite_p) {
+bool ConstInitVal::create(std::vector<std::shared_ptr<GramNode>> &toAdd, std::vector<TokenBase *>::iterator &ite_p) {
     auto ite = ite_p;
-    std::vector<GramNode *> son_ps;
+    std::vector<std::shared_ptr<GramNode>> son_ps;
     if (TokenNode::create(son_ps, ite, TokenBase::LBRACE)) {
         if (TokenNode::create(son_ps, ite, TokenBase::RBRACE)) {
-            toAdd.push_back(new ConstInitVal(son_ps));
+            std::shared_ptr<GramNode> tmp_p;
+            tmp_p.reset(new ConstInitVal(son_ps));
+            toAdd.push_back(tmp_p);
             ite_p = ite;
             return true;
         }
@@ -39,13 +41,17 @@ bool ConstInitVal::create(std::vector<GramNode *> &toAdd, std::vector<TokenBase 
             return false;
         }
         ite_p = ite;
-        toAdd.push_back(new ConstInitVal(son_ps));
+        std::shared_ptr<ConstInitVal> tmp_p;
+        tmp_p.reset(new ConstInitVal(son_ps));
+        toAdd.push_back(tmp_p);
         return true;
     } else {
         if (!ConstExp::create(son_ps, ite)) {
             return false;
         }
-        toAdd.push_back(new ConstInitVal(son_ps));
+        std::shared_ptr<ConstInitVal> tmp_p;
+        tmp_p.reset(new ConstInitVal(son_ps));
+        toAdd.push_back(tmp_p);
         ite_p = ite;
         return true;
     }

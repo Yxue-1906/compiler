@@ -6,14 +6,14 @@
 #include "../TokenNode.h"
 #include "Block.h"
 
-MainFuncDef::MainFuncDef(std::vector<GramNode *> sons) : GramNode() {
+MainFuncDef::MainFuncDef(std::vector<std::shared_ptr<GramNode>> sons) : GramNode() {
     setGramName("MainFuncDef");
     setSons(std::move(sons));
 }
 
-bool MainFuncDef::create(std::vector<GramNode *> &toAdd, std::vector<TokenBase *>::iterator &ite_p) {
+bool MainFuncDef::create(std::vector<std::shared_ptr<GramNode>> &toAdd, std::vector<TokenBase *>::iterator &ite_p) {
     auto ite = ite_p;
-    std::vector<GramNode *> son_ps;
+    std::vector<std::shared_ptr<GramNode>> son_ps;
     GramNode *nexNode;
     if (!TokenNode::create(son_ps, ite, TokenBase::INTTK)) {
         return false;
@@ -31,6 +31,8 @@ bool MainFuncDef::create(std::vector<GramNode *> &toAdd, std::vector<TokenBase *
         return false;
     }
     ite_p = ite;
-    toAdd.push_back(new MainFuncDef(son_ps));
+    std::shared_ptr<MainFuncDef> tmp_p;
+    tmp_p.reset(new MainFuncDef(son_ps));
+    toAdd.push_back(tmp_p);
     return true;
 }
