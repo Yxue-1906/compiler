@@ -151,9 +151,9 @@ Stmt::create(std::vector<std::shared_ptr<GramNode>> &toAdd, std::vector<TokenBas
             return false;
         }
         auto tokenNode = std::dynamic_pointer_cast<TokenNode>(son_ps.back());
-        auto strcon = std::dynamic_pointer_cast<STRCON>(tokenNode->getToken_p());//todo:check nullptr
+        auto strcon_p = std::dynamic_pointer_cast<STRCON>(tokenNode->getToken_p());//todo:check nullptr
         try {
-            if (!strcon->checkValid()) {
+            if (!strcon_p->checkValid()) {
                 auto printfNode = std::dynamic_pointer_cast<TokenNode>(son_ps[0]);
                 int lineNumber = printfNode->getToken_p()->getLineNumber();
                 throw IllegalCharException(lineNumber);
@@ -168,7 +168,7 @@ Stmt::create(std::vector<std::shared_ptr<GramNode>> &toAdd, std::vector<TokenBas
             }
         }
         try {
-            if (count != strcon->getCount()) {
+            if (count != strcon_p->getCount()) {
                 auto printfNode = std::dynamic_pointer_cast<TokenNode>(son_ps[0]);
                 int lineNumber = printfNode->getToken_p()->getLineNumber();
                 throw MismatchPlaceholderCountException(lineNumber);
@@ -192,7 +192,7 @@ Stmt::create(std::vector<std::shared_ptr<GramNode>> &toAdd, std::vector<TokenBas
         toAdd.push_back(tmp_p);
         return true;
     } else if (TokenBase::isTypeOf(ite, TokenBase::LBRACE)) {
-        if (!Block::create(son_ps, ite, isLoop)) {
+        if (!Block::create(son_ps, ite, isLoop, true)) {
             return false;
         }
         ite_p = ite;

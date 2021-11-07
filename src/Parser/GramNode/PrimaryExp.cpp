@@ -7,6 +7,7 @@
 #include "Exp.h"
 #include "Number.h"
 #include "LVal.h"
+#include "../../Lexer/Token/LPARENT.h"
 
 PrimaryExp::PrimaryExp(std::vector<std::shared_ptr<GramNode>> sons) : GramNode() {
     setGramName("PrimaryExp");
@@ -60,15 +61,24 @@ bool PrimaryExp::create(std::vector<std::shared_ptr<GramNode>> &toAdd, std::vect
 
 bool PrimaryExp::getType(std::shared_ptr<IdentInfo> &toReturn) {
     auto ite = this->sons.begin();
-    for (; ite != this->sons.end(); ++ite) {
-        auto number_p = std::dynamic_pointer_cast<Number>(*ite);
-        if (number_p) {
-            toReturn = IdentInfo::VARIABLE;
-            return true;
-        }
-        auto lval_p = std::dynamic_pointer_cast<LVal>(*ite);
-        if (lval_p) {
-            return lval_p//todo: complete here
+    auto number_p = std::dynamic_pointer_cast<Number>(*ite);
+    if (number_p) {
+        toReturn = std::make_shared<IdentInfo>(true, 0);
+        return true;
+    }
+    auto lval_p = std::dynamic_pointer_cast<LVal>(*ite);
+    if (lval_p) {
+        return lval_p->getType(toReturn);
+    }
+    auto tokenNode_p = std::dynamic_pointer_cast<TokenNode>(*ite);
+    if (tokenNode_p && std::dynamic_pointer_cast<LPARENT>(tokenNode_p->getToken_p())) {
+        ++ite;
+        auto exp_p = std::dynamic_pointer_cast<Exp>(*ite);
+        if (exp_p) {
+            return exp_p->getType(toReturn);
+        } else {
+            //unreachable
         }
     }
+    return false;//unreachable
 }

@@ -38,13 +38,13 @@ bool MulExp::create(std::vector<std::shared_ptr<GramNode>> &toAdd, std::vector<T
     return true;
 }
 
-bool MulExp::getType(std::shared_ptr<Info> &toReturn) {
+bool MulExp::getType(std::shared_ptr<IdentInfo> &toReturn) {
     std::shared_ptr<IdentInfo> tmp;
     for (auto &i: this->sons) {
         auto unaryExp_p = std::dynamic_pointer_cast<UnaryExp>(i);
         if (!unaryExp_p)
             continue;
-        if (!unaryExp_p.getType(tmp))
+        if (!unaryExp_p->getType(tmp))
             return false;
         if (!tmp)
             return false;

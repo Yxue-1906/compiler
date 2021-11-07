@@ -16,7 +16,8 @@ private:
     Block(std::vector<std::shared_ptr<GramNode>> sons);
 
 public:
-    static bool create(std::vector<std::shared_ptr<GramNode>> &, std::vector<TokenBase *>::iterator &, bool isLoop);
+    static bool
+    create(std::vector<std::shared_ptr<GramNode>> &, std::vector<TokenBase *>::iterator &, bool isLoop, bool newTable);
 
 };
 

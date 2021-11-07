@@ -36,16 +36,16 @@ public:
 
     bool operator!=(Info &&a) const override;
 
-protected:
-    IdentInfo(int dimension) noexcept;
+    IdentInfo(bool isConst, int dimension) noexcept;
+
+    bool checkConst() const noexcept;
+
+    bool getDimension() const noexcept;
 
 private:
+    const int isConst;
     const int dimension;
 
-public:
-    static std::shared_ptr<IdentInfo> VARIABLE;
-    static std::shared_ptr<IdentInfo> ARRAY;
-    static std::shared_ptr<IdentInfo> ARRAY_2D;
 };
 
 class FuncInfo : public Info {
@@ -75,7 +75,7 @@ public:
 
 private:
     std::shared_ptr<IdentInfo> returnType;
-    std::vector<std::shared_ptr<IdentInfo>> parmTypes;
+    std::map<std::string, std::shared_ptr<IdentInfo>> params;//todo: refactor here
 
 };
 

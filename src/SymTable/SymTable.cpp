@@ -8,10 +8,6 @@
 /**
  * provide pre-generate instances
  */
-std::shared_ptr<IdentInfo>IdentInfo::VARIABLE{new IdentInfo(0)};
-std::shared_ptr<IdentInfo>IdentInfo::ARRAY{new IdentInfo(1)};
-std::shared_ptr<IdentInfo>IdentInfo::ARRAY_2D{new IdentInfo(2)};
-
 bool IdentInfo::operator==(Info &a) const {
     try {
         auto identInfo = dynamic_cast<IdentInfo &>(a);
@@ -44,9 +40,17 @@ bool IdentInfo::operator!=(Info &&a) const {
     return !(*this == a);
 }
 
-IdentInfo::IdentInfo(int dimension) noexcept: dimension(dimension) {}
+IdentInfo::IdentInfo(bool isConst, int dimension) noexcept: isConst(isConst), dimension(dimension) {}
 
-int FuncInfo::ErrorType = 0;
+bool IdentInfo::checkConst() const noexcept {
+    return this->isConst;
+}
+
+bool IdentInfo::getDimension() const noexcept {
+    return this->dimension;
+}
+
+FuncInfo::ErrorType FuncInfo::errorNo = FuncInfo::ErrorType::NO_ERROR;
 
 bool FuncInfo::operator==(Info &a) const {
     try {
@@ -128,6 +132,8 @@ std::shared_ptr<Info> SymTable::queryIdent(std::string &name) noexcept {
     try {
         return symTable.at(name);
     } catch (std::out_of_range &e) {
+        if (this->formerTable_p)
+            return this->formerTable_p->queryIdent(name);
         return nullptr;
     }
 }

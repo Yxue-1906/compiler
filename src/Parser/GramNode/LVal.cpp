@@ -39,15 +39,26 @@ bool LVal::create(std::vector<std::shared_ptr<GramNode>> &toAdd, std::vector<Tok
     return true;
 }
 
+/**
+ * get type of lval, be variable or array or array 2d;
+ * @param toReturn return value goes here
+ * @return true when no error occurred, otherwise false
+ */
 bool LVal::getType(std::shared_ptr<IdentInfo> &toReturn) {
     auto ite = this->sons.begin();
     auto ident_p = std::dynamic_pointer_cast<IDENFR>(*ite);
     ++ite;
-    auto tmp = GramNode::getNowTable()->queryIdent(*ident_p->getValue_p());
-    toReturn = std::dynamic_pointer_cast<IdentInfo>(tmp);
-    if (!toReturn) {
+    try {
+        auto tmp = GramNode::getNowTable()->queryIdent(*ident_p->getValue_p());
+        toReturn = std::dynamic_pointer_cast<IdentInfo>(tmp);
+        if (!toReturn) {
+            toReturn = nullptr;
+            throw DupIdentException(ident_p->getLineNumber());
+        }
+    } catch (UndefIdentException &e) {
+        e.myOutput();
         toReturn = nullptr;
-        throw DupIdentException(ident_p->getLineNumber());
+        return false;
     }
     for (; ite != this->sons.end(); ++ite) {
         if (std::dynamic_pointer_cast<LBRACK>(*ite)) {
@@ -58,16 +69,17 @@ bool LVal::getType(std::shared_ptr<IdentInfo> &toReturn) {
                 // there is an exp and
                 // exp can return a type and
                 // this type must be a variable
-                if (tmp && *tmp == *IdentInfo::VARIABLE) {
-                    if (*toReturn == *IdentInfo::ARRAY_2D)
-                        toReturn = IdentInfo::ARRAY;
-                    else if (*toReturn == *IdentInfo::ARRAY)
-                        toReturn = IdentInfo::VARIABLE;
+                if (tmp && tmp->getDimension() == 0) {
+                    if (toReturn->getDimension() != 0)
+                        toReturn = std::make_shared<IdentInfo>(toReturn->checkConst(), toReturn->getDimension() - 1);
                     else {
                         toReturn = nullptr;
                         return false;//todo: check if need throw an exception
                     }
                 }
+            } else {
+                //there should be an exp in the bracket
+                //handle fault
             }
         }
     }

@@ -18,7 +18,11 @@ Block::Block(std::vector<std::shared_ptr<GramNode>> sons) : GramNode() {
  * @return
  */
 bool
-Block::create(std::vector<std::shared_ptr<GramNode>> &toAdd, std::vector<TokenBase *>::iterator &ite_p, bool isLoop) {
+Block::create(std::vector<std::shared_ptr<GramNode>> &toAdd, std::vector<TokenBase *>::iterator &ite_p, bool isLoop,
+              bool newTable) {
+    if (newTable) {
+        GramNode::nowTable_p = std::make_shared<SymTable>(GramNode::nowTable_p);
+    }
     auto ite = ite_p;
     std::vector<std::shared_ptr<GramNode>> son_ps;
     if (!TokenNode::create(son_ps, ite, TokenBase::LBRACE)) {
@@ -32,5 +36,6 @@ Block::create(std::vector<std::shared_ptr<GramNode>> &toAdd, std::vector<TokenBa
     std::shared_ptr<Block> tmp_p;
     tmp_p.reset(new Block(son_ps));
     toAdd.push_back(tmp_p);
+    GramNode::nowTable_p = GramNode::nowTable_p->getFormerTable_p();
     return true;
 }

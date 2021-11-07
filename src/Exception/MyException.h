@@ -8,6 +8,7 @@
 
 #include <exception>
 #include <string>
+#include <typeinfo>
 #include "../Lexer/TokenBase.h"
 
 class MyException : public std::exception, public MyOutput {
@@ -28,7 +29,7 @@ public:
         auto eos = getEos();
         (*eos) << lineNumber << ' ' << type;
 #ifdef DEBUG
-        (*os) << ':' << message;
+        (*eos) << ':' << typeid(*this).name();
 #endif // DEBUG
         (*eos) << std::endl;
     }
