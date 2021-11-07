@@ -12,11 +12,12 @@ class FuncType : public GramNode {
 private:
 public:
 private:
-    FuncType(std::vector<std::shared_ptr<GramNode>>sons);
+    FuncType(std::vector<std::shared_ptr<GramNode>> sons);
 
 public:
     static bool create(std::vector<std::shared_ptr<GramNode>> &, std::vector<TokenBase *>::iterator &);
 
+    std::shared_ptr<IdentInfo> getFuncType();
 };
 
 

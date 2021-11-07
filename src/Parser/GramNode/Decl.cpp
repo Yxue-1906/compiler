@@ -41,3 +41,9 @@ void Decl::myOutput() {
         i->myOutput();
     }
 }
+
+bool Decl::checkValid() {//todo: realize checkValid of ConstDecl and VarDecl
+    auto ite = this->sons.begin();
+    bool toReturn = true & (*ite)->checkValid();
+    return toReturn;
+}

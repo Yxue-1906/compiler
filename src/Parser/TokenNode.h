@@ -24,6 +24,10 @@ public:
     std::shared_ptr<TokenBase> getToken_p();
 
     static bool create(std::vector<std::shared_ptr<GramNode>> &, std::vector<TokenBase *>::iterator &, int);
+
+    virtual bool checkValid() override;
+
+    virtual void updateLineNumber() override;
 };
 
 

@@ -81,8 +81,8 @@ bool FuncInfo::operator!=(Info &&a) const {
 }
 
 FuncInfo::FuncInfo(std::shared_ptr<IdentInfo> identInfo_p,
-                   std::vector<std::shared_ptr<IdentInfo>> parmTypes) noexcept
-        : returnType(identInfo_p), parmTypes(std::move(parmTypes)) {}
+                   std::vector<std::pair<std::string, std::shared_ptr<IdentInfo>>> params) noexcept
+        : returnType(identInfo_p), params(std::move(params)) {}
 
 /**
  * check return type of itself equal to toCheck
@@ -103,14 +103,14 @@ std::shared_ptr<IdentInfo> FuncInfo::getReturnType() noexcept {
 }
 
 bool FuncInfo::checkParamTypes(std::vector<std::shared_ptr<IdentInfo>> &toCheck) const {
-    if (this->parmTypes.size() != toCheck.size()) {
+    if (this->params.size() != toCheck.size()) {
         FuncInfo::errorNo = FuncInfo::ErrorType::MISMATCH_PARAM_NUM;
         return false;
     }
-    auto ite_a = this->parmTypes.begin();
+    auto ite_a = this->params.begin();
     auto ite_b = toCheck.begin();
-    for (; ite_a != this->parmTypes.end() && ite_b != toCheck.end(); ++ite_a, ++ite_b) {
-        if (**ite_a != **ite_b) {
+    for (; ite_a != this->params.end() && ite_b != toCheck.end(); ++ite_a, ++ite_b) {
+        if (*(*ite_a).second != **ite_b) {
             FuncInfo::errorNo = FuncInfo::ErrorType::MISMATCH_CALL_TYPE;
             return false;
         }

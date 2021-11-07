@@ -99,28 +99,8 @@ Stmt::create(std::vector<std::shared_ptr<GramNode>> &toAdd, std::vector<TokenBas
         return true;
     } else if (TokenNode::create(son_ps, ite, TokenBase::BREAKTK) ||
                TokenNode::create(son_ps, ite, TokenBase::CONTINUETK)) {
-        try {
-            if (!isLoop) {
-                int lineNumber;
-                auto tokenNode = std::dynamic_pointer_cast<TokenNode>(son_ps.back());
-                auto breakTk = std::dynamic_pointer_cast<BREAKTK>(tokenNode->getToken_p());
-                auto continueTk = std::dynamic_pointer_cast<CONTINUETK>(tokenNode->getToken_p());
-                if (breakTk) {
-                    lineNumber = breakTk->getLineNumber();
-                } else {
-                    lineNumber = continueTk->getLineNumber();
-                }
-                throw ConBreakInNonLoopException(lineNumber);
-            }
-        } catch (ConBreakInNonLoopException &e) {
-            e.myOutput();
-        }
-        try {
-            if (!TokenNode::create(son_ps, ite, TokenBase::SEMICN)) {
-                throw MissingSemicolonException(GramNode::nowLine);
-            }
-        } catch (MismatchPlaceholderCountException &e) {
-            e.myOutput();
+        if (!TokenNode::create(son_ps, ite, TokenBase::SEMICN)) {
+            return false;
         }
         ite_p = ite;
         std::shared_ptr<Stmt> tmp_p;
@@ -131,12 +111,8 @@ Stmt::create(std::vector<std::shared_ptr<GramNode>> &toAdd, std::vector<TokenBas
         if (!TokenBase::isTypeOf(ite, TokenBase::SEMICN))
             if (!Exp::create(son_ps, ite))
                 return false;
-        try {
-            if (!TokenNode::create(son_ps, ite, TokenBase::SEMICN)) {
-                throw MissingSemicolonException(GramNode::nowLine);
-            }
-        } catch (MismatchPlaceholderCountException &e) {
-            e.myOutput();
+        if (!TokenNode::create(son_ps, ite, TokenBase::SEMICN)) {
+            return false;
         }
         ite_p = ite;
         std::shared_ptr<Stmt> tmp_p;
@@ -150,41 +126,16 @@ Stmt::create(std::vector<std::shared_ptr<GramNode>> &toAdd, std::vector<TokenBas
         if (!TokenNode::create(son_ps, ite, TokenBase::STRCON)) {
             return false;
         }
-        auto tokenNode = std::dynamic_pointer_cast<TokenNode>(son_ps.back());
-        auto strcon_p = std::dynamic_pointer_cast<STRCON>(tokenNode->getToken_p());//todo:check nullptr
-        try {
-            if (!strcon_p->checkValid()) {
-                auto printfNode = std::dynamic_pointer_cast<TokenNode>(son_ps[0]);
-                int lineNumber = printfNode->getToken_p()->getLineNumber();
-                throw IllegalCharException(lineNumber);
-            }
-        } catch (IllegalCharException &e) {//todo
-            e.myOutput();
-        }
-        int count = 0;
-        for (; TokenNode::create(son_ps, ite, TokenBase::COMMA); count++) {
+        for (; TokenNode::create(son_ps, ite, TokenBase::COMMA);) {
             if (!Exp::create(son_ps, ite)) {
                 return false;
             }
         }
-        try {
-            if (count != strcon_p->getCount()) {
-                auto printfNode = std::dynamic_pointer_cast<TokenNode>(son_ps[0]);
-                int lineNumber = printfNode->getToken_p()->getLineNumber();
-                throw MismatchPlaceholderCountException(lineNumber);
-            }
-        } catch (MismatchPlaceholderCountException &e) {
-            e.myOutput();
-        }
         if (!TokenNode::create(son_ps, ite, TokenBase::RPARENT)) {
             return false;
         }
-        try {
-            if (!TokenNode::create(son_ps, ite, TokenBase::SEMICN)) {
-                throw MissingSemicolonException(GramNode::nowLine);
-            }
-        } catch (MismatchPlaceholderCountException &e) {
-            e.myOutput();
+        if (!TokenNode::create(son_ps, ite, TokenBase::SEMICN)) {
+            return false;
         }
         ite_p = ite;
         std::shared_ptr<Stmt> tmp_p;
@@ -205,12 +156,8 @@ Stmt::create(std::vector<std::shared_ptr<GramNode>> &toAdd, std::vector<TokenBas
         if (detectExp()) {
             if (!Exp::create(son_ps, ite))
                 return false;
-            try {
-                if (!TokenNode::create(son_ps, ite, TokenBase::SEMICN)) {
-                    throw MissingSemicolonException(GramNode::nowLine);
-                }
-            } catch (MismatchPlaceholderCountException &e) {
-                e.myOutput();
+            if (!TokenNode::create(son_ps, ite, TokenBase::SEMICN)) {
+                return false;
             }
             ite_p = ite;
             std::shared_ptr<Stmt> tmp_p;
@@ -229,12 +176,8 @@ Stmt::create(std::vector<std::shared_ptr<GramNode>> &toAdd, std::vector<TokenBas
                 if (!TokenNode::create(son_ps, ite, TokenBase::RPARENT)) {
                     return false;
                 }
-                try {
-                    if (!TokenNode::create(son_ps, ite, TokenBase::SEMICN)) {
-                        throw MissingSemicolonException(GramNode::nowLine);
-                    }
-                } catch (MismatchPlaceholderCountException &e) {
-                    e.myOutput();
+                if (!TokenNode::create(son_ps, ite, TokenBase::SEMICN)) {
+                    return false;
                 }
                 ite_p = ite;
                 std::shared_ptr<Stmt> tmp_p;

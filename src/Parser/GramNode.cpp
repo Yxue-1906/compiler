@@ -46,3 +46,7 @@ std::shared_ptr<SymTable> GramNode::getNowTable() {
     return GramNode::nowTable_p;
 }
 
+void GramNode::updateLineNumber() {
+    this->sons.back()->updateLineNumber();
+}
+

@@ -46,3 +46,13 @@ bool ConstDecl::create(std::vector<std::shared_ptr<GramNode>> &toAdd, std::vecto
     toAdd.push_back(tmp_p);
     return true;
 }
+
+bool ConstDecl::checkValid() {
+    bool toReturn = true;
+    auto ite = this->sons.begin();
+    ite += 2;
+    for (; ite != sons.end(); ite += 2) {
+        auto constDef_p = std::dynamic_pointer_cast<ConstDef>(*ite);
+        //todo: get IdentInfo pointer form constDef_p
+    }
+}

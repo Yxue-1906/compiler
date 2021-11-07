@@ -47,12 +47,12 @@ bool FuncFParams::addSymTable() {
     return true;
 }
 
-std::vector<std::shared_ptr<IdentInfo>> FuncFParams::getParamTypes() {
-    std::vector<std::shared_ptr<IdentInfo>> toReturn;
+std::vector<std::pair<std::string, std::shared_ptr<IdentInfo>>> FuncFParams::getParamTypes() {
+    std::vector<std::pair<std::string, std::shared_ptr<IdentInfo>>> toReturn;
     for (auto &i: this->sons) {
         auto funcFParam_p = std::dynamic_pointer_cast<FuncFParam>(i);
         if (funcFParam_p) {
-            toReturn.push_back()
+            toReturn.push_back(funcFParam_p->getParamType());
         }
     }
     return toReturn;

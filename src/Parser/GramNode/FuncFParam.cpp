@@ -74,8 +74,10 @@ bool FuncFParam::addSymTable() {
     return true;
 }
 
-std::shared_ptr<IdentInfo> FuncFParam::getParamType() {
+std::pair<std::string, std::shared_ptr<IdentInfo>> FuncFParam::getParamType() {
+    std::pair<std::string, std::shared_ptr<IdentInfo>> toReturn;
     std::shared_ptr<TokenNode> tokenNode_p = std::dynamic_pointer_cast<TokenNode>(sons[1]);
+    auto ident_p = std::dynamic_pointer_cast<IDENFR>(tokenNode_p->getToken_p());
     auto ite = sons.begin();
     int dimension = 0;
     for (; ite != sons.end(); ++ite) {
@@ -87,5 +89,6 @@ std::shared_ptr<IdentInfo> FuncFParam::getParamType() {
             }
         }
     }
-    return std::make_shared<IdentInfo>(false, dimension);
+    toReturn = std::make_pair(*ident_p->getValue_p(), std::make_shared<IdentInfo>(false, dimension));
+    return toReturn;
 }

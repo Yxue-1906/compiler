@@ -34,9 +34,6 @@ bool FuncDef::create(std::vector<std::shared_ptr<GramNode>> &toAdd, std::vector<
     if (!TokenBase::isTypeOf(ite, TokenBase::RPARENT)) {
         if (!FuncFParams::create(son_ps, ite))
             return false;
-        GramNode::nowTable_p = std::make_shared<SymTable>(GramNode::nowTable_p);
-        auto funcFParams_p = std::dynamic_pointer_cast<FuncFParams>(son_ps.back());
-        funcFParams_p->addSymTable();//add func into symtable
     }
     if (!TokenNode::create(son_ps, ite, TokenBase::RPARENT)) {
         return false;

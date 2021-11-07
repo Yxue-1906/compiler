@@ -44,3 +44,11 @@ bool CompUnit::create(std::vector<std::shared_ptr<GramNode>> &toAdd, std::vector
     toAdd.push_back(tmp_p);
     return true;
 }
+
+bool CompUnit::checkValid() {
+    bool toReturn = true;
+    for (auto &i: this->sons) {
+        toReturn &= i->checkValid();
+    }
+    return toReturn;
+}

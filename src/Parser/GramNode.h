@@ -39,6 +39,10 @@ public:
     std::shared_ptr<GramNode> getSonByIndex(int index);
 
     virtual void myOutput() override;
+
+    virtual bool checkValid() = 0;
+
+    virtual void updateLineNumber();
 };
 
 

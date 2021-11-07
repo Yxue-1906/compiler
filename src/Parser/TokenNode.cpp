@@ -31,3 +31,11 @@ TokenNode::create(std::vector<std::shared_ptr<GramNode>> &toAdd, std::vector<Tok
     }
     return false;
 }
+
+bool TokenNode::checkValid() {
+    return true;
+}
+
+void TokenNode::updateLineNumber() {
+    GramNode::nowLine = this->token_p->getLineNumber();
+}
