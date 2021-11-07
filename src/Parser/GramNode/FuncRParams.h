@@ -17,7 +17,7 @@ private:
 public:
     static bool create(std::vector<std::shared_ptr<GramNode>> &, std::vector<TokenBase *>::iterator &);
 
-    std::vector<std::shared_ptr<IdentInfo>> getParamTypes();
+    std::vector<std::shared_ptr<IdentInfo>> getParamTypes(int lineNumber);
 };
 
 

@@ -100,26 +100,25 @@ std::shared_ptr<IdentInfo> FuncInfo::getReturnType() noexcept {
 
 bool FuncInfo::checkParamTypes(std::vector<std::shared_ptr<IdentInfo>> &toCheck) const {
     if (this->parmTypes.size() != toCheck.size()) {
-        FuncInfo::ErrorType = 1;
+        FuncInfo::errorNo = FuncInfo::ErrorType::MISMATCH_PARAM_NUM;
         return false;
     }
     auto ite_a = this->parmTypes.begin();
     auto ite_b = toCheck.begin();
     for (; ite_a != this->parmTypes.end() && ite_b != toCheck.end(); ++ite_a, ++ite_b) {
         if (**ite_a != **ite_b) {
-            FuncInfo::ErrorType = 2;
+            FuncInfo::errorNo = FuncInfo::ErrorType::MISMATCH_CALL_TYPE;
             return false;
         }
     }
     return true;
 }
 
-int FuncInfo::getLastError() const noexcept {
-    int toReturn = FuncInfo::ErrorType;
-    FuncInfo::ErrorType = 0;
+FuncInfo::ErrorType FuncInfo::getLastError() noexcept {
+    ErrorType toReturn = FuncInfo::errorNo;
+    errorNo = NO_ERROR;
     return toReturn;
 }
-
 
 SymTable::SymTable(std::shared_ptr<SymTable> formerTable_p) {
     this->formerTable_p = formerTable_p;

@@ -50,6 +50,11 @@ public:
 
 class FuncInfo : public Info {
 public:
+    enum ErrorType {
+        MISMATCH_PARAM_NUM, MISMATCH_CALL_TYPE, NO_ERROR
+    };
+    static ErrorType errorNo;
+public:
     bool operator==(Info &a) const override;
 
     bool operator==(Info &&a) const override;
@@ -66,10 +71,7 @@ public:
 
     bool checkParamTypes(std::vector<std::shared_ptr<IdentInfo>> &toCheck) const;
 
-    static int getLastError()  noexcept;
-
-public:
-    static int ErrorType;
+    static ErrorType getLastError() noexcept;
 
 private:
     std::shared_ptr<IdentInfo> returnType;

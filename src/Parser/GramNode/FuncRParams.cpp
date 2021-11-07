@@ -5,6 +5,7 @@
 #include "FuncRParams.h"
 #include "Exp.h"
 #include "../TokenNode.h"
+#include "../../Exception/MyException/MismatchCallTypeException.h"
 
 FuncRParams::FuncRParams(std::vector<std::shared_ptr<GramNode>> sons) : GramNode() {
     setGramName("FuncRParams");
@@ -36,15 +37,15 @@ bool FuncRParams::create(std::vector<std::shared_ptr<GramNode>> &toAdd, std::vec
     return true;
 }
 
-std::vector<std::shared_ptr<IdentInfo>> FuncRParams::getParamTypes() {
+std::vector<std::shared_ptr<IdentInfo>> FuncRParams::getParamTypes(int lineNumber) {
     std::vector<std::shared_ptr<IdentInfo>> toReturn;
-    for (auto i: this->sons) {
+    for (const auto &i: this->sons) {
         auto exp_p = std::dynamic_pointer_cast<Exp>(i);
         if (exp_p) {
             std::shared_ptr<IdentInfo> tmp;
             exp_p->getType(tmp);
             if (!tmp)
-                throw;//todo:error calling type exception
+                throw MismatchCallTypeException(lineNumber);
             toReturn.push_back(tmp);
         }
     }

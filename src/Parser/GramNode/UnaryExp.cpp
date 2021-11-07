@@ -7,7 +7,9 @@
 #include "FuncRParams.h"
 #include "PrimaryExp.h"
 #include "UnaryOp.h"
-#include "../../Exception/MyException/MismatchParmNumException.h"
+#include "../../Exception/MyException/MismatchParamNumException.h"
+#include "../../Exception/MyException/MismatchCallTypeException.h"
+#include "../../Lexer/Token/LPARENT.h"
 
 UnaryExp::UnaryExp(std::vector<std::shared_ptr<GramNode>> sons) : GramNode() {
     setGramName("UnaryExp");
@@ -62,52 +64,56 @@ bool UnaryExp::create(std::vector<std::shared_ptr<GramNode>> &toAdd, std::vector
     return false;
 }
 
-bool UnaryExp::getType(std::shared_ptr<Info> &toReturn) {
+bool UnaryExp::getType(std::shared_ptr<IdentInfo> &toReturn) {
     std::shared_ptr<IdentInfo> tmp;
     auto ite = this->sons.begin();
-    for (; ite != this->sons.end(); ++ite) {
-        auto primaryExp_p = std::dynamic_pointer_cast<PrimaryExp>(*ite);
-        if (primaryExp_p) {
-            if (!primaryExp_p->getType(tmp))
-                return false;
-            if (!tmp)
-                return false;
-            continue;
+    auto primaryExp_p = std::dynamic_pointer_cast<PrimaryExp>(*ite);
+    if (primaryExp_p) {
+        return primaryExp_p->getType(toReturn);
+    }
+    auto unaryOp_p = std::dynamic_pointer_cast<UnaryOp>(*ite);
+    if (unaryOp_p) {
+        ++ite;
+        auto unaryExp_p = std::dynamic_pointer_cast<UnaryExp>(*ite);
+        return unaryExp_p->getType(toReturn);
+    }
+    auto tokenNode_p = std::dynamic_pointer_cast<TokenNode>(*ite);
+    if (tokenNode_p) {
+        auto ident_p = std::dynamic_pointer_cast<IDENFR>(tokenNode_p->getToken_p());
+        auto info = GramNode::getNowTable()->queryIdent(*ident_p->getValue_p());
+        toReturn = std::dynamic_pointer_cast<IdentInfo>(info);
+        try {
+            if (!toReturn) {
+                throw UndefIdentException(ident_p->getLineNumber());
+            }
+        } catch (UndefIdentException &e) {
+            e.myOutput();
+            return false;
         }
-        auto ident_p = std::dynamic_pointer_cast<IDENFR>(*ite);
-        if (ident_p) {
-            try {
-                auto info = GramNode::nowTable_p->queryIdent(*ident_p->getValue_p());
-                if (!info) {
-                    // variable with the name does not exist
-                    throw UndefIdentException(ident_p->getLineNumber());
-                }
-                std::shared_ptr<FuncInfo> funcInfo = std::dynamic_pointer_cast<FuncInfo>(info);
-                if (!funcInfo)
-                    throw UndefIdentException(ident_p->getLineNumber());
-                if (!tmp || funcInfo->checkReturnType(tmp))
-                    tmp = funcInfo->getReturnType();
-                else
-                    return false;
-                ite += 2;
-                auto funcRParams_p = std::dynamic_pointer_cast<FuncRParams>(*ite);
-                std::vector<std::shared_ptr<IdentInfo>> toCheck;
-                if (funcRParams_p) {
-                    toCheck = funcRParams_p->getParamTypes();
-                }
-                if (!funcInfo->checkParamTypes(toCheck)) {
-                    int errorno = FuncInfo::getLastError();
-                    switch (errorno) {
-                        case 1:
-                            throw MismatchParmNumException(ident_p->getLineNumber());
-                        case 2:
-                            throw Mism//todo: throw right exception
+        ++ite;
+        try {
+            for (; ite != this->sons.end(); ++ite) {
+                tokenNode_p = std::dynamic_pointer_cast<TokenNode>(*ite);
+                if (std::dynamic_pointer_cast<LPARENT>(tokenNode_p->getToken_p())) {
+                    ++ite;
+                    if (ite == this->sons.end()) {
+                        //will it?
+                        toReturn = nullptr;
+                        std::cout << __FILE__ << ':' << __LINE__ << ':' << "reach son end here" << std::endl;
+                        return false;
                     }
+                    auto funcRParams_p = std::dynamic_pointer_cast<FuncRParams>(*ite);
+                    std::vector<std::shared_ptr<IdentInfo>> params;
+                    try {
+                        if (funcRParams_p) {
+                            params = funcRParams_p->getParamTypes(ident_p->getLineNumber());
+                        }
+                    }
+
                 }
-            } catch (UndefIdentException &e) {
-                e.myOutput();
-                return false;
-            } catch ()
+            }
+        } catch () {
+
         }
     }
 }

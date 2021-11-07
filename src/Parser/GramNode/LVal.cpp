@@ -45,16 +45,31 @@ bool LVal::getType(std::shared_ptr<IdentInfo> &toReturn) {
     ++ite;
     auto tmp = GramNode::getNowTable()->queryIdent(*ident_p->getValue_p());
     toReturn = std::dynamic_pointer_cast<IdentInfo>(tmp);
-    if (!toReturn)
-        throw DupIdentException(ident_p->getLineNumber());//todo: finish this func
+    if (!toReturn) {
+        toReturn = nullptr;
+        throw DupIdentException(ident_p->getLineNumber());
+    }
     for (; ite != this->sons.end(); ++ite) {
         if (std::dynamic_pointer_cast<LBRACK>(*ite)) {
             ++ite;
             auto exp_p = std::dynamic_pointer_cast<Exp>(*ite);
             std::shared_ptr<IdentInfo> tmp;
-            if (exp_p && exp_p->getType(tmp) &&) {
-                if (exp_p.)
+            if (exp_p && exp_p->getType(tmp)) {
+                // there is an exp and
+                // exp can return a type and
+                // this type must be a variable
+                if (tmp && *tmp == *IdentInfo::VARIABLE) {
+                    if (*toReturn == *IdentInfo::ARRAY_2D)
+                        toReturn = IdentInfo::ARRAY;
+                    else if (*toReturn == *IdentInfo::ARRAY)
+                        toReturn = IdentInfo::VARIABLE;
+                    else {
+                        toReturn = nullptr;
+                        return false;//todo: check if need throw an exception
+                    }
+                }
             }
         }
     }
+    return true;
 }
