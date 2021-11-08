@@ -32,7 +32,7 @@ bool ConstDef::create(std::vector<std::shared_ptr<GramNode>> &toAdd, std::vector
             return false;
         }
         if (!TokenNode::create(son_ps, ite, TokenBase::RBRACK)) {
-            return false;
+            ErrorNode::create(son_ps, ErrorNode::ErrorType::RIGHT_BRACKET);
         }
     }
     if (!TokenNode::create(son_ps, ite, TokenBase::ASSIGN)) {
@@ -49,7 +49,6 @@ bool ConstDef::create(std::vector<std::shared_ptr<GramNode>> &toAdd, std::vector
 }
 
 bool ConstDef::checkValid() {
-    int left = 0;
     for (auto &i: this->sons) {
         i->updateLineNumber();
         auto errorNode = std::dynamic_pointer_cast<ErrorNode>(i);
@@ -60,6 +59,7 @@ bool ConstDef::checkValid() {
                         throw MissingRightBracketException(GramNode::nowLine);
                     default:
                         //unreachable
+                        std::cout << __FILE__ << ':' << __LINE__ << ':' << "Unreachable" << std::endl;
                         break;
                 }
             }
@@ -71,6 +71,10 @@ bool ConstDef::checkValid() {
     return true;
 }
 
+/**
+ * check what variable type it is, then add it to symtable or handle fault
+ * @return
+ */
 bool ConstDef::addIdent() {
     auto ite = sons.begin();
     auto tokenNode_p = std::dynamic_pointer_cast<TokenNode>(*ite);

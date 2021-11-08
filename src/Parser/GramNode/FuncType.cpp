@@ -31,12 +31,18 @@ bool FuncType::create(std::vector<std::shared_ptr<GramNode>> &toAdd, std::vector
     return true;
 }
 
-std::shared_ptr<IdentInfo> FuncType::getFuncType() {
+bool FuncType::getReturnType(std::shared_ptr<IdentInfo> &toReturn) {
     auto tokenNode = std::dynamic_pointer_cast<TokenNode>(sons.back());
     auto voidTk = std::dynamic_pointer_cast<VOIDTK>(tokenNode->getToken_p());
     if (voidTk) {
-        return nullptr;
+        toReturn = nullptr;
+        return true;
     }
-    return std::make_shared<IdentInfo>(false, 0);
+    toReturn = std::make_shared<IdentInfo>(false, 0);
+    return true;
+}
+
+bool FuncType::checkValid() {
+    return true;
 }
 

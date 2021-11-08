@@ -17,7 +17,9 @@ private:
 public:
     static bool create(std::vector<std::shared_ptr<GramNode>> &, std::vector<TokenBase *>::iterator &);
 
-    std::shared_ptr<IdentInfo> getFuncType();
+    bool getReturnType(std::shared_ptr<IdentInfo> &toReturn);
+
+    virtual bool checkValid() override;
 };
 
 

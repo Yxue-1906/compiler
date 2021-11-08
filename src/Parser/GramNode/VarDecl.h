@@ -12,10 +12,14 @@ class VarDecl : public GramNode {
 private:
 public:
 private:
-    VarDecl(std::vector<std::shared_ptr<GramNode>>sons);
+    VarDecl(std::vector<std::shared_ptr<GramNode>> sons);
 
 public:
     static bool create(std::vector<std::shared_ptr<GramNode>> &, std::vector<TokenBase *>::iterator &);
+
+    bool checkValid() override;
+
+    bool addIdent();
 };
 
 

@@ -6,6 +6,8 @@
 #include "BType.h"
 #include "ConstExp.h"
 #include "../../Lexer/Token/LBRACK.h"
+#include "../ErrorNode.h"
+#include "../../Exception/MyException/MissingRightBracketException.h"
 
 FuncFParam::FuncFParam(std::vector<std::shared_ptr<GramNode>> sons) : GramNode() {
     setGramName("FuncFParam");
@@ -36,7 +38,7 @@ bool FuncFParam::create(std::vector<std::shared_ptr<GramNode>> &toAdd, std::vect
                 return false;
             }
             if (!TokenNode::create(son_ps, ite, TokenBase::RBRACK)) {
-                return false;
+                ErrorNode::create(son_ps, ErrorNode::ErrorType::RIGHT_BRACKET);
             }
         }
     }
@@ -44,6 +46,28 @@ bool FuncFParam::create(std::vector<std::shared_ptr<GramNode>> &toAdd, std::vect
     std::shared_ptr<FuncFParam> tmp_p;
     tmp_p.reset(new FuncFParam(son_ps));
     toAdd.push_back(tmp_p);
+    return true;
+}
+
+bool FuncFParam::checkValid() {
+    for (auto &i: sons) {
+        i->updateLineNumber();
+        auto errorNode = std::dynamic_pointer_cast<ErrorNode>(i);
+        try {
+            if (errorNode) {
+                switch (errorNode->errorType) {
+                    case ErrorNode::ErrorType::RIGHT_BRACKET:
+                        throw MissingRightBracketException(GramNode::nowLine);
+                    default:
+                        std::cout << __FILE__ << ':' << __LINE__ << ':' << "Unreachable" << std::endl;
+                        break;
+                }
+            }
+        } catch (MissingRightBracketException &e) {
+            e.myOutput();
+            return false;
+        }
+    }
     return true;
 }
 
@@ -92,3 +116,5 @@ std::pair<std::string, std::shared_ptr<IdentInfo>> FuncFParam::getParamType() {
     toReturn = std::make_pair(*ident_p->getValue_p(), std::make_shared<IdentInfo>(false, dimension));
     return toReturn;
 }
+
+

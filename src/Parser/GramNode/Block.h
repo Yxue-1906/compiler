@@ -19,6 +19,9 @@ public:
     static bool
     create(std::vector<std::shared_ptr<GramNode>> &, std::vector<TokenBase *>::iterator &, bool isLoop, bool newTable);
 
+    virtual bool checkValid() override;
+
+    bool getReturnType(std::shared_ptr<IdentInfo> &toReturn);
 };
 
 

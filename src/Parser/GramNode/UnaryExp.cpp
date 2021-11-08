@@ -42,40 +42,10 @@ bool UnaryExp::create(std::vector<std::shared_ptr<GramNode>> &toAdd, std::vector
     } else if (TokenBase::isTypeOf(ite, TokenBase::IDENFR) &&
                TokenBase::isTypeOf(ite + 1, TokenBase::LPARENT)) {
         TokenNode::create(son_ps, ite, TokenBase::IDENFR);
-        auto tokenNode = std::dynamic_pointer_cast<TokenNode>(son_ps.back());
-        auto ident_p = std::dynamic_pointer_cast<IDENFR>(tokenNode->getToken_p());
-        auto info = GramNode::nowTable_p->queryIdent(*ident_p->getValue_p());
-        auto funcInfo = std::dynamic_pointer_cast<FuncInfo>(info);
-        try {
-            if (!funcInfo) {
-                throw UndefIdentException(ident_p->getLineNumber());
-            }
-        } catch (UndefIdentException &e) {
-            e.myOutput();
-        }
         TokenNode::create(son_ps, ite, TokenBase::LPARENT);
         if (!TokenBase::isTypeOf(ite, TokenBase::RPARENT)) {
             if (!FuncRParams::create(son_ps, ite))
                 return false;
-            auto funcRParams_p = std::dynamic_pointer_cast<FuncRParams>(son_ps.back());
-            std::vector<std::shared_ptr<IdentInfo>> param = funcRParams_p->getParamTypes(ident_p->getLineNumber());
-            try {
-                if (funcInfo && !funcInfo->checkParamTypes(param)) {
-                    switch (FuncInfo::getLastError()) {
-                        case FuncInfo::ErrorType::MISMATCH_CALL_TYPE:
-                            throw MismatchCallTypeException(ident_p->getLineNumber());
-                        case FuncInfo::ErrorType::MISMATCH_PARAM_NUM:
-                            throw MismatchParamNumException(ident_p->getLineNumber());
-                        default:
-                            //unreachable
-                            break;
-                    }
-                }
-            } catch (MismatchParamNumException &e) {
-                e.myOutput();
-            } catch (MismatchCallTypeException &e) {
-                e.myOutput();
-            }
         }
         if (!TokenNode::create(son_ps, ite, TokenBase::RPARENT)) {
             return false;

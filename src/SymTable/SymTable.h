@@ -75,6 +75,9 @@ public:
     static ErrorType getLastError() noexcept;
 
 private:
+    bool checkParamTypes(std::vector<std::pair<std::string, std::shared_ptr<IdentInfo>>> &toCheck) const;
+
+private:
     std::shared_ptr<IdentInfo> returnType;
     std::vector<std::pair<std::string, std::shared_ptr<IdentInfo>>> params;
 

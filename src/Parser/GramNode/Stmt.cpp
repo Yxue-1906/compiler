@@ -212,6 +212,27 @@ Stmt::create(std::vector<std::shared_ptr<GramNode>> &toAdd, std::vector<TokenBas
     }
 }
 
+bool Stmt::checkValid() {
+    bool toReturn = true;
+    for (auto &i: sons) {
+        toReturn &= i->checkValid();
+    }
+    return toReturn;
+}
+
+bool Stmt::isConBreak() {
+    auto tokenNode = std::dynamic_pointer_cast<TokenNode>(sons[0]);
+    if (!tokenNode)
+        return false;
+    auto continueTk = std::dynamic_pointer_cast<CONTINUETK>(tokenNode->getToken_p());
+    if (continueTk)
+        return true;
+    auto breakTk = std::dynamic_pointer_cast<BREAKTK>(tokenNode->getToken_p());
+    if (breakTk)
+        return true;
+    return false;
+}
+
 /**
  * get return type
  * @param toReturn return value here
@@ -222,13 +243,19 @@ bool Stmt::getReturnType(std::shared_ptr<IdentInfo> &toReturn) {
     if (!firstTokenNode)
         return false;
     auto returnTk_p = std::dynamic_pointer_cast<RETURNTK>(firstTokenNode->getToken_p());
-    if (!returnTk_p)
+    if (!returnTk_p) {
+        toReturn = nullptr;
         return false;
-    if (this->sons.size() > 1) {
+    }
+    if (this->sons.size() > 2) {
         auto exp_p = std::dynamic_pointer_cast<Exp>(this->sons[1]);
         if (!exp_p)
             return false;
         return exp_p->getType(toReturn);
     }
-    return false;
+    toReturn = nullptr;
+    return true;
 }
+
+
+

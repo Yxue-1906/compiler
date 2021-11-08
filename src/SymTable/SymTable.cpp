@@ -55,7 +55,7 @@ FuncInfo::ErrorType FuncInfo::errorNo = FuncInfo::ErrorType::NO_ERROR;
 bool FuncInfo::operator==(Info &a) const {
     try {
         auto funcInfo = dynamic_cast<FuncInfo &>(a);
-        return checkReturnType(funcInfo.returnType) && checkParamTypes(funcInfo.parmTypes);
+        return checkReturnType(funcInfo.returnType) && checkParamTypes(funcInfo.params);
     } catch (std::bad_cast &e) {
         std::cout << __FILE__ << ':' << __LINE__ << ':' << e.what() << std::endl;
         return false;
@@ -65,7 +65,7 @@ bool FuncInfo::operator==(Info &a) const {
 bool FuncInfo::operator==(Info &&a) const {
     try {
         auto funcInfo = dynamic_cast<FuncInfo &>(a);
-        return checkReturnType(funcInfo.returnType) && checkParamTypes(funcInfo.parmTypes);
+        return checkReturnType(funcInfo.returnType) && checkParamTypes(funcInfo.params);
     } catch (std::bad_cast &e) {
         std::cout << __FILE__ << ':' << __LINE__ << ':' << e.what() << std::endl;
         return false;
@@ -100,6 +100,20 @@ bool FuncInfo::checkReturnType(std::shared_ptr<IdentInfo> toCheck) const {
 
 std::shared_ptr<IdentInfo> FuncInfo::getReturnType() noexcept {
     return this->returnType;
+}
+
+bool FuncInfo::checkParamTypes(std::vector<std::pair<std::string, std::shared_ptr<IdentInfo>>> &toCheck) const {
+    if (this->params.size() != toCheck.size()) {
+        return false;
+    }
+    auto ite_a = this->params.begin();
+    auto ite_b = toCheck.begin();
+    for (; ite_a != this->params.end() && ite_b != toCheck.end(); ++ite_a, ++ite_b) {
+        if (*(*ite_a).second != *(*ite_b).second) {
+            return false;
+        }
+    }
+    return true;
 }
 
 bool FuncInfo::checkParamTypes(std::vector<std::shared_ptr<IdentInfo>> &toCheck) const {

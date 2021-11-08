@@ -40,7 +40,7 @@ public:
 
     virtual void myOutput() override;
 
-    virtual bool checkValid() = 0;
+    virtual bool checkValid();
 
     virtual void updateLineNumber();
 };

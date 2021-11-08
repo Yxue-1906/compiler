@@ -19,7 +19,7 @@ public:
 
     bool addSymTable();
 
-    std::vector<std::pair<std::string, std::shared_ptr<IdentInfo>>> getParamTypes();
+    bool getParamTypes(std::vector<std::pair<std::string, std::shared_ptr<IdentInfo>>> &toReturn);
 };
 
 

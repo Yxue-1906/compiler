@@ -7,8 +7,10 @@
 #include "Stmt.h"
 #include "../TokenNode.h"
 #include "../../Lexer/Token/RETURNTK.h"
+#include "../../Exception/MyException/ConBreakInNonLoopException.h"
 
-BlockItem::BlockItem(std::vector<std::shared_ptr<GramNode>> sons) : GramNode() {
+BlockItem::BlockItem(std::vector<std::shared_ptr<GramNode>> sons)
+        : GramNode() {
     setGramName("BlockItem");
     setSons(std::move(sons));
 }
@@ -56,15 +58,24 @@ void BlockItem::myOutput() {
     }
 }
 
+bool BlockItem::checkValid() {
+    bool toReturn = true;
+    for (auto &i: sons) {
+        toReturn &= i->checkValid();
+    }
+    return toReturn;
+}
+
 /**
  * get return type of a block
- * @param identType return return type by pointer
+ * @param toReturn return return type by pointer
  * @return true on succeed, false when any error occurred
  */
-bool BlockItem::getReturnType(std::shared_ptr<IdentInfo> &identType) {
+bool BlockItem::getReturnType(std::shared_ptr<IdentInfo> &toReturn) {
     auto lastStmt = std::dynamic_pointer_cast<Stmt>(sons.back());
     if (!lastStmt) {
         return false;
     }
-    return lastStmt->getReturnType(identType);
+    return lastStmt->getReturnType(toReturn);
 }
+

@@ -13,7 +13,7 @@ class BType : public GramNode {
 private:
 public:
 private:
-    BType(std::vector<std::shared_ptr<GramNode>>sons);
+    BType(std::vector<std::shared_ptr<GramNode>> sons);
 
     virtual void myOutput() override;
 

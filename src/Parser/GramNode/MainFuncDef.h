@@ -8,16 +8,18 @@
 
 #include "../GramNode.h"
 
-class MainFuncDef :public GramNode {
+class MainFuncDef : public GramNode {
 private:
 
 public:
 
 private:
-    MainFuncDef(std::vector<std::shared_ptr<GramNode>>sons);
+    MainFuncDef(std::vector<std::shared_ptr<GramNode>> sons);
 
 public:
     static bool create(std::vector<std::shared_ptr<GramNode>> &, std::vector<TokenBase *>::iterator &);
+
+    virtual bool checkValid() override;
 };
 
 

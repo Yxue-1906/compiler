@@ -52,9 +52,7 @@ bool ConstDecl::checkValid() {
     auto ite = this->sons.begin();
     ite += 2;
     for (; ite != sons.end(); ite += 2) {
-        auto constDef_p = std::dynamic_pointer_cast<ConstDef>(*ite);
-        if (constDef_p) {
-            constDef_p->addIdent();
-        }
+        toReturn &= (*ite)->checkValid();
     }
+    return toReturn;
 }

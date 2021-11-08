@@ -6,7 +6,8 @@
 #include "../TokenNode.h"
 #include "BlockItem.h"
 
-Block::Block(std::vector<std::shared_ptr<GramNode>> sons) : GramNode() {
+Block::Block(std::vector<std::shared_ptr<GramNode>> sons)
+        : GramNode() {
     setGramName("Block");
     setSons(std::move(sons));
 }
@@ -38,4 +39,19 @@ Block::create(std::vector<std::shared_ptr<GramNode>> &toAdd, std::vector<TokenBa
     toAdd.push_back(tmp_p);
     GramNode::nowTable_p = GramNode::nowTable_p->getFormerTable_p();
     return true;
+}
+
+bool Block::checkValid() {
+    bool toReturn = true;
+    for (auto &i: sons) {
+        toReturn &= i->checkValid();
+    }
+    return toReturn;
+}
+
+bool Block::getReturnType(std::shared_ptr<IdentInfo> &toReturn) {
+    auto lastItem = std::dynamic_pointer_cast<BlockItem>(sons.back());
+    if (!lastItem)
+        return false;
+    return lastItem->getReturnType(toReturn);
 }

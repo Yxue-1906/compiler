@@ -50,3 +50,7 @@ void GramNode::updateLineNumber() {
     this->sons.back()->updateLineNumber();
 }
 
+bool GramNode::checkValid() {
+    return true;
+}
+

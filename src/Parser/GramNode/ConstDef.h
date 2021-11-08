@@ -14,12 +14,12 @@ public:
 private:
     ConstDef(std::vector<std::shared_ptr<GramNode>> sons);
 
+    bool addIdent();
+
 public:
     static bool create(std::vector<std::shared_ptr<GramNode>> &, std::vector<TokenBase *>::iterator &);
 
     virtual bool checkValid() override;
-
-    bool addIdent();
 };
 
 
