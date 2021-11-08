@@ -4,10 +4,12 @@
 
 #include "ErrorNode.h"
 
-ErrorNode::ErrorNode(ErrorNode::ErrorType errorType) : errorType(errorType) {}
+ErrorNode::ErrorNode(ErrorNode::ErrorType errorType) : errorType(errorType), lineNumber(GramNode::nowLine) {}
 
 bool ErrorNode::checkValid() {
     return true;
 }
 
-void ErrorNode::updateLineNumber() {}
+void ErrorNode::updateLineNumber() {
+    GramNode::nowLine = lineNumber;
+}

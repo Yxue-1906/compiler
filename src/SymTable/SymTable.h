@@ -63,7 +63,8 @@ public:
 
     bool operator!=(Info &&a) const override;
 
-    FuncInfo(std::shared_ptr<IdentInfo> identInfo_p, std::vector<std::pair<std::string, std::shared_ptr<IdentInfo>>>) noexcept;
+    FuncInfo(std::shared_ptr<IdentInfo> identInfo_p,
+             std::vector<std::pair<std::string, std::shared_ptr<IdentInfo>>>) noexcept;
 
     bool checkReturnType(std::shared_ptr<IdentInfo> toCheck) const;
 
@@ -75,7 +76,7 @@ public:
 
 private:
     std::shared_ptr<IdentInfo> returnType;
-    std::vector<std::pair<std::string, std::shared_ptr<IdentInfo>>> params;//todo: refactor here
+    std::vector<std::pair<std::string, std::shared_ptr<IdentInfo>>> params;
 
 };
 

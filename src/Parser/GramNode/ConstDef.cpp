@@ -53,34 +53,51 @@ bool ConstDef::checkValid() {
     for (auto &i: this->sons) {
         i->updateLineNumber();
         auto errorNode = std::dynamic_pointer_cast<ErrorNode>(i);
-        if (errorNode) {
-            switch (errorNode->errorType) {
-                case ErrorNode::ErrorType::RIGHT_BRACKET:
-                    throw MissingRightBracketException(GramNode::nowLine);
+        try {
+            if (errorNode) {
+                switch (errorNode->errorType) {
+                    case ErrorNode::ErrorType::RIGHT_BRACKET:
+                        throw MissingRightBracketException(GramNode::nowLine);
+                    default:
+                        //unreachable
+                        break;
+                }
             }
+        } catch (MissingRightBracketException &e) {
+            e.myOutput();
+            return false;
         }
     }
+    return true;
 }
 
-std::shared_ptr<IdentInfo> getType() {
-    bool toReturn = true;
+bool ConstDef::addIdent() {
     auto ite = sons.begin();
     auto tokenNode_p = std::dynamic_pointer_cast<TokenNode>(*ite);
     auto ident_p = std::dynamic_pointer_cast<IDENFR>(tokenNode_p->getToken_p());
     std::string name = *ident_p->getValue_p();
     ++ite;
-    int dimension = 0, leftCount = 0;
+    int dimension = 0;
     for (; ite != sons.end(); ++ite) {
+        auto errorNode = std::dynamic_pointer_cast<ErrorNode>(*ite);
+        if (errorNode) {
+            return false;
+        }
         tokenNode_p = std::dynamic_pointer_cast<TokenNode>(*ite);
         if (tokenNode_p) {
             auto lbrack_p = std::dynamic_pointer_cast<LBRACK>(tokenNode_p->getToken_p());
             if (lbrack_p) {
-                leftCount++;
                 dimension++;
-            } else {
-                leftCount--;
             }
         }
     }
-
+    try {
+        if (!GramNode::nowTable_p->addIdent(name, std::make_shared<IdentInfo>(true, dimension))) {
+            throw DupIdentException(ident_p->getLineNumber());
+        }
+    } catch (DupIdentException &e) {
+        e.myOutput();
+        return false;
+    }
+    return true;
 }

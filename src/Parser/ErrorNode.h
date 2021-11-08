@@ -22,6 +22,9 @@ public:
     virtual bool checkValid() override;
 
     virtual void updateLineNumber() override;
+
+private:
+    const int lineNumber = 0;
 };
 
 
