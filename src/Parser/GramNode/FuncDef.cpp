@@ -100,31 +100,31 @@ bool FuncDef::addIdent() {
     std::string name = *ident_p->getValue_p();
     ite += 2;
 
-    //check param valid
-    auto funcFParams = std::dynamic_pointer_cast<FuncFParams>(*ite);
-    funcFParams->checkValid();
-
-    //get params type
-    std::vector<std::pair<std::string, std::shared_ptr<IdentInfo>>> params;
-    funcFParams->getParamTypes(params);
-
     //set new Table
     GramNode::nowTable_p = std::make_shared<SymTable>(GramNode::nowTable_p);
     bool toReturn = true;
 
+    //check param valid
+    auto funcFParams = std::dynamic_pointer_cast<FuncFParams>(*ite);
+    toReturn &= funcFParams->checkValid();
+
+    //get params type
+//    std::vector<std::pair<std::string, std::shared_ptr<IdentInfo>>> params;
+//    funcFParams->getParamTypes(params);
+
     //add params
-    for (auto &i: params) {
-        auto paramName = i.first;
-        auto paramType = i.second;
-        try {
-            if (!GramNode::nowTable_p->addIdent(paramName, paramType)) {
-                toReturn = false;
-                throw DupIdentException(ident_p->getLineNumber());
-            }
-        } catch (DupIdentException &e) {
-            e.myOutput();
-        }
-    }
+//    for (auto &i: params) {
+//        auto paramName = i.first;
+//        auto paramType = i.second;
+//        try {
+//            if (!GramNode::nowTable_p->addIdent(paramName, paramType)) {
+//                toReturn = false;
+//                throw DupIdentException(ident_p->getLineNumber());
+//            }
+//        } catch (DupIdentException &e) {
+//            e.myOutput();
+//        }
+//    }
 
     //check block valid
     auto block_p = std::dynamic_pointer_cast<Block>(sons.back());

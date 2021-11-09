@@ -139,3 +139,29 @@ bool UnaryExp::getType(std::shared_ptr<IdentInfo> &toReturn) {
     }
     return false;
 }
+
+bool UnaryExp::checkValid() {
+    bool toReturn = true;
+    auto ite = sons.begin();
+    auto primaryExp_p = std::dynamic_pointer_cast<PrimaryExp>(*ite);
+    if (primaryExp_p) {
+        toReturn &= primaryExp_p->checkValid();
+        return toReturn;
+    }
+    auto unaryOp_p = std::dynamic_pointer_cast<UnaryOp>(*ite);
+    if (unaryOp_p) {
+        ite++;
+        auto unaryExp_p = std::dynamic_pointer_cast<UnaryExp>(*ite);
+        toReturn &= unaryExp_p->checkValid();
+        return toReturn;
+    }
+    auto tokenNode_p = std::dynamic_pointer_cast<TokenNode>(*ite);
+    auto ident_p = std::dynamic_pointer_cast<IDENFR>(tokenNode_p->getToken_p());
+    std::shared_ptr<IdentInfo> returnType;
+    try {
+
+    }
+    if (!GramNode::nowTable_p->queryIdent(*ident_p->getValue_p())) {
+
+    }
+}

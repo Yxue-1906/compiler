@@ -35,6 +35,14 @@ bool FuncFParams::create(std::vector<std::shared_ptr<GramNode>> &toAdd, std::vec
     return true;
 }
 
+bool FuncFParams::checkValid() {
+    bool toReturn = true;
+    for (auto &i: sons) {
+        toReturn &= i->checkValid();
+    }
+    return toReturn;
+}
+
 bool FuncFParams::addSymTable() {
     for (auto &i: this->sons) {
         auto funcFParam_p = std::dynamic_pointer_cast<FuncFParam>(i);

@@ -17,6 +17,9 @@ private:
 public:
     static bool create(std::vector<std::shared_ptr<GramNode>> &, std::vector<TokenBase *>::iterator &);
 
+
+    virtual bool checkValid() override;
+
     bool addSymTable();
 
     bool getParamTypes(std::vector<std::pair<std::string, std::shared_ptr<IdentInfo>>> &toReturn);
