@@ -59,7 +59,7 @@ bool FuncFParam::checkValid() {
         auto errorNode = std::dynamic_pointer_cast<ErrorNode>(*ite);
         try {
             if (errorNode) {
-                switch (errorNode->errorType) {
+                switch (errorNode->getErrorType()) {
                     case ErrorNode::ErrorType::RIGHT_BRACKET:
                         throw MissingRightBracketException(GramNode::nowLine);
                     default:
@@ -79,7 +79,7 @@ bool FuncFParam::checkValid() {
         }
     }
     try {
-        if (!GramNode::nowTable_p->addIdent(*ident_p->getValue_p(),
+        if (!GramNode::getNowTable()->addIdent(*ident_p->getValue_p(),
                                             std::make_shared<IdentInfo>(false, dimension))) {
             throw DupIdentException(ident_p->getLineNumber());
         }
@@ -107,7 +107,7 @@ bool FuncFParam::addSymTable() {
         }
     }
     try {
-        if (!GramNode::nowTable_p->addIdent(name, std::make_shared<IdentInfo>(false, dimension))) {
+        if (!GramNode::getNowTable()->addIdent(name, std::make_shared<IdentInfo>(false, dimension))) {
             throw DupIdentException(ident_p->getLineNumber());
         }
     } catch (DupIdentException &e) {

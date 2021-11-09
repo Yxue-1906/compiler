@@ -159,7 +159,7 @@ bool UnaryExp::checkValid() {
     auto ident_p = std::dynamic_pointer_cast<IDENFR>(tokenNode_p->getToken_p());
     std::shared_ptr<IdentInfo> returnType;
     try {
-
+        if (!)//todo
     }
     if (!GramNode::nowTable_p->queryIdent(*ident_p->getValue_p())) {
 

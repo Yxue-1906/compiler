@@ -76,6 +76,6 @@ bool BlockItem::getReturnType(std::shared_ptr<IdentInfo> &toReturn) {
     if (!lastStmt) {
         return false;
     }
-    return lastStmt->getReturnType(toReturn);
+    return lastStmt->isNonVoidReturn(toReturn);
 }
 

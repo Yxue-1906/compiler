@@ -16,8 +16,14 @@
 #include "../../Exception/MyException/ConBreakInNonLoopException.h"
 #include "../../Exception/MyException/MissingSemicolonException.h"
 #include "../../Lexer/Token/RETURNTK.h"
+#include "../../Lexer/Token/PRINTFTK.h"
+#include "../../Lexer/Token/COMMA.h"
+#include "../ErrorNode.h"
+#include "../../Exception/MyException/MissingRightParenthesisException.h"
+#include "../../Exception/MyException/AssignToConstException.h"
 
-Stmt::Stmt(std::vector<std::shared_ptr<GramNode>> sons) : GramNode() {
+Stmt::Stmt(std::vector<std::shared_ptr<GramNode>> sons, bool isLoop)
+        : GramNode(), isLoop(isLoop) {
     setGramName("Stmt");
     setSons(std::move(sons));
 }
@@ -76,7 +82,7 @@ Stmt::create(std::vector<std::shared_ptr<GramNode>> &toAdd, std::vector<TokenBas
         }
         ite_p = ite;
         std::shared_ptr<Stmt> tmp_p;
-        tmp_p.reset(new Stmt(son_ps));
+        tmp_p.reset(new Stmt(son_ps, isLoop));
         toAdd.push_back(tmp_p);
         return true;
     } else if (TokenNode::create(son_ps, ite, TokenBase::WHILETK)) {
@@ -94,7 +100,7 @@ Stmt::create(std::vector<std::shared_ptr<GramNode>> &toAdd, std::vector<TokenBas
         }
         ite_p = ite;
         std::shared_ptr<Stmt> tmp_p;
-        tmp_p.reset(new Stmt(son_ps));
+        tmp_p.reset(new Stmt(son_ps, isLoop));
         toAdd.push_back(tmp_p);
         return true;
     } else if (TokenNode::create(son_ps, ite, TokenBase::BREAKTK) ||
@@ -104,7 +110,7 @@ Stmt::create(std::vector<std::shared_ptr<GramNode>> &toAdd, std::vector<TokenBas
         }
         ite_p = ite;
         std::shared_ptr<Stmt> tmp_p;
-        tmp_p.reset(new Stmt(son_ps));
+        tmp_p.reset(new Stmt(son_ps, isLoop));
         toAdd.push_back(tmp_p);
         return true;
     } else if (TokenNode::create(son_ps, ite, TokenBase::RETURNTK)) {
@@ -116,7 +122,7 @@ Stmt::create(std::vector<std::shared_ptr<GramNode>> &toAdd, std::vector<TokenBas
         }
         ite_p = ite;
         std::shared_ptr<Stmt> tmp_p;
-        tmp_p.reset(new Stmt(son_ps));
+        tmp_p.reset(new Stmt(son_ps, isLoop));
         toAdd.push_back(tmp_p);
         return true;
     } else if (TokenNode::create(son_ps, ite, TokenBase::PRINTFTK)) {
@@ -139,7 +145,7 @@ Stmt::create(std::vector<std::shared_ptr<GramNode>> &toAdd, std::vector<TokenBas
         }
         ite_p = ite;
         std::shared_ptr<Stmt> tmp_p;
-        tmp_p.reset(new Stmt(son_ps));
+        tmp_p.reset(new Stmt(son_ps, isLoop));
         toAdd.push_back(tmp_p);
         return true;
     } else if (TokenBase::isTypeOf(ite, TokenBase::LBRACE)) {
@@ -148,7 +154,7 @@ Stmt::create(std::vector<std::shared_ptr<GramNode>> &toAdd, std::vector<TokenBas
         }
         ite_p = ite;
         std::shared_ptr<Stmt> tmp_p;
-        tmp_p.reset(new Stmt(son_ps));
+        tmp_p.reset(new Stmt(son_ps, isLoop));
         toAdd.push_back(tmp_p);
         return true;
     } else if (TokenBase::isTypeOf(ite, TokenBase::IDENFR) &&
@@ -161,7 +167,7 @@ Stmt::create(std::vector<std::shared_ptr<GramNode>> &toAdd, std::vector<TokenBas
             }
             ite_p = ite;
             std::shared_ptr<Stmt> tmp_p;
-            tmp_p.reset(new Stmt(son_ps));
+            tmp_p.reset(new Stmt(son_ps, isLoop));
             toAdd.push_back(tmp_p);
             return true;
         } else {
@@ -181,7 +187,7 @@ Stmt::create(std::vector<std::shared_ptr<GramNode>> &toAdd, std::vector<TokenBas
                 }
                 ite_p = ite;
                 std::shared_ptr<Stmt> tmp_p;
-                tmp_p.reset(new Stmt(son_ps));
+                tmp_p.reset(new Stmt(son_ps, isLoop));
                 toAdd.push_back(tmp_p);
                 return true;
             } else {
@@ -190,7 +196,7 @@ Stmt::create(std::vector<std::shared_ptr<GramNode>> &toAdd, std::vector<TokenBas
                     TokenNode::create(son_ps, ite, TokenBase::SEMICN);
                     ite_p = ite;
                     std::shared_ptr<Stmt> tmp_p;
-                    tmp_p.reset(new Stmt(son_ps));
+                    tmp_p.reset(new Stmt(son_ps, isLoop));
                     toAdd.push_back(tmp_p);
                     return true;
                 }
@@ -206,7 +212,7 @@ Stmt::create(std::vector<std::shared_ptr<GramNode>> &toAdd, std::vector<TokenBas
         }
         ite_p = ite;
         std::shared_ptr<Stmt> tmp_p;
-        tmp_p.reset(new Stmt(son_ps));
+        tmp_p.reset(new Stmt(son_ps, isLoop));
         toAdd.push_back(tmp_p);
         return true;
     }
@@ -214,7 +220,112 @@ Stmt::create(std::vector<std::shared_ptr<GramNode>> &toAdd, std::vector<TokenBas
 
 bool Stmt::checkValid() {
     bool toReturn = true;
+    auto ite = sons.begin();
+    std::shared_ptr<TokenNode> tokenNode_p;
+    tokenNode_p = std::dynamic_pointer_cast<TokenNode>(*ite);
+    if (tokenNode_p) {
+        try {
+            if (isConBreak() && !isLoop) {
+                auto token_p = tokenNode_p->getToken_p();
+                throw ConBreakInNonLoopException(token_p->getLineNumber());
+            }
+        } catch (ConBreakInNonLoopException &e) {
+            e.myOutput();
+            return false;
+        }
+        auto printfTk_p = std::dynamic_pointer_cast<PRINTFTK>(tokenNode_p->getToken_p());
+        if (printfTk_p) {
+            try {
+                ite += 2;
+                tokenNode_p = std::dynamic_pointer_cast<TokenNode>(*ite);
+                auto formatString_p = std::dynamic_pointer_cast<STRCON>(tokenNode_p->getToken_p());
+                if (!formatString_p->checkValid())
+                    throw IllegalCharException(formatString_p->getLineNumber());
+                int count = 0;
+                std::shared_ptr<Exp> exp_p;
+                while (ite != sons.end()) {
+                    tokenNode_p = std::dynamic_pointer_cast<TokenNode>(*ite);
+                    if (tokenNode_p && std::dynamic_pointer_cast<COMMA>(tokenNode_p->getToken_p())) {
+                        count++;
+                    } else if ((exp_p = std::dynamic_pointer_cast<Exp>(*ite))) {
+                        if (!exp_p->checkValid())
+                            return false;
+                    } else {
+                        //be errorNode or right parenthesis
+                        break;
+                    }
+                    ite++;
+                }
+                if (count != formatString_p->getCount())
+                    throw MismatchPlaceholderCountException(printfTk_p->getLineNumber());
+                while (ite != sons.end()) {
+                    auto errorNode_p = std::dynamic_pointer_cast<ErrorNode>(*ite);
+                    if (errorNode_p) {
+                        switch (errorNode_p->getErrorType()) {
+                            case ErrorNode::ErrorType::RIGHT_PARENTHESIS:
+                                throw MissingRightParenthesisException(errorNode_p->getLineNumber());
+                            case ErrorNode::ErrorType::SEMICOLON:
+                                throw MissingSemicolonException(errorNode_p->getLineNumber());
+                            default:
+                                //unreachable
+                                return false;
+                        }
+                    }
+                }
+            } catch (MyException &e) {
+                e.myOutput();
+                return false;
+            }
+            return true;
+        }
+        for (auto &i: sons) {
+            auto errorNode = std::dynamic_pointer_cast<ErrorNode>(*ite);
+            if (errorNode) {
+                switch (errorNode->getErrorType()) {
+                    case ErrorNode::ErrorType::RIGHT_PARENTHESIS:
+                        throw MissingRightParenthesisException(errorNode->getLineNumber());
+                    case ErrorNode::ErrorType::SEMICOLON:
+                        throw MissingSemicolonException(errorNode->getLineNumber());
+                    default:
+                        //unreachable
+                        return false;
+                }
+            }
+            toReturn &= i->checkValid();
+        }
+        return toReturn;
+    }
+    auto lval = std::dynamic_pointer_cast<LVal>(*ite);
+    if (lval) {
+        if (!lval->checkValid())
+            return false;
+        std::shared_ptr<IdentInfo> identType;
+        if (!lval->getType(identType)) {
+            std::cout << "unreachable" << std::endl;
+        }
+        try {
+            if (identType->checkConst()) {
+                lval->updateLineNumber();
+                throw AssignToConstException(GramNode::nowLine);
+            }
+        } catch (MyException &e) {
+            e.myOutput();
+            return false;
+        }//todo: check right parenthesis
+    }
     for (auto &i: sons) {
+        auto errorNode = std::dynamic_pointer_cast<ErrorNode>(*ite);
+        if (errorNode) {
+            switch (errorNode->getErrorType()) {
+                case ErrorNode::ErrorType::RIGHT_PARENTHESIS:
+                    throw MissingRightParenthesisException(errorNode->getLineNumber());
+                case ErrorNode::ErrorType::SEMICOLON:
+                    throw MissingSemicolonException(errorNode->getLineNumber());
+                default:
+                    //unreachable
+                    return false;
+            }
+        }
         toReturn &= i->checkValid();
     }
     return toReturn;
@@ -238,23 +349,14 @@ bool Stmt::isConBreak() {
  * @param toReturn return value here
  * @return false on fail, true on succeed
  */
-bool Stmt::getReturnType(std::shared_ptr<IdentInfo> &toReturn) {
-    auto firstTokenNode = std::dynamic_pointer_cast<TokenNode>(this->sons[0]);
-    if (!firstTokenNode)
-        return false;
-    auto returnTk_p = std::dynamic_pointer_cast<RETURNTK>(firstTokenNode->getToken_p());
-    if (!returnTk_p) {
-        toReturn = nullptr;
-        return false;
+bool Stmt::isNonVoidReturn() {
+    auto ite = sons.begin();
+    auto tokenNode_p = std::dynamic_pointer_cast<TokenNode>(*ite);
+    if (tokenNode_p && std::dynamic_pointer_cast<RETURNTK>(tokenNode_p->getToken_p())) {
+        if (sons.size() > 2)
+            return true;
     }
-    if (this->sons.size() > 2) {
-        auto exp_p = std::dynamic_pointer_cast<Exp>(this->sons[1]);
-        if (!exp_p)
-            return false;
-        return exp_p->getType(toReturn);
-    }
-    toReturn = nullptr;
-    return true;
+    return false;
 }
 
 

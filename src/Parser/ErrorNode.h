@@ -15,7 +15,6 @@ public:
         RIGHT_BRACKET,
         RIGHT_PARENTHESIS
     };
-    const ErrorType errorType;
 
     ErrorNode(ErrorType errorType);
 
@@ -25,8 +24,13 @@ public:
 
     static bool create(std::vector<std::shared_ptr<GramNode>> son_ps, ErrorType errorType);
 
+    int getLineNumber() const;
+
+    ErrorType getErrorType() const;
+
 private:
-    const int lineNumber = 0;
+    const ErrorType errorType;
+    const int lineNumber;
 };
 
 

@@ -4,13 +4,16 @@
 
 #include "ErrorNode.h"
 
-ErrorNode::ErrorNode(ErrorNode::ErrorType errorType) : errorType(errorType), lineNumber(GramNode::nowLine) {}
+ErrorNode::ErrorNode(ErrorNode::ErrorType errorType)
+        : errorType(errorType), lineNumber(GramNode::nowLine) {}
 
 bool ErrorNode::checkValid() {
-    return true;
+    return false;
 }
 
-void ErrorNode::updateLineNumber() {}
+void ErrorNode::updateLineNumber() {
+    GramNode::nowLine = this->lineNumber;
+}
 
 bool ErrorNode::create(std::vector<std::shared_ptr<GramNode>> son_ps, ErrorNode::ErrorType errorType) {
     switch (errorType) {
@@ -24,4 +27,12 @@ bool ErrorNode::create(std::vector<std::shared_ptr<GramNode>> son_ps, ErrorNode:
             //unreachable
             return false;
     }
+}
+
+int ErrorNode::getLineNumber() const {
+    return this->lineNumber;
+}
+
+ErrorNode::ErrorType ErrorNode::getErrorType() const {
+    return this->errorType;
 }

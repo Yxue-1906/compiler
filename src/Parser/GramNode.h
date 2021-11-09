@@ -15,10 +15,9 @@
 class GramNode : public MyOutput {
 private:
     std::string gramName;
-
+    static std::shared_ptr<SymTable> nowTable_p;
 protected:
     std::vector<std::shared_ptr<GramNode>> sons;
-    static std::shared_ptr<SymTable> nowTable_p;
 public:
     static int nowLine;
 protected:

@@ -10,21 +10,19 @@
 
 class Stmt : public GramNode {
 private:
-
+    const bool isLoop;
 public:
 
 private:
-    Stmt(std::vector<std::shared_ptr<GramNode>> sons);
+    Stmt(std::vector<std::shared_ptr<GramNode>> sons, bool isLoop);
+
+    bool isConBreak();
 
 public:
     static bool create(std::vector<std::shared_ptr<GramNode>> &, std::vector<TokenBase *>::iterator &, bool isLoop);
 
     virtual bool checkValid() override;
 
-    bool isConBreak();
-
-    bool getReturnType(std::shared_ptr<IdentInfo> &toReturn);
+    bool isNonVoidReturn();
 };
-
-
 #endif //PARSER_STMT_H
