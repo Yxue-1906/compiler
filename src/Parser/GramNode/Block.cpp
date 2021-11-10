@@ -19,11 +19,7 @@ Block::Block(std::vector<std::shared_ptr<GramNode>> sons)
  * @return
  */
 bool
-Block::create(std::vector<std::shared_ptr<GramNode>> &toAdd, std::vector<TokenBase *>::iterator &ite_p, bool isLoop,
-              bool newTable) {
-    if (newTable) {
-        GramNode::nowTable_p = std::make_shared<SymTable>(GramNode::nowTable_p);
-    }
+Block::create(std::vector<std::shared_ptr<GramNode>> &toAdd, std::vector<TokenBase *>::iterator &ite_p, bool isLoop) {
     auto ite = ite_p;
     std::vector<std::shared_ptr<GramNode>> son_ps;
     if (!TokenNode::create(son_ps, ite, TokenBase::LBRACE)) {
@@ -37,20 +33,19 @@ Block::create(std::vector<std::shared_ptr<GramNode>> &toAdd, std::vector<TokenBa
     std::shared_ptr<Block> tmp_p;
     tmp_p.reset(new Block(son_ps));
     toAdd.push_back(tmp_p);
-    GramNode::nowTable_p = GramNode::nowTable_p->getFormerTable_p();
     return true;
 }
 
 bool Block::checkValid() {
-    bool toReturn = true;
     for (auto &i: sons) {
-        toReturn &= i->checkValid();
+        i->checkValid();
     }
-    return toReturn;
+    GramNode::setNowTable(GramNode::getNowTable()->getFormerTable_p());
+    return true;
 }
 
 bool Block::getReturnType(std::shared_ptr<IdentInfo> &toReturn) {
-    auto lastItem = std::dynamic_pointer_cast<BlockItem>(sons.back());
+    auto lastItem = std::dynamic_pointer_cast<BlockItem>(*(sons.end() - 2));
     if (!lastItem)
         return false;
     return lastItem->getReturnType(toReturn);

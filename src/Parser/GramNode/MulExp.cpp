@@ -39,20 +39,30 @@ bool MulExp::create(std::vector<std::shared_ptr<GramNode>> &toAdd, std::vector<T
 }
 
 bool MulExp::getType(std::shared_ptr<IdentInfo> &toReturn) {
-    toReturn = nullptr;
-    std::shared_ptr<IdentInfo> base = std::make_shared<IdentInfo>(false, 0);
-    std::shared_ptr<IdentInfo> tmp;
-    for (auto &i: this->sons) {
-        auto unaryExp_p = std::dynamic_pointer_cast<UnaryExp>(i);
-        if (!unaryExp_p)
-            continue;
-        if (!unaryExp_p->getType(tmp))
+    if (this->type) {
+        toReturn = this->type;
+        return true;
+    }
+    return false;
+}
+
+bool MulExp::checkValid() {
+    auto ite = sons.begin();
+    auto unaryExp_p = std::dynamic_pointer_cast<UnaryExp>(*ite);
+    if (!unaryExp_p->checkValid())
+        return false;
+    if (!unaryExp_p->getType(this->type))
+        return false;
+    ite += 2;
+    if (ite < sons.end()) {
+        auto mulExp_p = std::dynamic_pointer_cast<MulExp>(*ite);
+        std::shared_ptr<IdentInfo> tmp;
+        if (!mulExp_p->checkValid())
             return false;
-        if (!tmp)
+        if (!mulExp_p->getType(tmp))
             return false;
-        if (tmp->getDimension() != base->getDimension())
+        if (!IdentInfo::mult(this->type, tmp, this->type))
             return false;
     }
-    toReturn = base;
     return true;
 }

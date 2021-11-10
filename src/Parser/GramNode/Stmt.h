@@ -25,4 +25,5 @@ public:
 
     bool isNonVoidReturn();
 };
+
 #endif //PARSER_STMT_H

@@ -10,6 +10,7 @@
 
 class FuncRParams : public GramNode {
 private:
+    std::vector<std::shared_ptr<IdentInfo>> params;
 public:
 private:
     FuncRParams(std::vector<std::shared_ptr<GramNode>> sons);
@@ -17,7 +18,9 @@ private:
 public:
     static bool create(std::vector<std::shared_ptr<GramNode>> &, std::vector<TokenBase *>::iterator &);
 
-    std::vector<std::shared_ptr<IdentInfo>> getParamTypes(int lineNumber);
+    virtual bool checkValid() override;
+
+    bool getParamTypes(std::vector<std::shared_ptr<IdentInfo>> &toReturn);
 };
 
 

@@ -6,7 +6,8 @@
 #define SRC_PARSER_ASSIGNTOCONSTEXCEPTION_H
 
 #include "../MyException.h"
-class AssignToConstException :public MyException{
+
+class AssignToConstException : public MyException {
 public:
     explicit AssignToConstException(const TokenBase &token) : MyException(token, 'h') {}
 

@@ -10,12 +10,15 @@
 
 class AddExp : public GramNode {
 private:
+    std::shared_ptr<IdentInfo> type;
 public:
 private:
     AddExp(std::vector<std::shared_ptr<GramNode>> sons);
 
 public:
     static bool create(std::vector<std::shared_ptr<GramNode>> &, std::vector<TokenBase *>::iterator &);
+
+    virtual bool checkValid() override;
 
     bool getType(std::shared_ptr<IdentInfo> &toReturn);
 };

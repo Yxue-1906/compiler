@@ -22,7 +22,7 @@ public:
 
     virtual void updateLineNumber() override;
 
-    static bool create(std::vector<std::shared_ptr<GramNode>> son_ps, ErrorType errorType);
+    static bool create(std::vector<std::shared_ptr<GramNode>> &son_ps, ErrorType errorType);
 
     int getLineNumber() const;
 

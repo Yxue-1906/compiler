@@ -14,10 +14,10 @@ private:
 public:
 
 private:
-    LOrExp(std::vector<std::shared_ptr<GramNode>>sons);
+    LOrExp(std::vector<std::shared_ptr<GramNode>> sons);
 
 public:
-    static bool create(std::vector<std::shared_ptr<GramNode>>&, std::vector<TokenBase *>::iterator &);
+    static bool create(std::vector<std::shared_ptr<GramNode>> &, std::vector<TokenBase *>::iterator &);
 
 };
 

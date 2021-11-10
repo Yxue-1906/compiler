@@ -50,6 +50,24 @@ bool IdentInfo::getDimension() const noexcept {
     return this->dimension;
 }
 
+bool IdentInfo::add(const std::shared_ptr<IdentInfo> &a, const std::shared_ptr<IdentInfo> &b,
+                    std::shared_ptr<IdentInfo> &result) {
+    if (a && b && a->dimension == b->dimension)
+        result = std::make_shared<IdentInfo>(true, a->dimension);
+    else
+        return false;
+    return true;
+}
+
+bool IdentInfo::mult(const std::shared_ptr<IdentInfo> &a, const std::shared_ptr<IdentInfo> &b,
+                     std::shared_ptr<IdentInfo> &result) {
+    if (a && b && a->dimension == b->dimension)
+        result = std::make_shared<IdentInfo>(true, a->dimension);
+    else
+        return false;
+    return true;
+}
+
 FuncInfo::ErrorType FuncInfo::errorNo = FuncInfo::ErrorType::NO_ERROR;
 
 bool FuncInfo::operator==(Info &a) const {

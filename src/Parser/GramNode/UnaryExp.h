@@ -10,7 +10,7 @@
 
 class UnaryExp : public GramNode {
 private:
-    std::shared_ptr<IdentInfo> returnType;
+    std::shared_ptr<IdentInfo> type;
     bool checked = false;
 public:
 

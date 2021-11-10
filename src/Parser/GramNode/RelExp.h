@@ -14,7 +14,7 @@ private:
 public:
 
 private:
-    RelExp(std::vector<std::shared_ptr<GramNode>>sons);
+    RelExp(std::vector<std::shared_ptr<GramNode>> sons);
 
 public:
     static bool create(std::vector<std::shared_ptr<GramNode>> &, std::vector<TokenBase *>::iterator &);

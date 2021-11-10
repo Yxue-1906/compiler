@@ -42,6 +42,10 @@ std::string &GramNode::getGramName() {
     return this->gramName;
 }
 
+void GramNode::setNowTable(std::shared_ptr<SymTable> newTable) {
+    GramNode::nowTable_p = newTable;
+}
+
 std::shared_ptr<SymTable> GramNode::getNowTable() {
     return GramNode::nowTable_p;
 }
@@ -53,4 +57,6 @@ void GramNode::updateLineNumber() {
 bool GramNode::checkValid() {
     return true;
 }
+
+
 

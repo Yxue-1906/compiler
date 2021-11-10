@@ -37,7 +37,7 @@ bool MainFuncDef::create(std::vector<std::shared_ptr<GramNode>> &toAdd, std::vec
     if (!TokenNode::create(son_ps, ite, TokenBase::RPARENT)) {
         ErrorNode::create(son_ps, ErrorNode::ErrorType::RIGHT_PARENTHESIS);
     }
-    if (!Block::create(son_ps, ite, false, true)) {
+    if (!Block::create(son_ps, ite, false)) {
         return false;
     }
     ite_p = ite;
@@ -53,38 +53,16 @@ bool MainFuncDef::checkValid() {
     auto mainTk = std::dynamic_pointer_cast<MAINTK>(tokenNode->getToken_p());
 
     //check if mis right parenthesis
+    GramNode::setNowTable(std::make_shared<SymTable>(GramNode::getNowTable()));
     for (auto &i: sons) {
-        i->updateLineNumber();
-        auto errorNode = std::dynamic_pointer_cast<ErrorNode>(i);
-        try {
-            if (errorNode) {
-                switch (errorNode->errorType) {
-                    case ErrorNode::ErrorType::RIGHT_PARENTHESIS:
-                        throw MissingRightParenthesisException(GramNode::nowLine);
-                    default:
-                        //unreachable
-                        std::cout << __FILE__ << ':' << __LINE__ << ':' << "Unreachable" << std::endl;
-                        break;
-                }
-            }
-        } catch (MissingRightParenthesisException &e) {
-            e.myOutput();
-            return false;
-        }
+        i->checkValid();
     }
-
-    //check block valid
-    auto block_p = std::dynamic_pointer_cast<Block>(sons.back());
-    if (!block_p) {
-        //unreachable
-        std::cout << __FILE__ << ':' << __LINE__ << ':' << "Unreachable" << std::endl;
-    }
-    block_p->checkValid();
 
     //check return type
+    auto block_p = std::dynamic_pointer_cast<Block>(sons.back());
     std::shared_ptr<IdentInfo> returnType;
     try {
-        if (!returnType || returnType->getDimension() != 0)
+        if (!block_p->getReturnType(returnType))
             throw MismatchReturnForNonVoidException(mainTk->getLineNumber());
     } catch (MismatchReturnForNonVoidException &e) {
         e.myOutput();

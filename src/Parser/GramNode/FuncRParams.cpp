@@ -37,17 +37,26 @@ bool FuncRParams::create(std::vector<std::shared_ptr<GramNode>> &toAdd, std::vec
     return true;
 }
 
-std::vector<std::shared_ptr<IdentInfo>> FuncRParams::getParamTypes(int lineNumber) {
-    std::vector<std::shared_ptr<IdentInfo>> toReturn;
-    for (const auto &i: this->sons) {
+bool FuncRParams::getParamTypes(std::vector<std::shared_ptr<IdentInfo>> &toReturn) {
+    if (!this->params.empty()) {
+        toReturn = this->params;
+        return true;
+    }
+    return false;
+}
+
+bool FuncRParams::checkValid() {
+    std::shared_ptr<IdentInfo> tmp;
+    for (auto &i: sons) {
         auto exp_p = std::dynamic_pointer_cast<Exp>(i);
         if (exp_p) {
-            std::shared_ptr<IdentInfo> tmp;
-            exp_p->getType(tmp);
-            if (!tmp)
-                throw MismatchCallTypeException(lineNumber);
-            toReturn.push_back(tmp);
+            if (exp_p->checkValid()) {
+                exp_p->getType(tmp);
+                this->params.push_back(tmp);
+            } else {
+                return false;
+            }
         }
     }
-    return toReturn;
+    return true;
 }

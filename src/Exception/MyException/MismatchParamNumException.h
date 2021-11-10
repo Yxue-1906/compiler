@@ -14,11 +14,11 @@ public:
 
     explicit MismatchParamNumException(int lineNumber) : MyException(lineNumber, 'd') {}
 
-    MismatchParamNumException(const TokenBase &token, const std::string& message) : MyException(token, 'd') {
+    MismatchParamNumException(const TokenBase &token, const std::string &message) : MyException(token, 'd') {
         this->message.append(message);
     }
 
-    MismatchParamNumException(int lineNumber, const std::string& message) : MyException(lineNumber, 'd') {
+    MismatchParamNumException(int lineNumber, const std::string &message) : MyException(lineNumber, 'd') {
         this->message.append(message);
     }
 

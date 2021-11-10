@@ -16,6 +16,7 @@ int main() {
 //        i->myOutput();
 //    }
     Parser parser{lexer.getList()};
-    parser.print();
+//    parser.print();
+    parser.getRoot()->checkValid();
     return 0;
 }

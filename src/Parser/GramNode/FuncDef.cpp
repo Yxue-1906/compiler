@@ -42,7 +42,7 @@ bool FuncDef::create(std::vector<std::shared_ptr<GramNode>> &toAdd, std::vector<
     if (!TokenNode::create(son_ps, ite, TokenBase::RPARENT)) {
         ErrorNode::create(son_ps, ErrorNode::ErrorType::RIGHT_PARENTHESIS);
     }
-    if (!Block::create(son_ps, ite, false, false)) {
+    if (!Block::create(son_ps, ite, false)) {
         return false;
     }
     ite_p = ite;
@@ -57,26 +57,23 @@ bool FuncDef::create(std::vector<std::shared_ptr<GramNode>> &toAdd, std::vector<
  * @return
  */
 bool FuncDef::checkValid() {
-    for (auto &i: sons) {
-        i->updateLineNumber();
-        auto errorNode = std::dynamic_pointer_cast<ErrorNode>(i);
-        try {
-            if (errorNode) {
-                switch (errorNode->errorType) {
-                    case ErrorNode::ErrorType::RIGHT_PARENTHESIS:
-                        throw MissingRightParenthesisException(GramNode::nowLine);
-                    default:
-                        //unreachable
-                        std::cout << __FILE__ << ':' << __LINE__ << ':' << "Unreachable" << std::endl;
-                        break;
-                }
-            }
-        } catch (MissingRightParenthesisException &e) {
-            e.myOutput();
-            return false;
-        }
+    bool toReturn = true;
+    auto ite = sons.begin();
+    auto funcType_p = std::dynamic_pointer_cast<FuncType>(*ite);
+    std::shared_ptr<IdentInfo> returnType;
+    if (!funcType_p->getReturnType(returnType)) {
+        //unreachable
+        return false;
     }
-    return true;
+    ++ite;
+    auto tokenNode_p = std::dynamic_pointer_cast<TokenNode>(*ite);
+    auto ident_p = std::dynamic_pointer_cast<IDENFR>(tokenNode_p->getToken_p());
+    ++ite;
+    GramNode::setNowTable(std::make_shared<SymTable>(GramNode::getNowTable()));
+    for (; ite != sons.end(); ++ite) {
+        toReturn &= (*ite)->checkValid();
+    }
+    return toReturn;
 }
 
 bool FuncDef::addIdent() {
@@ -101,7 +98,7 @@ bool FuncDef::addIdent() {
     ite += 2;
 
     //set new Table
-    GramNode::nowTable_p = std::make_shared<SymTable>(GramNode::nowTable_p);
+    GramNode::setNowTable(std::make_shared<SymTable>(GramNode::getNowTable()));
     bool toReturn = true;
 
     //check param valid

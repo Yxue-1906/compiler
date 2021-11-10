@@ -50,40 +50,25 @@ bool FuncFParam::create(std::vector<std::shared_ptr<GramNode>> &toAdd, std::vect
 }
 
 bool FuncFParam::checkValid() {
-    int dimension = 0;
     auto ite = sons.begin() + 1;
     auto tokenNode_p = std::dynamic_pointer_cast<TokenNode>(*ite);
     auto ident_p = std::dynamic_pointer_cast<IDENFR>(tokenNode_p->getToken_p());
+    int dimension = 0;
+    ++ite;
     for (; ite != sons.end(); ++ite) {
-        (*ite)->updateLineNumber();
-        auto errorNode = std::dynamic_pointer_cast<ErrorNode>(*ite);
-        try {
-            if (errorNode) {
-                switch (errorNode->getErrorType()) {
-                    case ErrorNode::ErrorType::RIGHT_BRACKET:
-                        throw MissingRightBracketException(GramNode::nowLine);
-                    default:
-                        std::cout << __FILE__ << ':' << __LINE__ << ':' << "Unreachable" << std::endl;
-                        return false;
-                }
-            }
-        } catch (MissingRightBracketException &e) {
-            e.myOutput();
-            return false;
-        }
         tokenNode_p = std::dynamic_pointer_cast<TokenNode>(*ite);
         if (tokenNode_p) {
-            auto left_bracket_p = std::dynamic_pointer_cast<LBRACK>(tokenNode_p->getToken_p());
-            if (left_bracket_p)
+            auto lb = std::dynamic_pointer_cast<LBRACK>(tokenNode_p->getToken_p());
+            if (lb)
                 dimension++;
+        } else if (!(*ite)->checkValid()) {
+            return false;
         }
     }
     try {
-        if (!GramNode::getNowTable()->addIdent(*ident_p->getValue_p(),
-                                            std::make_shared<IdentInfo>(false, dimension))) {
+        if (!GramNode::getNowTable()->addIdent(*ident_p->getValue_p(), std::make_shared<IdentInfo>(false, dimension)))
             throw DupIdentException(ident_p->getLineNumber());
-        }
-    } catch (DupIdentException &e) {
+    } catch (MyException &e) {
         e.myOutput();
         return false;
     }

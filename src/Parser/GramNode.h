@@ -31,8 +31,9 @@ protected:
 
     std::vector<std::shared_ptr<GramNode>> getSons();
 
-    std::shared_ptr<SymTable> getNowTable();
+    static void setNowTable(std::shared_ptr<SymTable> newTable);
 
+    static std::shared_ptr<SymTable> getNowTable();
 
 public:
     std::shared_ptr<GramNode> getSonByIndex(int index);

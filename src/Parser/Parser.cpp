@@ -19,3 +19,7 @@ void Parser::print() {
 void Parser::myOutput() {
     this->root->myOutput();
 }
+
+std::shared_ptr<GramNode> Parser::getRoot() {
+    return this->root;
+}

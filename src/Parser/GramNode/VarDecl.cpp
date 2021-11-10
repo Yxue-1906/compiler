@@ -8,6 +8,7 @@
 #include "../ErrorNode.h"
 #include "../../Exception/MyException/MissingRightBracketException.h"
 #include "../../Lexer/Token/LBRACK.h"
+#include "../../Exception/MyException/MissingSemicolonException.h"
 
 VarDecl::VarDecl(std::vector<std::shared_ptr<GramNode>> sons) : GramNode() {
     setGramName("VarDecl");
@@ -35,7 +36,7 @@ bool VarDecl::create(std::vector<std::shared_ptr<GramNode>> &toAdd, std::vector<
         }
     }
     if (!TokenNode::create(son_ps, ite, TokenBase::SEMICN)) {
-        return false;
+        ErrorNode::create(son_ps, ErrorNode::ErrorType::SEMICOLON);
     }
     ite_p = ite;
     std::shared_ptr<VarDecl> tmp_p;
@@ -45,25 +46,11 @@ bool VarDecl::create(std::vector<std::shared_ptr<GramNode>> &toAdd, std::vector<
 }
 
 bool VarDecl::checkValid() {
+    bool toReturn = true;
     for (auto &i: this->sons) {
-        i->updateLineNumber();
-        auto errorNode = std::dynamic_pointer_cast<ErrorNode>(i);
-        try {
-            if (errorNode) {
-                switch (errorNode->errorType) {
-                    case ErrorNode::ErrorType::RIGHT_BRACKET:
-                        throw MissingRightBracketException(GramNode::nowLine);
-                    default:
-                        //unreachable
-                        break;
-                }
-            }
-        } catch (MissingRightBracketException &e) {
-            e.myOutput();
-            return false;
-        }
+        toReturn &= i->checkValid();
     }
-    return true;
+    return toReturn;
 }
 
 bool VarDecl::addIdent() {
@@ -87,7 +74,7 @@ bool VarDecl::addIdent() {
         }
     }
     try {
-        if (!GramNode::nowTable_p->addIdent(name, std::make_shared<IdentInfo>(false, dimension))) {
+        if (!GramNode::getNowTable()->addIdent(name, std::make_shared<IdentInfo>(false, dimension))) {
             throw DupIdentException(ident_p->getLineNumber());
         }
     } catch (DupIdentException &e) {

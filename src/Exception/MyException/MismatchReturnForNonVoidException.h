@@ -10,15 +10,15 @@
 
 class MismatchReturnForNonVoidException : public MyException {
 public:
-    explicit MismatchReturnForNonVoidException(const TokenBase &token) : MyException(token, 'b') {}
+    explicit MismatchReturnForNonVoidException(const TokenBase &token) : MyException(token, 'g') {}
 
-    explicit MismatchReturnForNonVoidException(int lineNumber) : MyException(lineNumber, 'b') {}
+    explicit MismatchReturnForNonVoidException(int lineNumber) : MyException(lineNumber, 'g') {}
 
-    MismatchReturnForNonVoidException(const TokenBase &token, const std::string &message) : MyException(token, 'b') {
+    MismatchReturnForNonVoidException(const TokenBase &token, const std::string &message) : MyException(token, 'g') {
         this->message.append(message);
     }
 
-    MismatchReturnForNonVoidException(int lineNumber, const std::string &message) : MyException(lineNumber, 'b') {
+    MismatchReturnForNonVoidException(int lineNumber, const std::string &message) : MyException(lineNumber, 'g') {
         this->message.append(message);
     }
 };

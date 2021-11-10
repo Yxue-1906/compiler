@@ -12,7 +12,7 @@ class Number : public GramNode {
 private:
 public:
 private:
-    Number(std::vector<std::shared_ptr<GramNode>>sons);
+    Number(std::vector<std::shared_ptr<GramNode>> sons);
 
 public:
     static bool create(std::vector<std::shared_ptr<GramNode>> &, std::vector<TokenBase *>::iterator &);

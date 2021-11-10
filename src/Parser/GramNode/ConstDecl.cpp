@@ -7,6 +7,9 @@
 #include "../TokenNode.h"
 #include "BType.h"
 #include "ConstDef.h"
+#include "../ErrorNode.h"
+#include "../../Exception/MyException/MissingRightBracketException.h"
+#include "../../Exception/MyException/MissingSemicolonException.h"
 
 
 ConstDecl::ConstDecl(std::vector<std::shared_ptr<GramNode>> sons) : GramNode() {
@@ -38,7 +41,7 @@ bool ConstDecl::create(std::vector<std::shared_ptr<GramNode>> &toAdd, std::vecto
         }
     }
     if (!TokenNode::create(son_ps, ite, TokenBase::SEMICN)) {
-        return false;
+        ErrorNode::create(son_ps, ErrorNode::ErrorType::SEMICOLON);
     }
     ite_p = ite;
     std::shared_ptr<ConstDecl> tmp_p;
@@ -49,10 +52,8 @@ bool ConstDecl::create(std::vector<std::shared_ptr<GramNode>> &toAdd, std::vecto
 
 bool ConstDecl::checkValid() {
     bool toReturn = true;
-    auto ite = this->sons.begin();
-    ite += 2;
-    for (; ite != sons.end(); ite += 2) {
-        toReturn &= (*ite)->checkValid();
+    for (auto &i: this->sons) {
+        toReturn &= i->checkValid();
     }
     return toReturn;
 }

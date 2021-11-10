@@ -75,7 +75,6 @@ public:
 private:
     //bool isWhitespace(typeof(std::string::iterator));
 
-
     bool safeLookAhead(const std::string &, const std::function<bool(std::string::iterator)> &);
 
     bool isAlNum(int);

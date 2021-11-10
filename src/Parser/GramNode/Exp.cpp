@@ -36,6 +36,13 @@ bool Exp::getType(std::shared_ptr<IdentInfo> &toReturn) {
     return addExp_p->getType(toReturn);
 }
 
+bool Exp::checkValid() {
+    auto ite = sons.begin();
+    auto addExp_p = std::dynamic_pointer_cast<AddExp>(*ite);
+
+    return addExp_p->checkValid();
+}
+
 //bool Exp::create(std::vector<std::shared_ptr<GramNode>> &toAdd, std::vector<TokenBase *>::iterator &ite_p, LVal *lval) {
 //    auto ite = ite_p;
 //    std::vector<std::shared_ptr<GramNode>> son_ps;

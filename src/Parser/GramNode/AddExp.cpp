@@ -55,3 +55,25 @@ bool AddExp::getType(std::shared_ptr<IdentInfo> &toReturn) {
     toReturn = base;
     return true;
 }
+
+bool AddExp::checkValid() {
+    bool toReturn = true;
+    auto ite = sons.begin();
+    auto mulExp_p = std::dynamic_pointer_cast<MulExp>(*ite);
+    if (!mulExp_p->checkValid())
+        return false;
+    if (!mulExp_p->getType(this->type))
+        return false;
+    ite += 2;
+    if (ite < sons.end()) {
+        auto addExp_p = std::dynamic_pointer_cast<AddExp>(*ite);
+        std::shared_ptr<IdentInfo> tmp;
+        if (!addExp_p->checkValid())
+            return false;
+        if (!addExp_p->getType(tmp))
+            return false;
+        if (!IdentInfo::add(this->type, tmp, this->type))
+            return false;
+    }
+    return true;
+}

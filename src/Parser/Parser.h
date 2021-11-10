@@ -22,6 +22,8 @@ public:
     // public methods
     Parser(std::vector<TokenBase *> &);
 
+    std::shared_ptr<GramNode> getRoot();
+
     void print();
 
 private:

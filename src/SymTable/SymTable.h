@@ -42,6 +42,12 @@ public:
 
     bool getDimension() const noexcept;
 
+    static bool add(const std::shared_ptr<IdentInfo> &a, const std::shared_ptr<IdentInfo> &b,
+                    std::shared_ptr<IdentInfo> &result);
+
+    static bool mult(const std::shared_ptr<IdentInfo> &a, const std::shared_ptr<IdentInfo> &b,
+                     std::shared_ptr<IdentInfo> &result);
+
 private:
     const int isConst;
     const int dimension;

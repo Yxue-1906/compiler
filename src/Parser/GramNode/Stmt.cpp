@@ -7,19 +7,16 @@
 #include "Cond.h"
 #include "Exp.h"
 #include "Block.h"
-#include "LVal.h"
 #include "../../Lexer/Token/STRCON.h"
 #include "../../Exception/MyException/IllegalCharException.h"
 #include "../../Exception/MyException/MismatchPlaceholderCountException.h"
 #include "../../Lexer/Token/BREAKTK.h"
 #include "../../Lexer/Token/CONTINUETK.h"
 #include "../../Exception/MyException/ConBreakInNonLoopException.h"
-#include "../../Exception/MyException/MissingSemicolonException.h"
 #include "../../Lexer/Token/RETURNTK.h"
 #include "../../Lexer/Token/PRINTFTK.h"
 #include "../../Lexer/Token/COMMA.h"
 #include "../ErrorNode.h"
-#include "../../Exception/MyException/MissingRightParenthesisException.h"
 #include "../../Exception/MyException/AssignToConstException.h"
 
 Stmt::Stmt(std::vector<std::shared_ptr<GramNode>> sons, bool isLoop)
@@ -70,7 +67,7 @@ Stmt::create(std::vector<std::shared_ptr<GramNode>> &toAdd, std::vector<TokenBas
             return false;
         }
         if (!TokenNode::create(son_ps, ite, TokenBase::RPARENT)) {
-            return false;
+            ErrorNode::create(son_ps, ErrorNode::ErrorType::RIGHT_PARENTHESIS);
         }
         if (!Stmt::create(son_ps, ite, isLoop)) {
             return false;
@@ -93,7 +90,7 @@ Stmt::create(std::vector<std::shared_ptr<GramNode>> &toAdd, std::vector<TokenBas
             return false;
         }
         if (!TokenNode::create(son_ps, ite, TokenBase::RPARENT)) {
-            return false;
+            ErrorNode::create(son_ps, ErrorNode::ErrorType::RIGHT_PARENTHESIS);
         }
         if (!Stmt::create(son_ps, ite, true)) {
             return false;
@@ -106,7 +103,7 @@ Stmt::create(std::vector<std::shared_ptr<GramNode>> &toAdd, std::vector<TokenBas
     } else if (TokenNode::create(son_ps, ite, TokenBase::BREAKTK) ||
                TokenNode::create(son_ps, ite, TokenBase::CONTINUETK)) {
         if (!TokenNode::create(son_ps, ite, TokenBase::SEMICN)) {
-            return false;
+            ErrorNode::create(son_ps, ErrorNode::ErrorType::SEMICOLON);
         }
         ite_p = ite;
         std::shared_ptr<Stmt> tmp_p;
@@ -118,7 +115,7 @@ Stmt::create(std::vector<std::shared_ptr<GramNode>> &toAdd, std::vector<TokenBas
             if (!Exp::create(son_ps, ite))
                 return false;
         if (!TokenNode::create(son_ps, ite, TokenBase::SEMICN)) {
-            return false;
+            ErrorNode::create(son_ps, ErrorNode::ErrorType::SEMICOLON);
         }
         ite_p = ite;
         std::shared_ptr<Stmt> tmp_p;
@@ -138,10 +135,10 @@ Stmt::create(std::vector<std::shared_ptr<GramNode>> &toAdd, std::vector<TokenBas
             }
         }
         if (!TokenNode::create(son_ps, ite, TokenBase::RPARENT)) {
-            return false;
+            ErrorNode::create(son_ps, ErrorNode::ErrorType::RIGHT_PARENTHESIS);
         }
         if (!TokenNode::create(son_ps, ite, TokenBase::SEMICN)) {
-            return false;
+            ErrorNode::create(son_ps, ErrorNode::ErrorType::SEMICOLON);
         }
         ite_p = ite;
         std::shared_ptr<Stmt> tmp_p;
@@ -149,7 +146,7 @@ Stmt::create(std::vector<std::shared_ptr<GramNode>> &toAdd, std::vector<TokenBas
         toAdd.push_back(tmp_p);
         return true;
     } else if (TokenBase::isTypeOf(ite, TokenBase::LBRACE)) {
-        if (!Block::create(son_ps, ite, isLoop, true)) {
+        if (!Block::create(son_ps, ite, isLoop)) {
             return false;
         }
         ite_p = ite;
@@ -163,7 +160,7 @@ Stmt::create(std::vector<std::shared_ptr<GramNode>> &toAdd, std::vector<TokenBas
             if (!Exp::create(son_ps, ite))
                 return false;
             if (!TokenNode::create(son_ps, ite, TokenBase::SEMICN)) {
-                return false;
+                ErrorNode::create(son_ps, ErrorNode::ErrorType::SEMICOLON);
             }
             ite_p = ite;
             std::shared_ptr<Stmt> tmp_p;
@@ -180,10 +177,10 @@ Stmt::create(std::vector<std::shared_ptr<GramNode>> &toAdd, std::vector<TokenBas
                     return false;
                 }
                 if (!TokenNode::create(son_ps, ite, TokenBase::RPARENT)) {
-                    return false;
+                    ErrorNode::create(son_ps, ErrorNode::ErrorType::RIGHT_PARENTHESIS);
                 }
                 if (!TokenNode::create(son_ps, ite, TokenBase::SEMICN)) {
-                    return false;
+                    ErrorNode::create(son_ps, ErrorNode::ErrorType::SEMICOLON);
                 }
                 ite_p = ite;
                 std::shared_ptr<Stmt> tmp_p;
@@ -194,13 +191,14 @@ Stmt::create(std::vector<std::shared_ptr<GramNode>> &toAdd, std::vector<TokenBas
                 Exp::create(son_ps, ite);
                 if (TokenBase::isTypeOf(ite, TokenBase::SEMICN)) {
                     TokenNode::create(son_ps, ite, TokenBase::SEMICN);
-                    ite_p = ite;
-                    std::shared_ptr<Stmt> tmp_p;
-                    tmp_p.reset(new Stmt(son_ps, isLoop));
-                    toAdd.push_back(tmp_p);
-                    return true;
+                } else {
+                    ErrorNode::create(son_ps, ErrorNode::ErrorType::SEMICOLON);
                 }
-                return false;
+                ite_p = ite;
+                std::shared_ptr<Stmt> tmp_p;
+                tmp_p.reset(new Stmt(son_ps, isLoop));
+                toAdd.push_back(tmp_p);
+                return true;
             }
         }
     } else {
@@ -208,7 +206,7 @@ Stmt::create(std::vector<std::shared_ptr<GramNode>> &toAdd, std::vector<TokenBas
             if (!Exp::create(son_ps, ite))
                 return false;
         if (!TokenNode::create(son_ps, ite, TokenBase::SEMICN)) {
-            return false;
+            ErrorNode::create(son_ps, ErrorNode::ErrorType::SEMICOLON);
         }
         ite_p = ite;
         std::shared_ptr<Stmt> tmp_p;
@@ -258,19 +256,8 @@ bool Stmt::checkValid() {
                 }
                 if (count != formatString_p->getCount())
                     throw MismatchPlaceholderCountException(printfTk_p->getLineNumber());
-                while (ite != sons.end()) {
-                    auto errorNode_p = std::dynamic_pointer_cast<ErrorNode>(*ite);
-                    if (errorNode_p) {
-                        switch (errorNode_p->getErrorType()) {
-                            case ErrorNode::ErrorType::RIGHT_PARENTHESIS:
-                                throw MissingRightParenthesisException(errorNode_p->getLineNumber());
-                            case ErrorNode::ErrorType::SEMICOLON:
-                                throw MissingSemicolonException(errorNode_p->getLineNumber());
-                            default:
-                                //unreachable
-                                return false;
-                        }
-                    }
+                for (; ite != sons.end(); ++ite) {
+                    toReturn &= (*ite)->checkValid();
                 }
             } catch (MyException &e) {
                 e.myOutput();
@@ -279,18 +266,6 @@ bool Stmt::checkValid() {
             return true;
         }
         for (auto &i: sons) {
-            auto errorNode = std::dynamic_pointer_cast<ErrorNode>(*ite);
-            if (errorNode) {
-                switch (errorNode->getErrorType()) {
-                    case ErrorNode::ErrorType::RIGHT_PARENTHESIS:
-                        throw MissingRightParenthesisException(errorNode->getLineNumber());
-                    case ErrorNode::ErrorType::SEMICOLON:
-                        throw MissingSemicolonException(errorNode->getLineNumber());
-                    default:
-                        //unreachable
-                        return false;
-                }
-            }
             toReturn &= i->checkValid();
         }
         return toReturn;
@@ -314,19 +289,8 @@ bool Stmt::checkValid() {
         }//todo: check right parenthesis
     }
     for (auto &i: sons) {
-        auto errorNode = std::dynamic_pointer_cast<ErrorNode>(*ite);
-        if (errorNode) {
-            switch (errorNode->getErrorType()) {
-                case ErrorNode::ErrorType::RIGHT_PARENTHESIS:
-                    throw MissingRightParenthesisException(errorNode->getLineNumber());
-                case ErrorNode::ErrorType::SEMICOLON:
-                    throw MissingSemicolonException(errorNode->getLineNumber());
-                default:
-                    //unreachable
-                    return false;
-            }
-        }
-        toReturn &= i->checkValid();
+        if (!i->checkValid())
+            return false;
     }
     return toReturn;
 }

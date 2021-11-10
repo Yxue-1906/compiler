@@ -59,11 +59,9 @@ void BlockItem::myOutput() {
 }
 
 bool BlockItem::checkValid() {
-    bool toReturn = true;
-    for (auto &i: sons) {
-        toReturn &= i->checkValid();
-    }
-    return toReturn;
+    if (!sons.back()->checkValid())
+        return false;
+    return true;
 }
 
 /**
@@ -76,6 +74,6 @@ bool BlockItem::getReturnType(std::shared_ptr<IdentInfo> &toReturn) {
     if (!lastStmt) {
         return false;
     }
-    return lastStmt->isNonVoidReturn(toReturn);
+    return lastStmt->isNonVoidReturn();
 }
 

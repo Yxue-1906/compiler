@@ -46,6 +46,7 @@ bool CompUnit::create(std::vector<std::shared_ptr<GramNode>> &toAdd, std::vector
 }
 
 bool CompUnit::checkValid() {
+//    std::cout << sons.size() << std::endl;
     bool toReturn = true;
     for (auto &i: this->sons) {
         toReturn &= i->checkValid();

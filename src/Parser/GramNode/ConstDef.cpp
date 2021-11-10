@@ -49,24 +49,28 @@ bool ConstDef::create(std::vector<std::shared_ptr<GramNode>> &toAdd, std::vector
 }
 
 bool ConstDef::checkValid() {
-    for (auto &i: this->sons) {
-        i->updateLineNumber();
-        auto errorNode = std::dynamic_pointer_cast<ErrorNode>(i);
-        try {
-            if (errorNode) {
-                switch (errorNode->errorType) {
-                    case ErrorNode::ErrorType::RIGHT_BRACKET:
-                        throw MissingRightBracketException(GramNode::nowLine);
-                    default:
-                        //unreachable
-                        std::cout << __FILE__ << ':' << __LINE__ << ':' << "Unreachable" << std::endl;
-                        break;
-                }
-            }
-        } catch (MissingRightBracketException &e) {
-            e.myOutput();
+    auto ite = sons.begin();
+    auto tokenNode_p = std::dynamic_pointer_cast<TokenNode>(*ite);
+    auto ident_p = std::dynamic_pointer_cast<IDENFR>(tokenNode_p->getToken_p());
+    ++ite;
+    int dimension = 0;
+    for (; ite != sons.end(); ++ite) {
+        tokenNode_p = std::dynamic_pointer_cast<TokenNode>(*ite);
+        if (tokenNode_p) {
+            auto lb = std::dynamic_pointer_cast<LBRACK>(tokenNode_p->getToken_p());
+            if (lb)
+                dimension++;
+        } else if (!(*ite)->checkValid()) {
             return false;
         }
+    }
+    try {
+        if (!GramNode::getNowTable()->addIdent(*ident_p->getValue_p(), std::make_shared<IdentInfo>(false, dimension))) {
+            throw DupIdentException(ident_p->getLineNumber());
+        }
+    } catch (MyException &e) {
+        e.myOutput();
+        return false;
     }
     return true;
 }
@@ -94,14 +98,6 @@ bool ConstDef::addIdent() {
                 dimension++;
             }
         }
-    }
-    try {
-        if (!GramNode::nowTable_p->addIdent(name, std::make_shared<IdentInfo>(true, dimension))) {
-            throw DupIdentException(ident_p->getLineNumber());
-        }
-    } catch (DupIdentException &e) {
-        e.myOutput();
-        return false;
     }
     return true;
 }

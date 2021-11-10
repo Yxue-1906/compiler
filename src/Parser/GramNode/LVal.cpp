@@ -43,57 +43,32 @@ bool LVal::create(std::vector<std::shared_ptr<GramNode>> &toAdd, std::vector<Tok
 }
 
 bool LVal::checkValid() {
-    bool toReturn = true;
     auto ite = sons.begin();
     auto tokenNode_p = std::dynamic_pointer_cast<TokenNode>(*ite);
     auto ident_p = std::dynamic_pointer_cast<IDENFR>(tokenNode_p->getToken_p());
-    std::shared_ptr<IdentInfo> type;
+    std::shared_ptr<IdentInfo> type_tmp = std::dynamic_pointer_cast<IdentInfo>(
+            GramNode::getNowTable()->queryIdent(*ident_p->getValue_p()));
     try {
-        type = std::dynamic_pointer_cast<IdentInfo>(
-                GramNode::getNowTable()->queryIdent(*ident_p->getValue_p())
-        );
-        if (!type) {
+        if (!type_tmp)
             throw UndefIdentException(ident_p->getLineNumber());
-        }
     } catch (MyException &e) {
         e.myOutput();
         return false;
     }
+    int dimension = type_tmp->getDimension();
     ite++;
-    int dimension = type->getDimension();
-    while (true) {
+    for (; ite != sons.end(); ++ite) {
         tokenNode_p = std::dynamic_pointer_cast<TokenNode>(*ite);
-        if (!tokenNode_p)
-            break;
-        auto lb = std::dynamic_pointer_cast<LBRACK>(tokenNode_p->getToken_p());
-        ++ite;
-        auto exp_p = std::dynamic_pointer_cast<Exp>(*ite);
-        toReturn &= exp_p->checkValid();
-        if (!toReturn)
-            break;
-        ++ite;
-        tokenNode_p = std::dynamic_pointer_cast<TokenNode>(*ite);
-        try {
-            if (!tokenNode_p) {
-                auto errorNode_p = std::dynamic_pointer_cast<ErrorNode>(*ite);
-                switch (errorNode_p->getErrorType()) {
-                    case ErrorNode::ErrorType::RIGHT_BRACKET:
-                        throw MissingRightBracketException(errorNode_p->getLineNumber());
-                    default:
-                        //unreachable
-                        return false;
-                }
-            }
-        } catch (MyException &e) {
-            e.myOutput();
+        if (tokenNode_p) {
+            auto lb = std::dynamic_pointer_cast<LBRACK>(tokenNode_p->getToken_p());
+            if (lb)
+                dimension--;
+        } else if (!(*ite)->checkValid()) {
             return false;
         }
-        auto rb = std::dynamic_pointer_cast<RBRACK>(*ite);
-        dimension--;
-        ++ite;
     }
-    this->type = std::make_shared<IdentInfo>(type->checkConst(), dimension);
-    return toReturn;
+    this->type = std::make_shared<IdentInfo>(type_tmp->checkConst(), dimension);
+    return true;
 }
 
 /**
@@ -102,10 +77,11 @@ bool LVal::checkValid() {
  * @return true when no error occurred, otherwise false
  */
 bool LVal::getType(std::shared_ptr<IdentInfo> &toReturn) {
-    toReturn = this->type;
-    if (!this->type)
-        return false;
-    return true;
+    if (this->type) {
+        toReturn = this->type;
+        return true;
+    }
+    return false;
 }
 
 
