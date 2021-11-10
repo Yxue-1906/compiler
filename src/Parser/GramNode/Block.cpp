@@ -5,6 +5,8 @@
 #include "Block.h"
 #include "../TokenNode.h"
 #include "BlockItem.h"
+#include "../../Exception/MyException/MismatchReturnForNonVoidException.h"
+#include "../../Exception/MyException/MismatchReturnForVoidException.h"
 
 Block::Block(std::vector<std::shared_ptr<GramNode>> sons)
         : GramNode() {
@@ -44,9 +46,39 @@ bool Block::checkValid() {
     return true;
 }
 
-bool Block::getReturnType(std::shared_ptr<IdentInfo> &toReturn) {
+/**
+ *
+ * @param isVoid
+ * @return
+ */
+bool Block::checkReturn(bool isVoid) {
     auto lastItem = std::dynamic_pointer_cast<BlockItem>(*(sons.end() - 2));
-    if (!lastItem)
-        return false;
-    return lastItem->getReturnType(toReturn);
+    if (!lastItem) {
+        if (isVoid)
+            return true;
+        else {
+            auto tokenNode_p = std::dynamic_pointer_cast<TokenNode>(sons.back());
+            try {
+                throw MismatchReturnForNonVoidException(tokenNode_p->getToken_p()->getLineNumber());
+            } catch (MyException &e) {
+                e.myOutput();
+                return false;
+            }
+        }
+    }
+    int lineNumber = lastItem->getReturn(isVoid);
+    if (lineNumber) {
+        try {
+            throw MismatchReturnForVoidException(lineNumber);
+        } catch (MyException &e) {
+            e.myOutput();
+            return false;
+        }
+    }
+    return true;
+}
+
+int Block::getRightBracketLineNumber() {
+    auto tokenNode_p = std::dynamic_pointer_cast<TokenNode>(sons.back());
+    return tokenNode_p->getToken_p()->getLineNumber();
 }

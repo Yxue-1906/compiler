@@ -112,8 +112,9 @@ Stmt::create(std::vector<std::shared_ptr<GramNode>> &toAdd, std::vector<TokenBas
         return true;
     } else if (TokenNode::create(son_ps, ite, TokenBase::RETURNTK)) {
         if (!TokenBase::isTypeOf(ite, TokenBase::SEMICN))
-            if (!Exp::create(son_ps, ite))
-                return false;
+//            if (!Exp::create(son_ps, ite))
+//                return false;
+            Exp::create(son_ps, ite);
         if (!TokenNode::create(son_ps, ite, TokenBase::SEMICN)) {
             ErrorNode::create(son_ps, ErrorNode::ErrorType::SEMICOLON);
         }
@@ -313,14 +314,15 @@ bool Stmt::isConBreak() {
  * @param toReturn return value here
  * @return false on fail, true on succeed
  */
-bool Stmt::isNonVoidReturn() {
+int Stmt::isNonVoidReturn(bool isVoid) {
     auto ite = sons.begin();
     auto tokenNode_p = std::dynamic_pointer_cast<TokenNode>(*ite);
-    if (tokenNode_p && std::dynamic_pointer_cast<RETURNTK>(tokenNode_p->getToken_p())) {
-        if (sons.size() > 2)
-            return true;
+    if (tokenNode_p) {
+        auto returnTk_p = std::dynamic_pointer_cast<RETURNTK>(tokenNode_p->getToken_p());
+        if (returnTk_p && sons.size() > 2 && isVoid)
+            return returnTk_p->getLineNumber();
     }
-    return false;
+    return 0;
 }
 
 

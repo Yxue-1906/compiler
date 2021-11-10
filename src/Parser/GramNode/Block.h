@@ -21,7 +21,9 @@ public:
 
     virtual bool checkValid() override;
 
-    bool getReturnType(std::shared_ptr<IdentInfo> &toReturn);
+    bool checkReturn(bool isVoid);
+
+    int getRightBracketLineNumber();
 };
 
 

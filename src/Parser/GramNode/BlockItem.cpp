@@ -69,11 +69,11 @@ bool BlockItem::checkValid() {
  * @param toReturn return return type by pointer
  * @return true on succeed, false when any error occurred
  */
-bool BlockItem::getReturnType(std::shared_ptr<IdentInfo> &toReturn) {
-    auto lastStmt = std::dynamic_pointer_cast<Stmt>(sons.back());
-    if (!lastStmt) {
-        return false;
+int BlockItem::getReturn(bool isVoid) {
+    auto lastStmt_p = std::dynamic_pointer_cast<Stmt>(sons.back());
+    if (!lastStmt_p) {
+        return 0;
     }
-    return lastStmt->isNonVoidReturn();
+    return lastStmt_p->isNonVoidReturn(isVoid);
 }
 

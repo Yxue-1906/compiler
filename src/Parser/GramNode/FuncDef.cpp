@@ -36,8 +36,9 @@ bool FuncDef::create(std::vector<std::shared_ptr<GramNode>> &toAdd, std::vector<
         return false;
     }
     if (!TokenBase::isTypeOf(ite, TokenBase::RPARENT)) {
-        if (!FuncFParams::create(son_ps, ite))
-            return false;
+//        if (!FuncFParams::create(son_ps, ite))
+//            return false;
+        FuncFParams::create(son_ps, ite);
     }
     if (!TokenNode::create(son_ps, ite, TokenBase::RPARENT)) {
         ErrorNode::create(son_ps, ErrorNode::ErrorType::RIGHT_PARENTHESIS);
@@ -73,9 +74,12 @@ bool FuncDef::checkValid() {
     for (; ite != sons.end(); ++ite) {
         toReturn &= (*ite)->checkValid();
     }
+    auto block_p = std::dynamic_pointer_cast<Block>(sons.back());
+    toReturn &= block_p->checkReturn(funcType_p->checkValid());
     return toReturn;
 }
 
+/*
 bool FuncDef::addIdent() {
     //init itra
     auto ite = sons.begin();
@@ -134,21 +138,18 @@ bool FuncDef::addIdent() {
     //check return type
     std::shared_ptr<IdentInfo> returnTypeFromBlock;
     try {
-        if (returnType) {
+        if (returnType) {//todo: refactor
             if (block_p->getReturnType(returnTypeFromBlock) &&
                 returnTypeFromBlock->getDimension() != returnType->getDimension())
                 throw MismatchReturnForVoidException(ident_p->getLineNumber());
         } else {
-            if (!block_p->getReturnType(returnTypeFromBlock) ||
+            if (!block_p->checkReturn(returnTypeFromBlock) ||
                 returnTypeFromBlock->getDimension() != returnType->getDimension())
-                throw MismatchReturnForNonVoidException(ident_p->getLineNumber());
+                throw MismatchReturnForNonVoidException(block_p->getRightBracketLineNumber());
         }
-    } catch (MismatchReturnForVoidException &e) {
-        e.myOutput();
-        return false;
-    } catch (MismatchReturnForNonVoidException &e) {
+    } catch (MyException &e) {
         e.myOutput();
         return false;
     }
     return toReturn;
-}
+}*/

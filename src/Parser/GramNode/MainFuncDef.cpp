@@ -48,6 +48,7 @@ bool MainFuncDef::create(std::vector<std::shared_ptr<GramNode>> &toAdd, std::vec
 }
 
 bool MainFuncDef::checkValid() {
+    bool toReturn = true;
     //get main token, prepare to get line number
     auto tokenNode = std::dynamic_pointer_cast<TokenNode>(sons[1]);
     auto mainTk = std::dynamic_pointer_cast<MAINTK>(tokenNode->getToken_p());
@@ -61,12 +62,6 @@ bool MainFuncDef::checkValid() {
     //check return type
     auto block_p = std::dynamic_pointer_cast<Block>(sons.back());
     std::shared_ptr<IdentInfo> returnType;
-    try {
-        if (!block_p->getReturnType(returnType))
-            throw MismatchReturnForNonVoidException(mainTk->getLineNumber());
-    } catch (MismatchReturnForNonVoidException &e) {
-        e.myOutput();
-        return false;
-    }
-    return true;
+    toReturn &= block_p->checkReturn(false);
+    return toReturn;
 }

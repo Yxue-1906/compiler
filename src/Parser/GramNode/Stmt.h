@@ -23,7 +23,7 @@ public:
 
     virtual bool checkValid() override;
 
-    bool isNonVoidReturn();
+    int isNonVoidReturn(bool isVoid);
 };
 
 #endif //PARSER_STMT_H
