@@ -10,15 +10,15 @@
 
 class MismatchPlaceholderCountException : public MyException {
 public:
-    explicit MismatchPlaceholderCountException(const TokenBase &token) : MyException(token, 'b') {}
+    explicit MismatchPlaceholderCountException(const TokenBase &token) : MyException(token, 'l') {}
 
-    explicit MismatchPlaceholderCountException(int lineNumber) : MyException(lineNumber, 'b') {}
+    explicit MismatchPlaceholderCountException(int lineNumber) : MyException(lineNumber, 'l') {}
 
-    MismatchPlaceholderCountException(const TokenBase &token, const std::string &message) : MyException(token, 'b') {
+    MismatchPlaceholderCountException(const TokenBase &token, const std::string &message) : MyException(token, 'l') {
         this->message.append(message);
     }
 
-    MismatchPlaceholderCountException(int lineNumber, const std::string &message) : MyException(lineNumber, 'b') {
+    MismatchPlaceholderCountException(int lineNumber, const std::string &message) : MyException(lineNumber, 'l') {
         this->message.append(message);
     }
 };

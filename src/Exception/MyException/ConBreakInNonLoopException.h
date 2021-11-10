@@ -9,15 +9,15 @@
 
 class ConBreakInNonLoopException : public MyException {
 public:
-    explicit ConBreakInNonLoopException(const TokenBase &token) : MyException(token, 'k') {}
+    explicit ConBreakInNonLoopException(const TokenBase &token) : MyException(token, 'm') {}
 
-    explicit ConBreakInNonLoopException(int lineNumber) : MyException(lineNumber, 'k') {}
+    explicit ConBreakInNonLoopException(int lineNumber) : MyException(lineNumber, 'm') {}
 
-    ConBreakInNonLoopException(const TokenBase &token, const std::string &message) : MyException(token, 'k') {
+    ConBreakInNonLoopException(const TokenBase &token, const std::string &message) : MyException(token, 'm') {
         this->message.append(message);
     }
 
-    ConBreakInNonLoopException(int lineNumber, const std::string &message) : MyException(lineNumber, 'k') {
+    ConBreakInNonLoopException(int lineNumber, const std::string &message) : MyException(lineNumber, 'm') {
         this->message.append(message);
     }
 };

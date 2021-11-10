@@ -11,17 +11,17 @@
 
 class ModifyConstException : public MyException {
 public:
-    ModifyConstException(int line_number, std::string message) : MyException(line_number, 'c') {
+    ModifyConstException(int line_number, std::string message) : MyException(line_number, 'h') {
         this->message.append(message);
     }
 
-    ModifyConstException(const TokenBase &token, std::string message) : MyException(token, 'c') {
+    ModifyConstException(const TokenBase &token, std::string message) : MyException(token, 'h') {
         this->message.append(message);
     }
 
-    ModifyConstException(int line_number) : MyException(line_number, 'c') {}
+    ModifyConstException(int line_number) : MyException(line_number, 'h') {}
 
-    ModifyConstException(const TokenBase &token) : MyException(token, 'c') {}
+    ModifyConstException(const TokenBase &token) : MyException(token, 'h') {}
 };
 
 

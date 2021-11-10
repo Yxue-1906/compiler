@@ -121,7 +121,15 @@ bool UnaryExp::checkValid() {
     }
     try {
         if (!funcInfo->checkParamTypes(params)) {
-            throw MismatchCallTypeException(ident_p->getLineNumber());
+            switch (FuncInfo::getLastError()) {
+                case FuncInfo::ErrorType::MISMATCH_PARAM_NUM:
+                    throw MismatchParamNumException(ident_p->getLineNumber());
+                case FuncInfo::ErrorType::MISMATCH_CALL_TYPE:
+                    throw MismatchCallTypeException(ident_p->getLineNumber());
+                default:
+                    //unreachable
+                    return false;
+            }
         }
     } catch (MyException &e) {
         e.myOutput();

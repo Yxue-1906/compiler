@@ -37,14 +37,6 @@ bool FuncRParams::create(std::vector<std::shared_ptr<GramNode>> &toAdd, std::vec
     return true;
 }
 
-bool FuncRParams::getParamTypes(std::vector<std::shared_ptr<IdentInfo>> &toReturn) {
-    if (!this->params.empty()) {
-        toReturn = this->params;
-        return true;
-    }
-    return false;
-}
-
 bool FuncRParams::checkValid() {
     std::shared_ptr<IdentInfo> tmp;
     for (auto &i: sons) {
@@ -60,3 +52,12 @@ bool FuncRParams::checkValid() {
     }
     return true;
 }
+
+bool FuncRParams::getParamTypes(std::vector<std::shared_ptr<IdentInfo>> &toReturn) {
+    if (!this->params.empty()) {
+        toReturn = this->params;
+        return true;
+    }
+    return false;
+}
+
