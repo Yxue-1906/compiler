@@ -40,7 +40,7 @@ public:
 
     bool checkConst() const noexcept;
 
-    bool getDimension() const noexcept;
+    int getDimension() const noexcept;
 
     static bool add(const std::shared_ptr<IdentInfo> &a, const std::shared_ptr<IdentInfo> &b,
                     std::shared_ptr<IdentInfo> &result);

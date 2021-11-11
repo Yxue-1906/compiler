@@ -10,6 +10,8 @@
 
 class FuncFParam : public GramNode {
 private:
+    std::shared_ptr<IDENFR> ident;
+    std::shared_ptr<IdentInfo> type;
 public:
 private:
     FuncFParam(std::vector<std::shared_ptr<GramNode>> sons);
@@ -21,7 +23,7 @@ public:
 
     bool addSymTable();
 
-    std::pair<std::string, std::shared_ptr<IdentInfo>> getParamType();
+    bool getParamType(std::pair<std::shared_ptr<IDENFR>, std::shared_ptr<IdentInfo>> &toReturn);
 };
 
 

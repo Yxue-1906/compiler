@@ -30,17 +30,18 @@ bool Exp::create(std::vector<std::shared_ptr<GramNode>> &toAdd, std::vector<Toke
 }
 
 bool Exp::getType(std::shared_ptr<IdentInfo> &toReturn) {
-    auto addExp_p = std::dynamic_pointer_cast<AddExp>(sons.back());
-    if (!addExp_p)
+    if (!this->type)
         return false;
-    return addExp_p->getType(toReturn);
+    toReturn = this->type;
+    return true;
 }
 
 bool Exp::checkValid() {
     auto ite = sons.begin();
     auto addExp_p = std::dynamic_pointer_cast<AddExp>(*ite);
-
-    return addExp_p->checkValid();
+    if (!addExp_p->checkValid() || !addExp_p->getType(this->type))
+        return false;
+    return true;
 }
 
 //bool Exp::create(std::vector<std::shared_ptr<GramNode>> &toAdd, std::vector<TokenBase *>::iterator &ite_p, LVal *lval) {

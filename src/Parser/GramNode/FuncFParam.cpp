@@ -65,13 +65,8 @@ bool FuncFParam::checkValid() {
             return false;
         }
     }
-    try {
-        if (!GramNode::getNowTable()->addIdent(*ident_p->getValue_p(), std::make_shared<IdentInfo>(false, dimension)))
-            throw DupIdentException(ident_p->getLineNumber());
-    } catch (MyException &e) {
-        e.myOutput();
-        return false;
-    }
+    this->ident = ident_p;
+    this->type = std::make_shared<IdentInfo>(false, dimension);
     return true;
 }
 
@@ -102,23 +97,11 @@ bool FuncFParam::addSymTable() {
     return true;
 }
 
-std::pair<std::string, std::shared_ptr<IdentInfo>> FuncFParam::getParamType() {
-    std::pair<std::string, std::shared_ptr<IdentInfo>> toReturn;
-    std::shared_ptr<TokenNode> tokenNode_p = std::dynamic_pointer_cast<TokenNode>(sons[1]);
-    auto ident_p = std::dynamic_pointer_cast<IDENFR>(tokenNode_p->getToken_p());
-    auto ite = sons.begin();
-    int dimension = 0;
-    for (; ite != sons.end(); ++ite) {
-        tokenNode_p = std::dynamic_pointer_cast<TokenNode>(*ite);
-        if (tokenNode_p) {
-            auto lbrack_p = std::dynamic_pointer_cast<LBRACK>(tokenNode_p->getToken_p());
-            if (lbrack_p) {
-                dimension++;
-            }
-        }
-    }
-    toReturn = std::make_pair(*ident_p->getValue_p(), std::make_shared<IdentInfo>(false, dimension));
-    return toReturn;
+bool FuncFParam::getParamType(std::pair<std::shared_ptr<IDENFR>, std::shared_ptr<IdentInfo>> &toReturn) {
+    if (!this->type)
+        return false;
+    toReturn = std::make_pair(this->ident, this->type);
+    return true;
 }
 
 

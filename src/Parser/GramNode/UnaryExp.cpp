@@ -109,15 +109,10 @@ bool UnaryExp::checkValid() {
     }
     ite += 2;
     auto funcRParams = std::dynamic_pointer_cast<FuncRParams>(*ite);
-    if (!funcRParams) {
-        //unreachable
-        return false;
-    }
-    if (!funcRParams->checkValid())
-        return false;
     std::vector<std::shared_ptr<IdentInfo>> params;
-    if (!funcRParams->getParamTypes(params)) {
-        return false;
+    if (funcRParams) {
+        if (!funcRParams->checkValid() || !funcRParams->getParamTypes(params))
+            return false;
     }
     try {
         if (!funcInfo->checkParamTypes(params)) {

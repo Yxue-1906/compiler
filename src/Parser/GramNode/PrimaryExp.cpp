@@ -82,3 +82,36 @@ bool PrimaryExp::getType(std::shared_ptr<IdentInfo> &toReturn) {
     }
     return false;//unreachable
 }
+
+bool PrimaryExp::checkValid() {
+    bool toReturn = true;
+    auto ite = sons.begin();
+    if (std::dynamic_pointer_cast<Number>(*ite)) {
+        this->type = std::make_shared<IdentInfo>(true, 0);
+        return true;
+    }
+    auto tokenNode_p = std::dynamic_pointer_cast<TokenNode>(*ite);
+    if (tokenNode_p) {
+        if (std::dynamic_pointer_cast<LPARENT>(tokenNode_p->getToken_p())) {
+            ++ite;
+            auto exp_p = std::dynamic_pointer_cast<Exp>(*ite);
+            if (!exp_p->checkValid() || !exp_p->getType(this->type)) {
+                //unreachable
+                return false;
+            }
+            return true;
+        } else {
+            //unreachable
+            return false;
+        }
+    }
+    auto lval_p = std::dynamic_pointer_cast<LVal>(*ite);
+    if (lval_p) {
+        if (!lval_p->checkValid() || !lval_p->getType(this->type))
+            return false;
+    } else {
+        //unreachable
+        return false;
+    }
+    return true;
+}

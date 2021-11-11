@@ -38,21 +38,9 @@ bool AddExp::create(std::vector<std::shared_ptr<GramNode>> &toAdd, std::vector<T
 }
 
 bool AddExp::getType(std::shared_ptr<IdentInfo> &toReturn) {
-    toReturn = nullptr;
-    std::shared_ptr<IdentInfo> base = std::make_shared<IdentInfo>(false, 0);
-    std::shared_ptr<IdentInfo> tmp;
-    for (auto &i: this->sons) {
-        auto mulExp_p = std::dynamic_pointer_cast<MulExp>(i);
-        if (!mulExp_p)
-            continue;
-        if (!mulExp_p->getType(tmp))
-            return false;
-        if (!tmp)
-            return false;
-        if (tmp->getDimension() != base->getDimension())
-            return false;
-    }
-    toReturn = base;
+    if (!this->type)
+        return false;
+    toReturn = this->type;
     return true;
 }
 
@@ -60,9 +48,7 @@ bool AddExp::checkValid() {
     bool toReturn = true;
     auto ite = sons.begin();
     auto mulExp_p = std::dynamic_pointer_cast<MulExp>(*ite);
-    if (!mulExp_p->checkValid())
-        return false;
-    if (!mulExp_p->getType(this->type))
+    if (!mulExp_p->checkValid() || !mulExp_p->getType(this->type))
         return false;
     ite += 2;
     if (ite < sons.end()) {

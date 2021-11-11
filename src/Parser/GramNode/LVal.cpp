@@ -46,7 +46,7 @@ bool LVal::checkValid() {
     auto ite = sons.begin();
     auto tokenNode_p = std::dynamic_pointer_cast<TokenNode>(*ite);
     auto ident_p = std::dynamic_pointer_cast<IDENFR>(tokenNode_p->getToken_p());
-    std::shared_ptr<IdentInfo> type_tmp = std::dynamic_pointer_cast<IdentInfo>(
+    auto type_tmp = std::dynamic_pointer_cast<IdentInfo>(
             GramNode::getNowTable()->queryIdent(*ident_p->getValue_p()));
     try {
         if (!type_tmp)

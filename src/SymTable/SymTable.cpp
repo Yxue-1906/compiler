@@ -46,7 +46,7 @@ bool IdentInfo::checkConst() const noexcept {
     return this->isConst;
 }
 
-bool IdentInfo::getDimension() const noexcept {
+int IdentInfo::getDimension() const noexcept {
     return this->dimension;
 }
 

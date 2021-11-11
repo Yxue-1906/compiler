@@ -43,23 +43,24 @@ bool FuncFParams::checkValid() {
     return toReturn;
 }
 
-bool FuncFParams::addSymTable() {
-    for (auto &i: this->sons) {
-        auto funcFParam_p = std::dynamic_pointer_cast<FuncFParam>(i);
-        if (funcFParam_p) {
-            if (!funcFParam_p->addSymTable()) {
-                return false;
-            }
-        }
-    }
-    return true;
-}
+//bool FuncFParams::addSymTable() {
+//    for (auto &i: this->sons) {
+//        auto funcFParam_p = std::dynamic_pointer_cast<FuncFParam>(i);
+//        if (funcFParam_p) {
+//            if (!funcFParam_p->addSymTable()) {
+//                return false;
+//            }
+//        }
+//    }
+//    return true;
+//}
 
-bool FuncFParams::getParamTypes(std::vector<std::pair<std::string, std::shared_ptr<IdentInfo>>> &toReturn) {
+bool FuncFParams::getParamTypes(std::vector<std::pair<std::shared_ptr<IDENFR>, std::shared_ptr<IdentInfo>>> &toReturn) {
+    std::pair<std::shared_ptr<IDENFR>, std::shared_ptr<IdentInfo>> tmp_pair;
     for (auto &i: this->sons) {
         auto funcFParam_p = std::dynamic_pointer_cast<FuncFParam>(i);
-        if (funcFParam_p) {
-            toReturn.push_back(funcFParam_p->getParamType());
+        if (funcFParam_p && funcFParam_p->getParamType(tmp_pair)) {
+            toReturn.push_back(tmp_pair);
         }
     }
     return true;

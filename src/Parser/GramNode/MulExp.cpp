@@ -39,19 +39,16 @@ bool MulExp::create(std::vector<std::shared_ptr<GramNode>> &toAdd, std::vector<T
 }
 
 bool MulExp::getType(std::shared_ptr<IdentInfo> &toReturn) {
-    if (this->type) {
-        toReturn = this->type;
-        return true;
-    }
-    return false;
+    if (!this->type)
+        return false;
+    toReturn = this->type;
+    return true;
 }
 
 bool MulExp::checkValid() {
     auto ite = sons.begin();
     auto unaryExp_p = std::dynamic_pointer_cast<UnaryExp>(*ite);
-    if (!unaryExp_p->checkValid())
-        return false;
-    if (!unaryExp_p->getType(this->type))
+    if (!unaryExp_p->checkValid() || !unaryExp_p->getType(this->type))
         return false;
     ite += 2;
     if (ite < sons.end()) {
@@ -66,3 +63,4 @@ bool MulExp::checkValid() {
     }
     return true;
 }
+

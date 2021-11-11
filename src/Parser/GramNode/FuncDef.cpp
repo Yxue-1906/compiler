@@ -11,6 +11,7 @@
 #include "../../Exception/MyException/MissingRightParenthesisException.h"
 #include "../../Exception/MyException/MismatchReturnForVoidException.h"
 #include "../../Exception/MyException/MismatchReturnForNonVoidException.h"
+#include "../../Lexer/Token/RBRACK.h"
 
 FuncDef::FuncDef(std::vector<std::shared_ptr<GramNode>> sons) : GramNode() {
     setGramName("FuncDef");
@@ -69,13 +70,39 @@ bool FuncDef::checkValid() {
     ++ite;
     auto tokenNode_p = std::dynamic_pointer_cast<TokenNode>(*ite);
     auto ident_p = std::dynamic_pointer_cast<IDENFR>(tokenNode_p->getToken_p());
-    ++ite;
-    GramNode::setNowTable(std::make_shared<SymTable>(GramNode::getNowTable()));
-    for (; ite != sons.end(); ++ite) {
-        toReturn &= (*ite)->checkValid();
+    ite += 2;
+    auto funcFParams = std::dynamic_pointer_cast<FuncFParams>(*ite);
+    std::vector<std::pair<std::shared_ptr<IDENFR>, std::shared_ptr<IdentInfo>>> params;
+    if (funcFParams) {
+        if (!funcFParams->checkValid() || !funcFParams->getParamTypes(params)) {
+            //unreachable
+            return false;
+        }
     }
+    try {
+        for (auto &i: params) {
+            if (GramNode::getNowTable()->addIdent(*i.first->getValue_p(), i.second)) {
+                throw DupIdentException(i.first->getLineNumber());
+            }
+        }
+        std::vector<std::pair<std::string, std::shared_ptr<IdentInfo>>> tmp_params;
+        tmp_params.reserve(params.size());
+        for (auto &i: params) {
+            tmp_params.emplace_back(*i.first->getValue_p(), i.second);
+        }
+        if (!GramNode::getNowTable()->addIdent(*ident_p->getValue_p(),
+                                               std::make_shared<FuncInfo>(returnType, tmp_params))) {
+            throw DupIdentException(ident_p->getLineNumber());
+        }
+    } catch (MyException &e) {
+        e.myOutput();
+        return false;
+    }
+    GramNode::setNowTable(std::make_shared<SymTable>(GramNode::getNowTable()));
     auto block_p = std::dynamic_pointer_cast<Block>(sons.back());
-    toReturn &= block_p->checkReturn(funcType_p->checkValid());
+    if (!block_p->checkValid())
+        return false;
+    toReturn &= block_p->checkReturn(returnType == nullptr);
     return toReturn;
 }
 

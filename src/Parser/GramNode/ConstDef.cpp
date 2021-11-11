@@ -65,7 +65,7 @@ bool ConstDef::checkValid() {
         }
     }
     try {
-        if (!GramNode::getNowTable()->addIdent(*ident_p->getValue_p(), std::make_shared<IdentInfo>(false, dimension))) {
+        if (!GramNode::getNowTable()->addIdent(*ident_p->getValue_p(), std::make_shared<IdentInfo>(true, dimension))) {
             throw DupIdentException(ident_p->getLineNumber());
         }
     } catch (MyException &e) {
