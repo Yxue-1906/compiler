@@ -70,7 +70,7 @@ std::ostream *MyOutput::getEos() {
     }
     if (eos) {
         if (dynamic_cast<std::ofstream *>(eos)) {
-            if (dynamic_cast<std::ofstream *>(eos)->is_open())return os;
+            if (dynamic_cast<std::ofstream *>(eos)->is_open())return eos;
         }
         return eos;
     }

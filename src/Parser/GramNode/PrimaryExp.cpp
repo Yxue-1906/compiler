@@ -8,6 +8,7 @@
 #include "Number.h"
 #include "LVal.h"
 #include "../../Lexer/Token/LPARENT.h"
+#include "../ErrorNode.h"
 
 PrimaryExp::PrimaryExp(std::vector<std::shared_ptr<GramNode>> sons) : GramNode() {
     setGramName("PrimaryExp");
@@ -33,7 +34,7 @@ bool PrimaryExp::create(std::vector<std::shared_ptr<GramNode>> &toAdd, std::vect
             return false;
         }
         if (!TokenNode::create(son_ps, ite, TokenBase::RPARENT)) {
-            return false;
+            ErrorNode::create(son_ps, ErrorNode::ErrorType::RIGHT_PARENTHESIS);
         }
         ite_p = ite;
         std::shared_ptr<PrimaryExp> tmp_p;

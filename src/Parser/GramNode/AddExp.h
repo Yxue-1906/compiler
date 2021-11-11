@@ -15,6 +15,9 @@ public:
 private:
     AddExp(std::vector<std::shared_ptr<GramNode>> sons);
 
+    static bool create(std::vector<std::shared_ptr<GramNode>> &, std::vector<TokenBase *>::iterator &,
+                       __attribute__((unused)) int unUsed);
+
 public:
     static bool create(std::vector<std::shared_ptr<GramNode>> &, std::vector<TokenBase *>::iterator &);
 

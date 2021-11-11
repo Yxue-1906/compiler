@@ -19,7 +19,6 @@ public:
 
     virtual bool checkValid() override;
 
-//    bool addIdent();
 };
 
 

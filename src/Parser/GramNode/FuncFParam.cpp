@@ -31,7 +31,7 @@ bool FuncFParam::create(std::vector<std::shared_ptr<GramNode>> &toAdd, std::vect
     }
     if (TokenNode::create(son_ps, ite, TokenBase::LBRACK)) {
         if (!TokenNode::create(son_ps, ite, TokenBase::RBRACK)) {
-            return false;
+            ErrorNode::create(son_ps, ErrorNode::ErrorType::RIGHT_BRACKET);
         }
         for (; TokenNode::create(son_ps, ite, TokenBase::LBRACK);) {
             if (!ConstExp::create(son_ps, ite)) {
@@ -67,33 +67,6 @@ bool FuncFParam::checkValid() {
     }
     this->ident = ident_p;
     this->type = std::make_shared<IdentInfo>(false, dimension);
-    return true;
-}
-
-bool FuncFParam::addSymTable() {
-    auto tokenNode_p = std::dynamic_pointer_cast<TokenNode>(sons[1]);
-    auto ident_p = std::dynamic_pointer_cast<IDENFR>(tokenNode_p->getToken_p());
-    std::string name = *ident_p->getValue_p();
-    auto ite = sons.begin();
-    ite += 2;
-    int dimension = 0;
-    for (; ite != sons.end(); ++ite) {
-        tokenNode_p = std::dynamic_pointer_cast<TokenNode>(*ite);
-        if (tokenNode_p) {
-            auto lbrack_p = std::dynamic_pointer_cast<LBRACK>(tokenNode_p->getToken_p());
-            if (lbrack_p) {
-                dimension++;
-            }
-        }
-    }
-    try {
-        if (!GramNode::getNowTable()->addIdent(name, std::make_shared<IdentInfo>(false, dimension))) {
-            throw DupIdentException(ident_p->getLineNumber());
-        }
-    } catch (DupIdentException &e) {
-        e.myOutput();
-        return false;
-    }
     return true;
 }
 

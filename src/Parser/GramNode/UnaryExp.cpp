@@ -10,6 +10,7 @@
 #include "../../Exception/MyException/MismatchParamNumException.h"
 #include "../../Exception/MyException/MismatchCallTypeException.h"
 #include "../../Lexer/Token/LPARENT.h"
+#include "../ErrorNode.h"
 
 UnaryExp::UnaryExp(std::vector<std::shared_ptr<GramNode>> sons) : GramNode() {
     setGramName("UnaryExp");
@@ -48,7 +49,7 @@ bool UnaryExp::create(std::vector<std::shared_ptr<GramNode>> &toAdd, std::vector
                 return false;
         }
         if (!TokenNode::create(son_ps, ite, TokenBase::RPARENT)) {
-            return false;
+            ErrorNode::create(son_ps, ErrorNode::ErrorType::RIGHT_PARENTHESIS);
         }
         ite_p = ite;
         std::shared_ptr<UnaryExp> tmp_p;

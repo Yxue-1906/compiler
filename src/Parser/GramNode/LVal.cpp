@@ -32,7 +32,7 @@ bool LVal::create(std::vector<std::shared_ptr<GramNode>> &toAdd, std::vector<Tok
             return false;
         }
         if (!TokenNode::create(son_ps, ite, TokenBase::RBRACK)) {
-            return false;
+            ErrorNode::create(son_ps, ErrorNode::ErrorType::RIGHT_BRACKET);
         }
     }
     ite_p = ite;

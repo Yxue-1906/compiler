@@ -20,6 +20,14 @@ bool
 TokenNode::create(std::vector<std::shared_ptr<GramNode>> &toAdd, std::vector<TokenBase *>::iterator &ite_p, int type) {
     auto ite = ite_p;
     if (TokenBase::isTypeOf(ite, type)) {
+#ifdef DEBUG
+        std::cerr << (*ite)->getLineNumber() << ':';
+        if (dynamic_cast<Token<std::string> * >(*ite)) {
+            std::cerr << *dynamic_cast<Token<std::string> *>(*ite)->getValue_p() << std::endl;
+        } else {
+            std::cerr << *dynamic_cast<Token<int> *>(*ite)->getValue_p() << std::endl;
+        }
+#endif
         std::shared_ptr<TokenBase> tmp_token_p;
         tmp_token_p.reset(*ite);
         GramNode::nowLine = tmp_token_p->getLineNumber();

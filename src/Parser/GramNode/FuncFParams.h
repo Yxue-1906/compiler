@@ -19,8 +19,6 @@ public:
 
     virtual bool checkValid() override;
 
-    bool addSymTable();
-
     bool getParamTypes(std::vector<std::pair<std::shared_ptr<IDENFR>, std::shared_ptr<IdentInfo>>> &toReturn);
 };
 

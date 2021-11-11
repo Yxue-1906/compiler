@@ -9,14 +9,11 @@ int main() {
     std::ofstream ofs;
     ofs.open("output.txt", std::ios::out | std::ios::trunc);
     MyOutput::setOutput(&ofs);
+    std::ofstream eofs;
+    eofs.open("error.txt", std::ios::out | std::ios::trunc);
     MyOutput::setErrorOutput(&std::cout);
     Lexer lexer{std::move(ifs)};
-//    for (auto &i: lexer.getList()) {
-//        std::cout << i->getLineNumber() << ":";
-//        i->myOutput();
-//    }
     Parser parser{lexer.getList()};
-//    parser.print();
     parser.getRoot()->checkValid();
     return 0;
 }

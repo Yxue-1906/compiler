@@ -43,17 +43,6 @@ bool FuncFParams::checkValid() {
     return toReturn;
 }
 
-//bool FuncFParams::addSymTable() {
-//    for (auto &i: this->sons) {
-//        auto funcFParam_p = std::dynamic_pointer_cast<FuncFParam>(i);
-//        if (funcFParam_p) {
-//            if (!funcFParam_p->addSymTable()) {
-//                return false;
-//            }
-//        }
-//    }
-//    return true;
-//}
 
 bool FuncFParams::getParamTypes(std::vector<std::pair<std::shared_ptr<IDENFR>, std::shared_ptr<IdentInfo>>> &toReturn) {
     std::pair<std::shared_ptr<IDENFR>, std::shared_ptr<IdentInfo>> tmp_pair;

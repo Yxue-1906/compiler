@@ -81,7 +81,7 @@ bool FuncDef::checkValid() {
     }
     try {
         for (auto &i: params) {
-            if (GramNode::getNowTable()->addIdent(*i.first->getValue_p(), i.second)) {
+            if (!GramNode::getNowTable()->addIdent(*i.first->getValue_p(), i.second)) {
                 throw DupIdentException(i.first->getLineNumber());
             }
         }
@@ -105,78 +105,3 @@ bool FuncDef::checkValid() {
     toReturn &= block_p->checkReturn(returnType == nullptr);
     return toReturn;
 }
-
-/*
-bool FuncDef::addIdent() {
-    //init itra
-    auto ite = sons.begin();
-    auto funcType = std::dynamic_pointer_cast<FuncType>(*ite);
-    ite++;
-    if (!funcType) {
-        //unreachable
-        //handle fault
-    }
-
-    //get return type
-    std::shared_ptr<IdentInfo> returnType;
-    funcType->getReturnType(returnType);
-    auto tokenNode = std::dynamic_pointer_cast<TokenNode>(*ite);
-    ite++;
-
-    //get func name
-    auto ident_p = std::dynamic_pointer_cast<IDENFR>(tokenNode->getToken_p());
-    std::string name = *ident_p->getValue_p();
-    ite += 2;
-
-    //set new Table
-    GramNode::setNowTable(std::make_shared<SymTable>(GramNode::getNowTable()));
-    bool toReturn = true;
-
-    //check param valid
-    auto funcFParams = std::dynamic_pointer_cast<FuncFParams>(*ite);
-    toReturn &= funcFParams->checkValid();
-
-    //get params type
-//    std::vector<std::pair<std::string, std::shared_ptr<IdentInfo>>> params;
-//    funcFParams->getParamTypes(params);
-
-    //add params
-//    for (auto &i: params) {
-//        auto paramName = i.first;
-//        auto paramType = i.second;
-//        try {
-//            if (!GramNode::nowTable_p->addIdent(paramName, paramType)) {
-//                toReturn = false;
-//                throw DupIdentException(ident_p->getLineNumber());
-//            }
-//        } catch (DupIdentException &e) {
-//            e.myOutput();
-//        }
-//    }
-
-    //check block valid
-    auto block_p = std::dynamic_pointer_cast<Block>(sons.back());
-    if (!block_p) {
-        //unreachable
-        std::cout << __FILE__ << ':' << __LINE__ << ':' << "Unreachable" << std::endl;
-    }
-    block_p->checkValid();
-
-    //check return type
-    std::shared_ptr<IdentInfo> returnTypeFromBlock;
-    try {
-        if (returnType) {//todo: refactor
-            if (block_p->getReturnType(returnTypeFromBlock) &&
-                returnTypeFromBlock->getDimension() != returnType->getDimension())
-                throw MismatchReturnForVoidException(ident_p->getLineNumber());
-        } else {
-            if (!block_p->checkReturn(returnTypeFromBlock) ||
-                returnTypeFromBlock->getDimension() != returnType->getDimension())
-                throw MismatchReturnForNonVoidException(block_p->getRightBracketLineNumber());
-        }
-    } catch (MyException &e) {
-        e.myOutput();
-        return false;
-    }
-    return toReturn;
-}*/

@@ -33,7 +33,7 @@ bool VarDef::create(std::vector<std::shared_ptr<GramNode>> &toAdd, std::vector<T
             return false;
         }
         if (!TokenNode::create(son_ps, ite, TokenBase::RBRACK)) {
-            return false;
+            ErrorNode::create(son_ps, ErrorNode::ErrorType::RIGHT_BRACKET);
         }
     }
     if (TokenNode::create(son_ps, ite, TokenBase::ASSIGN)) {

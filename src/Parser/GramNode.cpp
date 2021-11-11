@@ -13,6 +13,9 @@ GramNode::GramNode() = default;
 
 void GramNode::setGramName(std::string gramName) {
     this->gramName = std::move(gramName);
+#ifdef DEBUG
+    std::cerr << "<" << this->gramName << ">" << std::endl;
+#endif
 }
 
 void GramNode::setSons(std::vector<std::shared_ptr<GramNode>> sons) {
