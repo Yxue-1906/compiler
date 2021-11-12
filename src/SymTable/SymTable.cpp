@@ -68,6 +68,14 @@ bool IdentInfo::mult(const std::shared_ptr<IdentInfo> &a, const std::shared_ptr<
     return true;
 }
 
+void IdentInfo::print() const {
+    if (isConst)
+        std::cout << "const ";
+    std::cout << "int";
+    for (int i = 0; i < dimension; ++i)
+        std::cout << "[]";
+}
+
 FuncInfo::ErrorType FuncInfo::errorNo = FuncInfo::ErrorType::NO_ERROR;
 
 bool FuncInfo::operator==(Info &a) const {
@@ -116,7 +124,7 @@ bool FuncInfo::checkReturnType(std::shared_ptr<IdentInfo> toCheck) const {
         return true;
 }
 
-std::shared_ptr<IdentInfo> FuncInfo::getReturnType() noexcept {
+const std::shared_ptr<IdentInfo> &FuncInfo::getReturnType() noexcept {
     return this->returnType;
 }
 
@@ -150,10 +158,28 @@ bool FuncInfo::checkParamTypes(std::vector<std::shared_ptr<IdentInfo>> &toCheck)
     return true;
 }
 
+const std::vector<std::pair<std::string, std::shared_ptr<IdentInfo>>> &FuncInfo::getParams() const {
+    return this->params;
+}
+
 FuncInfo::ErrorType FuncInfo::getLastError() noexcept {
     ErrorType toReturn = FuncInfo::errorNo;
     errorNo = NO_ERROR;
     return toReturn;
+}
+
+void FuncInfo::print() const {
+    if (this->returnType)
+        this->returnType->print();
+    else
+        std::cout << "void";
+    std::cout << '(';
+    for (auto &i: params) {
+        std::cout << i.first << ':';
+        i.second->print();
+        std::cout << ',';
+    }
+    std::cout << ')';
 }
 
 SymTable::SymTable(std::shared_ptr<SymTable> formerTable_p) {
@@ -184,6 +210,27 @@ bool SymTable::addIdent(std::string name, std::shared_ptr<Info> info) noexcept {
     }
 }
 
+#ifdef DEBUG
+
+int SymTable::printTable() {
+    int tabs = 0;
+    if (this->formerTable_p) {
+        tabs = this->formerTable_p->printTable();
+    }
+    for (int j = 0; j < tabs; ++j)
+        std::cout << '\t';
+    std::cout << '|' << std::endl;
+    for (auto &i: this->symTable) {
+        for (int j = 0; j < tabs; ++j)
+            std::cout << '\t';
+        std::cout << i.first << ':';
+        i.second->print();
+        std::cout << std::endl;
+    }
+    return tabs + 1;
+}
+
+#endif
 
 
 

@@ -46,6 +46,10 @@ std::string &GramNode::getGramName() {
 }
 
 void GramNode::setNowTable(std::shared_ptr<SymTable> newTable) {
+#ifdef DEBUG
+    nowTable_p->printTable();
+    std::cout << "---------------" << std::endl;
+#endif
     GramNode::nowTable_p = newTable;
 }
 

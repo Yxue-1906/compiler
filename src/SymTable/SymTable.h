@@ -24,6 +24,8 @@ public:
     virtual bool operator!=(Info &a) const = 0;
 
     virtual bool operator!=(Info &&a) const = 0;
+
+    virtual void print() const = 0;
 };
 
 class IdentInfo : public Info {
@@ -47,6 +49,8 @@ public:
 
     static bool mult(const std::shared_ptr<IdentInfo> &a, const std::shared_ptr<IdentInfo> &b,
                      std::shared_ptr<IdentInfo> &result);
+
+    virtual void print() const override;
 
 private:
     const int isConst;
@@ -74,11 +78,15 @@ public:
 
     bool checkReturnType(std::shared_ptr<IdentInfo> toCheck) const;
 
-    std::shared_ptr<IdentInfo> getReturnType() noexcept;
+    const std::shared_ptr<IdentInfo> &getReturnType() noexcept;
 
     bool checkParamTypes(std::vector<std::shared_ptr<IdentInfo>> &toCheck) const;
 
+    const std::vector<std::pair<std::string, std::shared_ptr<IdentInfo>>> &getParams() const;
+
     static ErrorType getLastError() noexcept;
+
+    virtual void print() const override;
 
 private:
     bool checkParamTypes(std::vector<std::pair<std::string, std::shared_ptr<IdentInfo>>> &toCheck) const;
@@ -109,6 +117,11 @@ public:
 
     std::shared_ptr<SymTable> getFormerTable_p();
 
+#ifdef DEBUG
+
+    int printTable();
+
+#endif
 };
 
 

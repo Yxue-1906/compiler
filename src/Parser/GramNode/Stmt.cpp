@@ -1,22 +1,21 @@
 //
 // Created by unrelated on 2021/10/18.
 //
-
-#include "Stmt.h"
 #include "../TokenNode.h"
+#include "../ErrorNode.h"
+#include "Stmt.h"
 #include "Cond.h"
 #include "Exp.h"
 #include "Block.h"
 #include "../../Lexer/Token/STRCON.h"
-#include "../../Exception/MyException/IllegalCharException.h"
-#include "../../Exception/MyException/MismatchPlaceholderCountException.h"
 #include "../../Lexer/Token/BREAKTK.h"
 #include "../../Lexer/Token/CONTINUETK.h"
-#include "../../Exception/MyException/ConBreakInNonLoopException.h"
 #include "../../Lexer/Token/RETURNTK.h"
 #include "../../Lexer/Token/PRINTFTK.h"
 #include "../../Lexer/Token/COMMA.h"
-#include "../ErrorNode.h"
+#include "../../Exception/MyException/IllegalCharException.h"
+#include "../../Exception/MyException/MismatchPlaceholderCountException.h"
+#include "../../Exception/MyException/ConBreakInNonLoopException.h"
 #include "../../Exception/MyException/AssignToConstException.h"
 
 Stmt::Stmt(std::vector<std::shared_ptr<GramNode>> sons, bool isLoop)
@@ -222,53 +221,56 @@ bool Stmt::checkValid() {
     auto ite = sons.begin();
     std::shared_ptr<TokenNode> tokenNode_p;
     tokenNode_p = std::dynamic_pointer_cast<TokenNode>(*ite);
-    if (tokenNode_p) {
+    try {
+        if (isConBreak() && !isLoop) {
+            auto token_p = tokenNode_p->getToken_p();
+            throw ConBreakInNonLoopException(token_p->getLineNumber());
+        }
+    } catch (ConBreakInNonLoopException &e) {
+        e.myOutput();
+        return false;
+    }
+    if (tokenNode_p && std::dynamic_pointer_cast<PRINTFTK>(tokenNode_p->getToken_p())) {
+        auto printfTk_p = std::dynamic_pointer_cast<PRINTFTK>(tokenNode_p->getToken_p());
+        ite += 2;
+        tokenNode_p = std::dynamic_pointer_cast<TokenNode>(*ite);
+        auto formatString_p = std::dynamic_pointer_cast<STRCON>(tokenNode_p->getToken_p());
         try {
-            if (isConBreak() && !isLoop) {
-                auto token_p = tokenNode_p->getToken_p();
-                throw ConBreakInNonLoopException(token_p->getLineNumber());
-            }
-        } catch (ConBreakInNonLoopException &e) {
+            if (!formatString_p->checkValid())
+                throw IllegalCharException(formatString_p->getLineNumber());
+        } catch (MyException &e) {
             e.myOutput();
             return false;
         }
-        auto printfTk_p = std::dynamic_pointer_cast<PRINTFTK>(tokenNode_p->getToken_p());
-        if (printfTk_p) {
-            try {
-                ite += 2;
-                tokenNode_p = std::dynamic_pointer_cast<TokenNode>(*ite);
-                auto formatString_p = std::dynamic_pointer_cast<STRCON>(tokenNode_p->getToken_p());
-                if (!formatString_p->checkValid())
-                    throw IllegalCharException(formatString_p->getLineNumber());
-                int count = 0;
-                std::shared_ptr<Exp> exp_p;
-                while (ite != sons.end()) {
-                    tokenNode_p = std::dynamic_pointer_cast<TokenNode>(*ite);
-                    if (tokenNode_p && std::dynamic_pointer_cast<COMMA>(tokenNode_p->getToken_p())) {
-                        count++;
-                    } else if ((exp_p = std::dynamic_pointer_cast<Exp>(*ite))) {
-                        if (!exp_p->checkValid())
-                            return false;
-                    } else {
-                        //be errorNode or right parenthesis
-                        break;
-                    }
-                    ite++;
-                }
-                if (count != formatString_p->getCount())
-                    throw MismatchPlaceholderCountException(printfTk_p->getLineNumber());
-                for (; ite != sons.end(); ++ite) {
-                    toReturn &= (*ite)->checkValid();
-                }
-            } catch (MyException &e) {
-                e.myOutput();
+        ++ite;
+        int count = 0;
+        std::shared_ptr<Exp> exp_p;
+        for (; (tokenNode_p = std::dynamic_pointer_cast<TokenNode>(*ite));) {
+            if (!std::dynamic_pointer_cast<COMMA>(tokenNode_p->getToken_p()))
+                break;
+            count++;
+            ite++;
+            if (!(exp_p = std::dynamic_pointer_cast<Exp>(*ite)))
                 return false;
-            }
-            return true;
+            if (!exp_p->checkValid())
+                return false;
+            ite++;
         }
-        for (auto &i: sons) {
-            toReturn &= i->checkValid();
+        try {
+            if (count != formatString_p->getCount())
+                throw MismatchPlaceholderCountException(printfTk_p->getLineNumber());
+        } catch (MyException &e) {
+            e.myOutput();
+            return false;
         }
+    }
+    auto block_p = std::dynamic_pointer_cast<Block>(*ite);
+    if (block_p) {
+        GramNode::setNowTable(std::make_shared<SymTable>(GramNode::getNowTable()));
+        if (!block_p->checkValid())
+            return false;
+        for (++ite; ite != sons.end(); ++ite)
+            toReturn &= (*ite)->checkValid();
         return toReturn;
     }
     auto lval = std::dynamic_pointer_cast<LVal>(*ite);
@@ -289,9 +291,8 @@ bool Stmt::checkValid() {
             return false;
         }//todo: check right parenthesis
     }
-    for (auto &i: sons) {
-        if (!i->checkValid())
-            return false;
+    for (; ite != sons.end(); ++ite) {
+        toReturn &= (*ite)->checkValid();
     }
     return toReturn;
 }

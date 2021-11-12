@@ -20,18 +20,31 @@ LAndExp::LAndExp(std::vector<std::shared_ptr<GramNode>> sons) : GramNode() {
 bool LAndExp::create(std::vector<std::shared_ptr<GramNode>> &toAdd, std::vector<TokenBase *>::iterator &ite_p) {
     auto ite = ite_p;
     std::vector<std::shared_ptr<GramNode>> son_ps;
-    std::swap(toAdd, son_ps);
     if (!EqExp::create(son_ps, ite)) {
         return false;
     }
-    std::shared_ptr<LAndExp> tmp_p;
-    tmp_p.reset(new LAndExp(son_ps));
-    toAdd.push_back(tmp_p);
-    if (TokenNode::create(toAdd, ite, TokenBase::AND)) {
-        if (!LAndExp::create(toAdd, ite)) {
-            return false;
+    std::shared_ptr<LAndExp> lAndExp_p;
+    lAndExp_p.reset(new LAndExp(son_ps));
+    for (;;) {
+        std::vector<std::shared_ptr<GramNode>> tmp;
+        tmp.push_back(lAndExp_p);
+        if (TokenNode::create(tmp, ite, TokenBase::AND)) {
+            if (!EqExp::create(tmp, ite))
+                return false;
+            lAndExp_p.reset(new LAndExp(tmp));
+        } else {
+            break;
         }
     }
     ite_p = ite;
+    toAdd.push_back(lAndExp_p);
     return true;
+}
+
+bool LAndExp::checkValid() {
+    bool toReturn = true;
+    for (auto &i: sons) {
+        toReturn &= i->checkValid();
+    }
+    return toReturn;
 }

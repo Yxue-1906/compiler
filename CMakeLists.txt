@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.16)
 project(src/Parser)
 
 set(CMAKE_CXX_STANDARD 11)
-add_definitions(-DDEBUG)
+#add_definitions(-DDEBUG)
 add_executable(Parser src/main.cpp
         src/Parser/Parser.cpp
         src/Parser/Parser.h

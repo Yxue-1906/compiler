@@ -37,20 +37,19 @@ bool FuncFParams::create(std::vector<std::shared_ptr<GramNode>> &toAdd, std::vec
 
 bool FuncFParams::checkValid() {
     bool toReturn = true;
-    for (auto &i: sons) {
-        toReturn &= i->checkValid();
+    for (auto ite = sons.begin(); ite < sons.end(); ite += 2) {
+        auto funcFParam = std::dynamic_pointer_cast<FuncFParam>(*ite);
+        toReturn &= funcFParam->checkValid();
+        std::pair<std::shared_ptr<IDENFR>, std::shared_ptr<IdentInfo>> tmp;
+        if (!funcFParam->getParamType(tmp))
+            return false;
+        this->params.push_back(tmp);
     }
     return toReturn;
 }
 
 
 bool FuncFParams::getParamTypes(std::vector<std::pair<std::shared_ptr<IDENFR>, std::shared_ptr<IdentInfo>>> &toReturn) {
-    std::pair<std::shared_ptr<IDENFR>, std::shared_ptr<IdentInfo>> tmp_pair;
-    for (auto &i: this->sons) {
-        auto funcFParam_p = std::dynamic_pointer_cast<FuncFParam>(i);
-        if (funcFParam_p && funcFParam_p->getParamType(tmp_pair)) {
-            toReturn.push_back(tmp_pair);
-        }
-    }
+    toReturn = this->params;
     return true;
 }

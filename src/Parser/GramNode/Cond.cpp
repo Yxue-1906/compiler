@@ -28,3 +28,8 @@ bool Cond::create(std::vector<std::shared_ptr<GramNode>> &toAdd, std::vector<Tok
     toAdd.push_back(tmp_p);
     return true;
 }
+
+bool Cond::checkValid() {
+    auto lOrExp_p = std::dynamic_pointer_cast<LOrExp>(sons.back());
+    return lOrExp_p->checkValid();
+}

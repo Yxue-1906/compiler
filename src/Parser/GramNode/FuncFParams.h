@@ -10,6 +10,7 @@
 
 class FuncFParams : public GramNode {
 private:
+    std::vector<std::pair<std::shared_ptr<IDENFR>, std::shared_ptr<IdentInfo>>> params;
 public:
 private:
     FuncFParams(std::vector<std::shared_ptr<GramNode>> sons);

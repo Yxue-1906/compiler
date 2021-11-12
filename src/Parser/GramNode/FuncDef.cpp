@@ -72,26 +72,19 @@ bool FuncDef::checkValid() {
     auto ident_p = std::dynamic_pointer_cast<IDENFR>(tokenNode_p->getToken_p());
     ite += 2;
     auto funcFParams = std::dynamic_pointer_cast<FuncFParams>(*ite);
-    std::vector<std::pair<std::shared_ptr<IDENFR>, std::shared_ptr<IdentInfo>>> params;
+    std::vector<std::pair<std::shared_ptr<IDENFR>, std::shared_ptr<IdentInfo>>> params_tmp;
     if (funcFParams) {
-        if (!funcFParams->checkValid() || !funcFParams->getParamTypes(params)) {
-            //unreachable
+        if (!funcFParams->checkValid() || !funcFParams->getParamTypes(params_tmp)) {
             return false;
         }
     }
+    std::vector<std::pair<std::string, std::shared_ptr<IdentInfo>>> params;
+    for (auto &i: params_tmp) {
+        params.push_back(std::make_pair(*i.first->getValue_p(), i.second));
+    }
     try {
-        for (auto &i: params) {
-            if (!GramNode::getNowTable()->addIdent(*i.first->getValue_p(), i.second)) {
-                throw DupIdentException(i.first->getLineNumber());
-            }
-        }
-        std::vector<std::pair<std::string, std::shared_ptr<IdentInfo>>> tmp_params;
-        tmp_params.reserve(params.size());
-        for (auto &i: params) {
-            tmp_params.emplace_back(*i.first->getValue_p(), i.second);
-        }
         if (!GramNode::getNowTable()->addIdent(*ident_p->getValue_p(),
-                                               std::make_shared<FuncInfo>(returnType, tmp_params))) {
+                                               std::make_shared<FuncInfo>(returnType, params))) {
             throw DupIdentException(ident_p->getLineNumber());
         }
     } catch (MyException &e) {
@@ -99,6 +92,14 @@ bool FuncDef::checkValid() {
         return false;
     }
     GramNode::setNowTable(std::make_shared<SymTable>(GramNode::getNowTable()));
+    for (auto &i: params_tmp) {
+        try {
+            if (!GramNode::getNowTable()->addIdent(*i.first->getValue_p(), i.second))
+                throw DupIdentException(i.first->getLineNumber());
+        } catch (MyException &e) {
+            e.myOutput();
+        }
+    }
     auto block_p = std::dynamic_pointer_cast<Block>(sons.back());
     if (!block_p->checkValid())
         return false;

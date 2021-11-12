@@ -14,6 +14,7 @@ int main() {
     MyOutput::setErrorOutput(&std::cout);
     Lexer lexer{std::move(ifs)};
     Parser parser{lexer.getList()};
+//    parser.getRoot()->myOutput();
     parser.getRoot()->checkValid();
     return 0;
 }

@@ -20,19 +20,32 @@ EqExp::EqExp(std::vector<std::shared_ptr<GramNode>> sons) : GramNode() {
 bool EqExp::create(std::vector<std::shared_ptr<GramNode>> &toAdd, std::vector<TokenBase *>::iterator &ite_p) {
     auto ite = ite_p;
     std::vector<std::shared_ptr<GramNode>> son_ps;
-    std::swap(toAdd, son_ps);
     if (!RelExp::create(son_ps, ite)) {
         return false;
     }
-    std::shared_ptr<EqExp> tmp_p;
-    tmp_p.reset(new EqExp(son_ps));
-    toAdd.push_back(tmp_p);
-    if (TokenNode::create(toAdd, ite, TokenBase::EQL) ||
-        TokenNode::create(toAdd, ite, TokenBase::NEQ)) {
-        if (!EqExp::create(toAdd, ite)) {
-            return false;
+    std::shared_ptr<EqExp> eqExp_p;
+    eqExp_p.reset(new EqExp(son_ps));
+    for (;;) {
+        std::vector<std::shared_ptr<GramNode>> tmp;
+        tmp.push_back(eqExp_p);
+        if (TokenNode::create(tmp, ite, TokenBase::EQL) ||
+            TokenNode::create(tmp, ite, TokenBase::NEQ)) {
+            if (!RelExp::create(tmp, ite))
+                return false;
+            eqExp_p.reset(new EqExp(tmp));
+        } else {
+            break;
         }
     }
     ite_p = ite;
+    toAdd.push_back(eqExp_p);
     return true;
+}
+
+bool EqExp::checkValid() {
+    bool toReturn = true;
+    for (auto &i: sons) {
+        toReturn &= i->checkValid();
+    }
+    return toReturn;
 }
