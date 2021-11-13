@@ -49,6 +49,7 @@ bool ConstDef::create(std::vector<std::shared_ptr<GramNode>> &toAdd, std::vector
 }
 
 bool ConstDef::checkValid() {
+    bool toReturn = true;
     auto ite = sons.begin();
     auto tokenNode_p = std::dynamic_pointer_cast<TokenNode>(*ite);
     auto ident_p = std::dynamic_pointer_cast<IDENFR>(tokenNode_p->getToken_p());
@@ -60,8 +61,8 @@ bool ConstDef::checkValid() {
             auto lb = std::dynamic_pointer_cast<LBRACK>(tokenNode_p->getToken_p());
             if (lb)
                 dimension++;
-        } else if (!(*ite)->checkValid()) {
-            return false;
+        } else {
+            toReturn &= (*ite)->checkValid();
         }
     }
     try {
@@ -75,29 +76,3 @@ bool ConstDef::checkValid() {
     return true;
 }
 
-/**
- * check what variable type it is, then add it to symtable or handle fault
- * @return
- */
-bool ConstDef::addIdent() {
-    auto ite = sons.begin();
-    auto tokenNode_p = std::dynamic_pointer_cast<TokenNode>(*ite);
-    auto ident_p = std::dynamic_pointer_cast<IDENFR>(tokenNode_p->getToken_p());
-    std::string name = *ident_p->getValue_p();
-    ++ite;
-    int dimension = 0;
-    for (; ite != sons.end(); ++ite) {
-        auto errorNode = std::dynamic_pointer_cast<ErrorNode>(*ite);
-        if (errorNode) {
-            return false;
-        }
-        tokenNode_p = std::dynamic_pointer_cast<TokenNode>(*ite);
-        if (tokenNode_p) {
-            auto lbrack_p = std::dynamic_pointer_cast<LBRACK>(tokenNode_p->getToken_p());
-            if (lbrack_p) {
-                dimension++;
-            }
-        }
-    }
-    return true;
-}

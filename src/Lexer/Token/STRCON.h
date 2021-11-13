@@ -22,6 +22,8 @@ public:
         auto ite = this->value_p->begin();
         ite++;
         for (; ite != this->value_p->end(); ++ite) {
+            if (*ite == '\"')
+                break;
             if (*ite == '\\') {
                 if (ite + 1 != this->value_p->end() && *(ite + 1) == 'n')
                     ite++;
@@ -29,7 +31,9 @@ public:
                     toReturn = false;
             } else if (*ite == '%') {
                 if (ite + 1 != this->value_p->end() && *(ite + 1) == 'd')
-                    this->count++, ite++;
+                    this->count++;
+            } else {
+                if ((*ite) == 32 || (*ite) == 33 || ((*ite) < 127 && (*ite) > 39)) {}
                 else
                     toReturn = false;
             }

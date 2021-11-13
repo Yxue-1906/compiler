@@ -21,13 +21,14 @@ Block::Block(std::vector<std::shared_ptr<GramNode>> sons)
  * @return
  */
 bool
-Block::create(std::vector<std::shared_ptr<GramNode>> &toAdd, std::vector<TokenBase *>::iterator &ite_p, bool isLoop) {
+Block::create(std::vector<std::shared_ptr<GramNode>> &toAdd, std::vector<TokenBase *>::iterator &ite_p, bool isLoop,
+              bool isVoid) {
     auto ite = ite_p;
     std::vector<std::shared_ptr<GramNode>> son_ps;
     if (!TokenNode::create(son_ps, ite, TokenBase::LBRACE)) {
         return false;
     }
-    for (; !TokenBase::isTypeOf(ite, TokenBase::RBRACE) && BlockItem::create(son_ps, ite, isLoop););
+    for (; !TokenBase::isTypeOf(ite, TokenBase::RBRACE) && BlockItem::create(son_ps, ite, isLoop, isVoid););
     if (!TokenNode::create(son_ps, ite, TokenBase::RBRACE)) {
         return false;
     }
@@ -53,27 +54,29 @@ bool Block::checkValid() {
  */
 bool Block::checkReturn(bool isVoid) {
     auto lastItem = std::dynamic_pointer_cast<BlockItem>(*(sons.end() - 2));
-    if (!lastItem) {
-        if (isVoid)
-            return true;
-        else {
-            auto tokenNode_p = std::dynamic_pointer_cast<TokenNode>(sons.back());
-            try {
-                throw MismatchReturnForNonVoidException(tokenNode_p->getToken_p()->getLineNumber());
-            } catch (MyException &e) {
-                e.myOutput();
-                return false;
-            }
-        }
-    }
-    int lineNumber = lastItem->getReturn(isVoid);
-    if (lineNumber) {
+    if (!lastItem || !lastItem->hasReturn()) {
+        auto tokenNode_p = std::dynamic_pointer_cast<TokenNode>(sons.back());
         try {
-            throw MismatchReturnForVoidException(lineNumber);
+            throw MismatchReturnForNonVoidException(tokenNode_p->getToken_p()->getLineNumber());
         } catch (MyException &e) {
             e.myOutput();
             return false;
         }
+    }
+    int lineNumber = lastItem->hasReturn();
+    try {
+        if (isVoid) {
+            if (lineNumber > 0)
+                throw MismatchReturnForVoidException(lineNumber);
+        } else {
+            if (lineNumber < 0) {
+                auto tokenNode_p = std::dynamic_pointer_cast<TokenNode>(sons.back());
+                throw MismatchReturnForNonVoidException(tokenNode_p->getToken_p()->getLineNumber());
+            }
+        }
+    } catch (MyException &e) {
+        e.myOutput();
+        return false;
     }
     return true;
 }

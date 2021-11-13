@@ -99,7 +99,8 @@ private:
 
 class SymTable {
 private:
-    std::map<std::string, std::shared_ptr<Info>> symTable;
+    std::map<std::string, std::shared_ptr<IdentInfo>> varTable;
+    std::map<std::string, std::shared_ptr<FuncInfo>> funcTable;
     std::shared_ptr<SymTable> formerTable_p = nullptr;
 
 public:
@@ -111,7 +112,9 @@ public:
     SymTable &operator=(const SymTable &&) = delete;//
     ~SymTable() = default;
 
-    std::shared_ptr<Info> queryIdent(std::string &name) noexcept;
+    std::shared_ptr<IdentInfo> queryVar(std::string &name) noexcept;
+
+    std::shared_ptr<FuncInfo> queryFunc(std::string &name) noexcept;
 
     bool addIdent(std::string name, std::shared_ptr<Info> info) noexcept;
 

@@ -186,12 +186,22 @@ SymTable::SymTable(std::shared_ptr<SymTable> formerTable_p) {
     this->formerTable_p = formerTable_p;
 }
 
-std::shared_ptr<Info> SymTable::queryIdent(std::string &name) noexcept {
+std::shared_ptr<IdentInfo> SymTable::queryVar(std::string &name) noexcept {
     try {
-        return symTable.at(name);
+        return varTable.at(name);
     } catch (std::out_of_range &e) {
         if (this->formerTable_p)
-            return this->formerTable_p->queryIdent(name);
+            return this->formerTable_p->queryVar(name);
+        return nullptr;
+    }
+}
+
+std::shared_ptr<FuncInfo> SymTable::queryFunc(std::string &name) noexcept {
+    try {
+        return funcTable.at(name);
+    } catch (std::out_of_range &e) {
+        if (this->formerTable_p)
+            return this->formerTable_p->queryFunc(name);
         return nullptr;
     }
 }
@@ -202,13 +212,25 @@ std::shared_ptr<SymTable> SymTable::getFormerTable_p() {
 
 bool SymTable::addIdent(std::string name, std::shared_ptr<Info> info) noexcept {
     try {
-        symTable.at(name);
-        return false;
+        if (std::dynamic_pointer_cast<IdentInfo>(info)) {
+            varTable.at(name);
+            varTable[name] = std::dynamic_pointer_cast<IdentInfo>(info);
+            return false;
+        } else {
+            funcTable.at(name);
+            funcTable[name] = std::dynamic_pointer_cast<FuncInfo>(info);
+            return false;
+        }
     } catch (std::out_of_range &e) {
-        symTable[name] = info;
+        if (std::dynamic_pointer_cast<IdentInfo>(info)) {
+            varTable[name] = std::dynamic_pointer_cast<IdentInfo>(info);
+        } else {
+            funcTable[name] = std::dynamic_pointer_cast<FuncInfo>(info);
+        }
         return true;
     }
 }
+
 
 #ifdef DEBUG
 
@@ -220,7 +242,7 @@ int SymTable::printTable() {
     for (int j = 0; j < tabs; ++j)
         std::cout << '\t';
     std::cout << '|' << std::endl;
-    for (auto &i: this->symTable) {
+    for (auto &i: this->varTable) {
         for (int j = 0; j < tabs; ++j)
             std::cout << '\t';
         std::cout << i.first << ':';

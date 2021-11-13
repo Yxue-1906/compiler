@@ -100,6 +100,8 @@ bool PrimaryExp::checkValid() {
                 //unreachable
                 return false;
             }
+            ++ite;
+            (*ite)->checkValid();
             return true;
         } else {
             //unreachable
@@ -115,4 +117,15 @@ bool PrimaryExp::checkValid() {
         return false;
     }
     return true;
+}
+
+bool PrimaryExp::getLVal(std::shared_ptr<GramNode> &toReturn) {
+    if (this->sons.size() == 1) {
+        auto lval_p = std::dynamic_pointer_cast<LVal>(sons.back());
+        if (!lval_p)
+            return false;
+        toReturn = lval_p;
+        return true;
+    }
+    return false;
 }

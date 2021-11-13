@@ -30,21 +30,24 @@ bool FuncDef::create(std::vector<std::shared_ptr<GramNode>> &toAdd, std::vector<
     if (!FuncType::create(son_ps, ite)) {
         return false;
     }
+    std::shared_ptr<FuncType> funcType_p = std::dynamic_pointer_cast<FuncType>(son_ps.back());
+    std::shared_ptr<IdentInfo> tmp;
+    funcType_p->getReturnType(tmp);
     if (!TokenNode::create(son_ps, ite, TokenBase::IDENFR)) {
         return false;
     }
     if (!TokenNode::create(son_ps, ite, TokenBase::LPARENT)) {
         return false;
     }
-    if (!TokenBase::isTypeOf(ite, TokenBase::RPARENT)) {
+//    if (!TokenBase::isTypeOf(ite, TokenBase::RPARENT)) {
 //        if (!FuncFParams::create(son_ps, ite))
 //            return false;
-        FuncFParams::create(son_ps, ite);
-    }
+    FuncFParams::create(son_ps, ite);
+//    }
     if (!TokenNode::create(son_ps, ite, TokenBase::RPARENT)) {
         ErrorNode::create(son_ps, ErrorNode::ErrorType::RIGHT_PARENTHESIS);
     }
-    if (!Block::create(son_ps, ite, false)) {
+    if (!Block::create(son_ps, ite, false, !tmp)) {
         return false;
     }
     ite_p = ite;
@@ -74,10 +77,13 @@ bool FuncDef::checkValid() {
     auto funcFParams = std::dynamic_pointer_cast<FuncFParams>(*ite);
     std::vector<std::pair<std::shared_ptr<IDENFR>, std::shared_ptr<IdentInfo>>> params_tmp;
     if (funcFParams) {
-        if (!funcFParams->checkValid() || !funcFParams->getParamTypes(params_tmp)) {
+        toReturn &= funcFParams->checkValid();
+        if (!funcFParams->getParamTypes(params_tmp)) {
             return false;
         }
+        ++ite;
     }
+    (*ite)->checkValid();
     std::vector<std::pair<std::string, std::shared_ptr<IdentInfo>>> params;
     for (auto &i: params_tmp) {
         params.push_back(std::make_pair(*i.first->getValue_p(), i.second));
@@ -89,7 +95,7 @@ bool FuncDef::checkValid() {
         }
     } catch (MyException &e) {
         e.myOutput();
-        return false;
+//        return false;
     }
     GramNode::setNowTable(std::make_shared<SymTable>(GramNode::getNowTable()));
     for (auto &i: params_tmp) {
@@ -101,8 +107,10 @@ bool FuncDef::checkValid() {
         }
     }
     auto block_p = std::dynamic_pointer_cast<Block>(sons.back());
-    if (!block_p->checkValid())
-        return false;
-    toReturn &= block_p->checkReturn(returnType == nullptr);
+//    if (!block_p->checkValid())
+//        return false;
+    toReturn &= block_p->checkValid();
+    if (returnType != nullptr)
+        toReturn &= block_p->checkReturn(false);
     return toReturn;
 }

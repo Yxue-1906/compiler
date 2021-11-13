@@ -102,3 +102,11 @@ bool AddExp::checkValid() {
 
     return true;
 }
+
+bool AddExp::getLVal(std::shared_ptr<GramNode> &toReturn) {
+    if (this->sons.size() == 1) {
+        auto mulExp_p = std::dynamic_pointer_cast<MulExp>(sons.back());
+        return mulExp_p->getLVal(toReturn);
+    }
+    return false;
+}

@@ -43,11 +43,11 @@ bool LVal::create(std::vector<std::shared_ptr<GramNode>> &toAdd, std::vector<Tok
 }
 
 bool LVal::checkValid() {
+    bool toReturn = true;
     auto ite = sons.begin();
     auto tokenNode_p = std::dynamic_pointer_cast<TokenNode>(*ite);
     auto ident_p = std::dynamic_pointer_cast<IDENFR>(tokenNode_p->getToken_p());
-    auto type_tmp = std::dynamic_pointer_cast<IdentInfo>(
-            GramNode::getNowTable()->queryIdent(*ident_p->getValue_p()));
+    auto type_tmp = GramNode::getNowTable()->queryVar(*ident_p->getValue_p());
     try {
         if (!type_tmp)
             throw UndefIdentException(ident_p->getLineNumber());
@@ -63,12 +63,12 @@ bool LVal::checkValid() {
             auto lb = std::dynamic_pointer_cast<LBRACK>(tokenNode_p->getToken_p());
             if (lb)
                 dimension--;
-        } else if (!(*ite)->checkValid()) {
-            return false;
+        } else {
+            toReturn &= (*ite)->checkValid();
         }
     }
     this->type = std::make_shared<IdentInfo>(type_tmp->checkConst(), dimension);
-    return true;
+    return toReturn;
 }
 
 /**

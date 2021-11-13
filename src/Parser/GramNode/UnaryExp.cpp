@@ -44,10 +44,11 @@ bool UnaryExp::create(std::vector<std::shared_ptr<GramNode>> &toAdd, std::vector
                TokenBase::isTypeOf(ite + 1, TokenBase::LPARENT)) {
         TokenNode::create(son_ps, ite, TokenBase::IDENFR);
         TokenNode::create(son_ps, ite, TokenBase::LPARENT);
-        if (!TokenBase::isTypeOf(ite, TokenBase::RPARENT)) {
-            if (!FuncRParams::create(son_ps, ite))
-                return false;
-        }
+//        if (!TokenBase::isTypeOf(ite, TokenBase::RPARENT)) {
+//            if (!FuncRParams::create(son_ps, ite))
+//                return false;
+//        }
+        FuncRParams::create(son_ps, ite);
         if (!TokenNode::create(son_ps, ite, TokenBase::RPARENT)) {
             ErrorNode::create(son_ps, ErrorNode::ErrorType::RIGHT_PARENTHESIS);
         }
@@ -101,7 +102,7 @@ bool UnaryExp::checkValid() {
     auto ident_p = std::dynamic_pointer_cast<IDENFR>(tokenNode_p->getToken_p());
     std::shared_ptr<FuncInfo> funcInfo;
     try {
-        funcInfo = std::dynamic_pointer_cast<FuncInfo>(GramNode::getNowTable()->queryIdent(*ident_p->getValue_p()));
+        funcInfo = GramNode::getNowTable()->queryFunc(*ident_p->getValue_p());
         if (!funcInfo)
             throw UndefIdentException(ident_p->getLineNumber());
     } catch (MyException &e) {
@@ -112,9 +113,16 @@ bool UnaryExp::checkValid() {
     auto funcRParams = std::dynamic_pointer_cast<FuncRParams>(*ite);
     std::vector<std::shared_ptr<IdentInfo>> params;
     if (funcRParams) {
-        if (!funcRParams->checkValid() || !funcRParams->getParamTypes(params))
+        try {
+            if (!funcRParams->checkValid() || !funcRParams->getParamTypes(params))
+                throw MismatchCallTypeException(ident_p->getLineNumber());
+        } catch (MyException &e) {
+            e.myOutput();
             return false;
+        }
+        ++ite;
     }
+    (*ite)->checkValid();
     try {
         if (!funcInfo->checkParamTypes(params)) {
             switch (FuncInfo::getLastError()) {
@@ -133,4 +141,14 @@ bool UnaryExp::checkValid() {
     }
     this->type = funcInfo->getReturnType();
     return true;
+}
+
+bool UnaryExp::getLVal(std::shared_ptr<GramNode> &toReturn) {
+    if (this->sons.size() == 1) {
+        auto primaryExp_p = std::dynamic_pointer_cast<PrimaryExp>(sons.back());
+        if (!primaryExp_p)
+            return false;
+        return primaryExp_p->getLVal(toReturn);
+    }
+    return false;
 }

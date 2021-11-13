@@ -17,9 +17,10 @@
 #include "../../Exception/MyException/MismatchPlaceholderCountException.h"
 #include "../../Exception/MyException/ConBreakInNonLoopException.h"
 #include "../../Exception/MyException/AssignToConstException.h"
+#include "../../Exception/MyException/MismatchReturnForVoidException.h"
 
-Stmt::Stmt(std::vector<std::shared_ptr<GramNode>> sons, bool isLoop)
-        : GramNode(), isLoop(isLoop) {
+Stmt::Stmt(std::vector<std::shared_ptr<GramNode>> sons, bool isLoop, bool isVoid)
+        : GramNode(), isLoop(isLoop), isVoid(isVoid) {
     setGramName("Stmt");
     setSons(std::move(sons));
 }
@@ -40,24 +41,10 @@ Stmt::Stmt(std::vector<std::shared_ptr<GramNode>> sons, bool isLoop)
  * @return
  */
 bool
-Stmt::create(std::vector<std::shared_ptr<GramNode>> &toAdd, std::vector<TokenBase *>::iterator &ite_p, bool isLoop) {
+Stmt::create(std::vector<std::shared_ptr<GramNode>> &toAdd, std::vector<TokenBase *>::iterator &ite_p, bool isLoop,
+             bool isVoid) {
     auto ite = ite_p;
     std::vector<std::shared_ptr<GramNode>> son_ps;
-    auto detectExp = [ite]() -> bool {
-        if (!TokenBase::isTypeOf(ite, TokenBase::IDENFR))
-            return true;
-        int index = 1;
-        for (int leftLBrackets = 0; leftLBrackets != 0 || TokenBase::isTypeOf(ite + index, TokenBase::LBRACK);) {
-            if (TokenBase::isTypeOf(ite + index, TokenBase::RBRACK))
-                leftLBrackets--;
-            else if (TokenBase::isTypeOf(ite + index, TokenBase::LBRACK))
-                leftLBrackets++;
-            index++;
-        }
-        if (TokenBase::isTypeOf(ite + index, TokenBase::ASSIGN))
-            return false;
-        return true;
-    };
     if (TokenNode::create(son_ps, ite, TokenBase::IFTK)) {
         if (!TokenNode::create(son_ps, ite, TokenBase::LPARENT)) {
             return false;
@@ -68,17 +55,17 @@ Stmt::create(std::vector<std::shared_ptr<GramNode>> &toAdd, std::vector<TokenBas
         if (!TokenNode::create(son_ps, ite, TokenBase::RPARENT)) {
             ErrorNode::create(son_ps, ErrorNode::ErrorType::RIGHT_PARENTHESIS);
         }
-        if (!Stmt::create(son_ps, ite, isLoop)) {
+        if (!Stmt::create(son_ps, ite, isLoop, isVoid)) {
             return false;
         }
         if (TokenNode::create(son_ps, ite, TokenBase::ELSETK)) {
-            if (!Stmt::create(son_ps, ite, isLoop)) {
+            if (!Stmt::create(son_ps, ite, isLoop, isVoid)) {
                 return false;
             }
         }
         ite_p = ite;
         std::shared_ptr<Stmt> tmp_p;
-        tmp_p.reset(new Stmt(son_ps, isLoop));
+        tmp_p.reset(new Stmt(son_ps, isLoop, isVoid));
         toAdd.push_back(tmp_p);
         return true;
     } else if (TokenNode::create(son_ps, ite, TokenBase::WHILETK)) {
@@ -91,12 +78,12 @@ Stmt::create(std::vector<std::shared_ptr<GramNode>> &toAdd, std::vector<TokenBas
         if (!TokenNode::create(son_ps, ite, TokenBase::RPARENT)) {
             ErrorNode::create(son_ps, ErrorNode::ErrorType::RIGHT_PARENTHESIS);
         }
-        if (!Stmt::create(son_ps, ite, true)) {
+        if (!Stmt::create(son_ps, ite, true, isVoid)) {
             return false;
         }
         ite_p = ite;
         std::shared_ptr<Stmt> tmp_p;
-        tmp_p.reset(new Stmt(son_ps, isLoop));
+        tmp_p.reset(new Stmt(son_ps, isLoop, isVoid));
         toAdd.push_back(tmp_p);
         return true;
     } else if (TokenNode::create(son_ps, ite, TokenBase::BREAKTK) ||
@@ -106,7 +93,7 @@ Stmt::create(std::vector<std::shared_ptr<GramNode>> &toAdd, std::vector<TokenBas
         }
         ite_p = ite;
         std::shared_ptr<Stmt> tmp_p;
-        tmp_p.reset(new Stmt(son_ps, isLoop));
+        tmp_p.reset(new Stmt(son_ps, isLoop, isVoid));
         toAdd.push_back(tmp_p);
         return true;
     } else if (TokenNode::create(son_ps, ite, TokenBase::RETURNTK)) {
@@ -119,7 +106,7 @@ Stmt::create(std::vector<std::shared_ptr<GramNode>> &toAdd, std::vector<TokenBas
         }
         ite_p = ite;
         std::shared_ptr<Stmt> tmp_p;
-        tmp_p.reset(new Stmt(son_ps, isLoop));
+        tmp_p.reset(new Stmt(son_ps, isLoop, isVoid));
         toAdd.push_back(tmp_p);
         return true;
     } else if (TokenNode::create(son_ps, ite, TokenBase::PRINTFTK)) {
@@ -142,36 +129,33 @@ Stmt::create(std::vector<std::shared_ptr<GramNode>> &toAdd, std::vector<TokenBas
         }
         ite_p = ite;
         std::shared_ptr<Stmt> tmp_p;
-        tmp_p.reset(new Stmt(son_ps, isLoop));
+        tmp_p.reset(new Stmt(son_ps, isLoop, isVoid));
         toAdd.push_back(tmp_p);
         return true;
     } else if (TokenBase::isTypeOf(ite, TokenBase::LBRACE)) {
-        if (!Block::create(son_ps, ite, isLoop)) {
+        if (!Block::create(son_ps, ite, isLoop, isVoid)) {
             return false;
         }
         ite_p = ite;
         std::shared_ptr<Stmt> tmp_p;
-        tmp_p.reset(new Stmt(son_ps, isLoop));
+        tmp_p.reset(new Stmt(son_ps, isLoop, isVoid));
         toAdd.push_back(tmp_p);
         return true;
     } else if (TokenBase::isTypeOf(ite, TokenBase::IDENFR) &&
                !TokenBase::isTypeOf(ite + 1, TokenBase::LPARENT)) {
-        if (detectExp()) {
-            if (!Exp::create(son_ps, ite))
+        if (!Exp::create(son_ps, ite))
+            return false;
+        auto exp_p = std::dynamic_pointer_cast<Exp>(son_ps.back());
+        if (TokenBase::isTypeOf(ite, TokenBase::ASSIGN)) {
+            son_ps.pop_back();
+            std::shared_ptr<GramNode> gramNode_p;
+            if (!exp_p->getLVal(gramNode_p))
                 return false;
-            if (!TokenNode::create(son_ps, ite, TokenBase::SEMICN)) {
-                ErrorNode::create(son_ps, ErrorNode::ErrorType::SEMICOLON);
-            }
-            ite_p = ite;
-            std::shared_ptr<Stmt> tmp_p;
-            tmp_p.reset(new Stmt(son_ps, isLoop));
-            toAdd.push_back(tmp_p);
-            return true;
-        } else {
-            if (!LVal::create(son_ps, ite))
+            auto lval_p = std::dynamic_pointer_cast<LVal>(gramNode_p);
+            if (!lval_p)
                 return false;
-            if (!TokenNode::create(son_ps, ite, TokenBase::ASSIGN))
-                return false;
+            son_ps.push_back(lval_p);
+            TokenNode::create(son_ps, ite, TokenBase::ASSIGN);
             if (TokenNode::create(son_ps, ite, TokenBase::GETINTTK)) {
                 if (!TokenNode::create(son_ps, ite, TokenBase::LPARENT)) {
                     return false;
@@ -184,7 +168,7 @@ Stmt::create(std::vector<std::shared_ptr<GramNode>> &toAdd, std::vector<TokenBas
                 }
                 ite_p = ite;
                 std::shared_ptr<Stmt> tmp_p;
-                tmp_p.reset(new Stmt(son_ps, isLoop));
+                tmp_p.reset(new Stmt(son_ps, isLoop, isVoid));
                 toAdd.push_back(tmp_p);
                 return true;
             } else {
@@ -196,10 +180,19 @@ Stmt::create(std::vector<std::shared_ptr<GramNode>> &toAdd, std::vector<TokenBas
                 }
                 ite_p = ite;
                 std::shared_ptr<Stmt> tmp_p;
-                tmp_p.reset(new Stmt(son_ps, isLoop));
+                tmp_p.reset(new Stmt(son_ps, isLoop, isVoid));
                 toAdd.push_back(tmp_p);
                 return true;
             }
+        } else {
+            if (!TokenNode::create(son_ps, ite, TokenBase::SEMICN)) {
+                ErrorNode::create(son_ps, ErrorNode::ErrorType::SEMICOLON);
+            }
+            ite_p = ite;
+            std::shared_ptr<Stmt> tmp_p;
+            tmp_p.reset(new Stmt(son_ps, isLoop, isVoid));
+            toAdd.push_back(tmp_p);
+            return true;
         }
     } else {
         if (!TokenBase::isTypeOf(ite, TokenBase::SEMICN))
@@ -210,7 +203,7 @@ Stmt::create(std::vector<std::shared_ptr<GramNode>> &toAdd, std::vector<TokenBas
         }
         ite_p = ite;
         std::shared_ptr<Stmt> tmp_p;
-        tmp_p.reset(new Stmt(son_ps, isLoop));
+        tmp_p.reset(new Stmt(son_ps, isLoop, isVoid));
         toAdd.push_back(tmp_p);
         return true;
     }
@@ -235,13 +228,7 @@ bool Stmt::checkValid() {
         ite += 2;
         tokenNode_p = std::dynamic_pointer_cast<TokenNode>(*ite);
         auto formatString_p = std::dynamic_pointer_cast<STRCON>(tokenNode_p->getToken_p());
-        try {
-            if (!formatString_p->checkValid())
-                throw IllegalCharException(formatString_p->getLineNumber());
-        } catch (MyException &e) {
-            e.myOutput();
-            return false;
-        }
+        bool isValid = formatString_p->checkValid();
         ++ite;
         int count = 0;
         std::shared_ptr<Exp> exp_p;
@@ -261,8 +248,25 @@ bool Stmt::checkValid() {
                 throw MismatchPlaceholderCountException(printfTk_p->getLineNumber());
         } catch (MyException &e) {
             e.myOutput();
+//            return false;
+        }
+        try {
+            if (!isValid)
+                throw IllegalCharException(formatString_p->getLineNumber());
+        } catch (MyException &e) {
+            e.myOutput();
             return false;
         }
+    } else if (tokenNode_p && std::dynamic_pointer_cast<RETURNTK>(tokenNode_p->getToken_p())) {
+        auto returnTk_p = std::dynamic_pointer_cast<RETURNTK>(tokenNode_p->getToken_p());
+        try {
+            if (isVoid && sons.size() > 2)
+                throw MismatchReturnForVoidException(returnTk_p->getLineNumber());
+        } catch (MyException &e) {
+            e.myOutput();
+            return false;
+        }
+        ++ite;
     }
     auto block_p = std::dynamic_pointer_cast<Block>(*ite);
     if (block_p) {
@@ -275,21 +279,22 @@ bool Stmt::checkValid() {
     }
     auto lval = std::dynamic_pointer_cast<LVal>(*ite);
     if (lval) {
-        if (!lval->checkValid())
-            return false;
-        std::shared_ptr<IdentInfo> identType;
-        if (!lval->getType(identType)) {
-            std::cout << "unreachable" << std::endl;
+        if (!lval->checkValid()) {
+            toReturn = false;
+        } else {
+            std::shared_ptr<IdentInfo> identType;
+            lval->getType(identType);
+            try {
+                if (identType->checkConst()) {
+                    lval->updateLineNumber();
+                    throw AssignToConstException(GramNode::nowLine);
+                }
+            } catch (MyException &e) {
+                e.myOutput();
+                return false;
+            }//todo: check right parenthesis
         }
-        try {
-            if (identType->checkConst()) {
-                lval->updateLineNumber();
-                throw AssignToConstException(GramNode::nowLine);
-            }
-        } catch (MyException &e) {
-            e.myOutput();
-            return false;
-        }//todo: check right parenthesis
+        ++ite;
     }
     for (; ite != sons.end(); ++ite) {
         toReturn &= (*ite)->checkValid();
@@ -315,15 +320,13 @@ bool Stmt::isConBreak() {
  * @param toReturn return value here
  * @return false on fail, true on succeed
  */
-int Stmt::isNonVoidReturn(bool isVoid) {
+bool Stmt::hasReturn() {
     auto ite = sons.begin();
     auto tokenNode_p = std::dynamic_pointer_cast<TokenNode>(*ite);
-    if (tokenNode_p) {
-        auto returnTk_p = std::dynamic_pointer_cast<RETURNTK>(tokenNode_p->getToken_p());
-        if (returnTk_p && sons.size() > 2 && isVoid)
-            return returnTk_p->getLineNumber();
-    }
-    return 0;
+    if (tokenNode_p && std::dynamic_pointer_cast<RETURNTK>(tokenNode_p->getToken_p()))
+        return true;
+    else
+        return false;
 }
 
 

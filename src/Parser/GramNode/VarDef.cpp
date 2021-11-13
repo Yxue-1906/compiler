@@ -49,6 +49,7 @@ bool VarDef::create(std::vector<std::shared_ptr<GramNode>> &toAdd, std::vector<T
 }
 
 bool VarDef::checkValid() {
+    bool toReturn = true;
     auto ite = sons.begin();
     auto tokenNode_p = std::dynamic_pointer_cast<TokenNode>(*ite);
     auto ident_p = std::dynamic_pointer_cast<IDENFR>(tokenNode_p->getToken_p());
@@ -60,8 +61,8 @@ bool VarDef::checkValid() {
             auto lb = std::dynamic_pointer_cast<LBRACK>(tokenNode_p->getToken_p());
             if (lb)
                 dimension++;
-        } else if (!(*ite)->checkValid()) {
-            return false;
+        } else {
+            toReturn &= (*ite)->checkValid();
         }
     }
     try {
@@ -72,5 +73,5 @@ bool VarDef::checkValid() {
         e.myOutput();
         return false;
     }
-    return true;
+    return toReturn;
 }

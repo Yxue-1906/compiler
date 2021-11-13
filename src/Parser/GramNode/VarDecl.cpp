@@ -53,34 +53,3 @@ bool VarDecl::checkValid() {
     return toReturn;
 }
 
-bool VarDecl::addIdent() {
-    auto ite = sons.begin();
-    auto tokenNode_p = std::dynamic_pointer_cast<TokenNode>(*ite);
-    auto ident_p = std::dynamic_pointer_cast<IDENFR>(tokenNode_p->getToken_p());
-    std::string name = *ident_p->getValue_p();
-    ++ite;
-    int dimension = 0;
-    for (; ite != sons.end(); ++ite) {
-        auto errorNode = std::dynamic_pointer_cast<ErrorNode>(*ite);
-        if (errorNode) {
-            return false;
-        }
-        tokenNode_p = std::dynamic_pointer_cast<TokenNode>(*ite);
-        if (tokenNode_p) {
-            auto lbrack_p = std::dynamic_pointer_cast<LBRACK>(tokenNode_p->getToken_p());
-            if (lbrack_p) {
-                dimension++;
-            }
-        }
-    }
-    try {
-        if (!GramNode::getNowTable()->addIdent(name, std::make_shared<IdentInfo>(false, dimension))) {
-            throw DupIdentException(ident_p->getLineNumber());
-        }
-    } catch (DupIdentException &e) {
-        e.myOutput();
-        return false;
-    }
-    return true;
-}
-

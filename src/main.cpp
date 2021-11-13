@@ -11,7 +11,11 @@ int main() {
     MyOutput::setOutput(&ofs);
     std::ofstream eofs;
     eofs.open("error.txt", std::ios::out | std::ios::trunc);
-    MyOutput::setErrorOutput(&std::cout);
+#ifdef DEBUG
+    MyOutput::setErrorOutput(&eofs);
+#else
+    MyOutput::setErrorOutput(&eofs);
+#endif
     Lexer lexer{std::move(ifs)};
     Parser parser{lexer.getList()};
 //    parser.getRoot()->myOutput();

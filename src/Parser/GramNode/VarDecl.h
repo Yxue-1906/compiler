@@ -19,7 +19,6 @@ public:
 
     bool checkValid() override;
 
-    bool addIdent();
 };
 
 

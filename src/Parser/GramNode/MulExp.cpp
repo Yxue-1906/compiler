@@ -98,10 +98,18 @@ bool MulExp::checkValid() {
     std::shared_ptr<IdentInfo> tmp;
     if (!mulExp_p->checkValid() || !mulExp_p->getType(this->type))
         return false;
-    if (!unaryExp_p->checkValid() || unaryExp_p->getType(tmp))
+    if (!unaryExp_p->checkValid() || !unaryExp_p->getType(tmp))
         return false;
     if (!IdentInfo::mult(this->type, tmp, this->type))
         return false;
     return true;
+}
+
+bool MulExp::getLVal(std::shared_ptr<GramNode> &toReturn) {
+    if (this->sons.size()) {
+        auto unaryExp_p = std::dynamic_pointer_cast<UnaryExp>(sons.back());
+        return unaryExp_p->getLVal(toReturn);
+    }
+    return false;
 }
 

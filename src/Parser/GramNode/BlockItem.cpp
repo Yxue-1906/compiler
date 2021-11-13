@@ -21,8 +21,9 @@ BlockItem::BlockItem(std::vector<std::shared_ptr<GramNode>> sons)
  * @param ite_p
  * @return
  */
-bool BlockItem::create(std::vector<std::shared_ptr<GramNode>> &toAdd, std::vector<TokenBase *>::iterator &ite_p,
-                       bool isLoop) {
+bool
+BlockItem::create(std::vector<std::shared_ptr<GramNode>> &toAdd, std::vector<TokenBase *>::iterator &ite_p, bool isLoop,
+                  bool isVoid) {
     auto ite = ite_p;
     std::vector<std::shared_ptr<GramNode>> son_ps;
     auto detectDecl = [&ite]() -> bool {
@@ -41,7 +42,7 @@ bool BlockItem::create(std::vector<std::shared_ptr<GramNode>> &toAdd, std::vecto
         toAdd.push_back(tmp_p);
         return true;
     } else {
-        if (!Stmt::create(son_ps, ite, isLoop)) {
+        if (!Stmt::create(son_ps, ite, isLoop, isVoid)) {
             return false;
         }
         ite_p = ite;
@@ -69,11 +70,11 @@ bool BlockItem::checkValid() {
  * @param toReturn return return type by pointer
  * @return true on succeed, false when any error occurred
  */
-int BlockItem::getReturn(bool isVoid) {
+bool BlockItem::hasReturn() {
     auto lastStmt_p = std::dynamic_pointer_cast<Stmt>(sons.back());
     if (!lastStmt_p) {
-        return 0;
+        return false;
     }
-    return lastStmt_p->isNonVoidReturn(isVoid);
+    return lastStmt_p->hasReturn();
 }
 

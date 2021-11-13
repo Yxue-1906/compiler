@@ -17,7 +17,8 @@ private:
 
 public:
     static bool
-    create(std::vector<std::shared_ptr<GramNode>> &, std::vector<TokenBase *>::iterator &, bool isLoop);
+    create(std::vector<std::shared_ptr<GramNode>> &toAdd, std::vector<TokenBase *>::iterator &ite_p, bool isLoop,
+           bool isVoid);
 
     virtual bool checkValid() override;
 

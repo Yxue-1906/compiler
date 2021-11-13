@@ -14,7 +14,7 @@ GramNode::GramNode() = default;
 void GramNode::setGramName(std::string gramName) {
     this->gramName = std::move(gramName);
 #ifdef DEBUG
-    std::cerr << "<" << this->gramName << ">" << std::endl;
+    //    std::cerr << "<" << this->gramName << ">" << std::endl;
 #endif
 }
 
@@ -58,7 +58,7 @@ std::shared_ptr<SymTable> GramNode::getNowTable() {
 }
 
 void GramNode::updateLineNumber() {
-    this->sons.back()->updateLineNumber();
+    (*sons.begin())->updateLineNumber();
 }
 
 bool GramNode::checkValid() {

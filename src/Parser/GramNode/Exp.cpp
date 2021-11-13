@@ -44,6 +44,14 @@ bool Exp::checkValid() {
     return true;
 }
 
+bool Exp::getLVal(std::shared_ptr<GramNode> &toReturn) {
+    if (this->sons.size() == 1) {
+        auto addExp_p = std::dynamic_pointer_cast<AddExp>(sons.back());
+        return addExp_p->getLVal(toReturn);
+    }
+    return false;
+}
+
 //bool Exp::create(std::vector<std::shared_ptr<GramNode>> &toAdd, std::vector<TokenBase *>::iterator &ite_p, LVal *lval) {
 //    auto ite = ite_p;
 //    std::vector<std::shared_ptr<GramNode>> son_ps;
