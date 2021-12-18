@@ -27,6 +27,7 @@ public:
 
     bool hasReturn();
 
+    virtual std::string toMidCode() override;
 };
 
 

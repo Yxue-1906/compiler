@@ -10,6 +10,7 @@
 #include "../Output/MyOutput.h"
 #include "../Lexer/TokenBase.h"
 #include "../SymTable/SymTable.h"
+#include "../VM/PCode.h"
 #include <utility>
 
 class GramNode : public MyOutput {
@@ -18,6 +19,9 @@ private:
     static std::shared_ptr<SymTable> nowTable_p;
 protected:
     std::vector<std::shared_ptr<GramNode>> sons;
+    static std::vector<std::shared_ptr<PCode>> MidCodeSequence;
+    static std::map<std::string, int> labels;
+
 public:
     static int nowLine;
 protected:
@@ -43,6 +47,8 @@ public:
     virtual bool checkValid();
 
     virtual void updateLineNumber();
+
+    virtual std::string toMidCode();
 };
 
 

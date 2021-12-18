@@ -65,3 +65,12 @@ bool MainFuncDef::checkValid() {
     toReturn &= block_p->checkReturn(false);
     return toReturn;
 }
+
+std::string MainFuncDef::toMidCode() {
+    labels.emplace("main", MidCodeSequence.size());
+    auto block_p = std::dynamic_pointer_cast<Block>(this->sons[4]);
+    if (!block_p) {
+        block_p->toMidCode();
+    }
+    return "";
+}

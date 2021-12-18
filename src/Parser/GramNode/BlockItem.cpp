@@ -78,3 +78,9 @@ bool BlockItem::hasReturn() {
     return lastStmt_p->hasReturn();
 }
 
+std::string BlockItem::toMidCode() {
+    auto gramNode_p = this->sons[0];
+    gramNode_p->toMidCode();
+    return "";
+}
+

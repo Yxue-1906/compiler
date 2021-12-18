@@ -25,6 +25,8 @@ public:
     bool checkReturn(bool isVoid);
 
     int getRightBracketLineNumber();
+
+    virtual std::string toMidCode() override;
 };
 
 

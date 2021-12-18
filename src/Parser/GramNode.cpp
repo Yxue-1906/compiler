@@ -65,5 +65,9 @@ bool GramNode::checkValid() {
     return true;
 }
 
+std::string GramNode::toMidCode() {
+    return std::string();
+}
+
 
 

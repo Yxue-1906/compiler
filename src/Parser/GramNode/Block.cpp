@@ -85,3 +85,12 @@ int Block::getRightBracketLineNumber() {
     auto tokenNode_p = std::dynamic_pointer_cast<TokenNode>(sons.back());
     return tokenNode_p->getToken_p()->getLineNumber();
 }
+
+std::string Block::toMidCode() {
+    auto ite = this->sons.begin() + 1;
+    auto blockItem_p = std::dynamic_pointer_cast<BlockItem>(*ite);
+    for (; blockItem_p; ite++, std::dynamic_pointer_cast<BlockItem>(*ite)) {
+        blockItem_p->toMidCode();
+    }
+    return "";
+}
