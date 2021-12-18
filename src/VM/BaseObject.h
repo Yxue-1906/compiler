@@ -6,6 +6,7 @@
 #define VM_BASEOBJECT_H
 
 #include <string>
+#include <vector>
 
 class BaseObject {
 public:

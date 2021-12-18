@@ -47,3 +47,9 @@ bool Decl::checkValid() {//todo: realize checkValid of ConstDecl and VarDecl
         return false;
     return true;
 }
+
+std::string Decl::toMidCode() {
+    auto gramNode_p = this->sons[0];
+    gramNode_p->toMidCode();
+    return "";
+}

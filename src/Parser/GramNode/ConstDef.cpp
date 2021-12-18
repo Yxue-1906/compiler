@@ -76,3 +76,11 @@ bool ConstDef::checkValid() {
     return true;
 }
 
+std::string ConstDef::toMidCode() {
+    auto ite = this->sons.begin();
+    auto tokenNode_p = std::dynamic_pointer_cast<TokenNode>(*(ite++));
+    std::shared_ptr<std::string> ident =
+            std::dynamic_pointer_cast<IDENFR>(tokenNode_p->getToken_p())->getValue_p();
+
+}
+

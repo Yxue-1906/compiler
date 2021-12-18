@@ -57,15 +57,16 @@ Interpreter::Interpreter(std::shared_ptr<std::istream> istream_p) {
             istream >> label1 >> label2;
             MidCodeSequence.push_back(std::make_shared<BR>(label1, label2));
         } else if (ins == "CALL") {
-            std::string name, funcName;
-            istream >> name;
-            if (!name.empty() && name[0] == '%') {
-                istream >> funcName;
-                MidCodeSequence.push_back(std::make_shared<CALL>(name, funcName));
-            } else {
-                funcName = name;
-                MidCodeSequence.push_back(std::make_shared<CALL>(funcName));
+            std::string funcName;
+            std::string param;
+            std::vector<std::string> formalParams;
+            istream >> funcName;
+            istream >> param;
+            for (; param != ";"; istream >> param) {
+                formalParams.push_back(param);
             }
+            MidCodeSequence.push_back(std::make_shared<CALL>(funcName, formalParams));
+            continue;
         } else if (ins == "DIV") {
             std::string name1, name2, toStore;
             istream >> name1 >> name2 >> toStore;
@@ -230,6 +231,7 @@ void Interpreter::run() {
             auto call_p = std::dynamic_pointer_cast<CALL>(MidCodeSequence[PC]);
             ReturnAddrLink.push_back(PC + 1);
             PC = labels[call_p->funcName];
+            //todo: modify call behavior
             if (call_p->name.size()) {
                 varTable_p->add(call_p->name, DataStack.size());
                 DataStack.push_back(0);
