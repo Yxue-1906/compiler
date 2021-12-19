@@ -60,12 +60,15 @@ Interpreter::Interpreter(std::shared_ptr<std::istream> istream_p) {
             std::string funcName;
             std::string param;
             std::vector<std::string> formalParams;
+            std::vector<std::string> inParams;
             istream >> funcName;
             istream >> param;
             for (; param != ";"; istream >> param) {
                 formalParams.push_back(param);
+                istream >> param;
+                inParams.push_back(param);
             }
-            MidCodeSequence.push_back(std::make_shared<CALL>(funcName, formalParams));
+            MidCodeSequence.push_back(std::make_shared<CALL>(funcName, inParams, formalParams));
             continue;
         } else if (ins == "DIV") {
             std::string name1, name2, toStore;
@@ -167,16 +170,17 @@ Interpreter::Interpreter(std::shared_ptr<std::istream> istream_p) {
     PC = labels["main"];
 }
 
-Interpreter::Interpreter(std::vector<std::shared_ptr<PCode>> midCodeSequence) {
-    this->StackOffset = 0;
-    this->DynamicLink.push_back(0);
-    this->ReturnAddrLink.push_back(0);
-    this->MidCodeSequence = midCodeSequence;
-}
+//Interpreter::Interpreter(std::vector<std::shared_ptr<PCode>> midCodeSequence) {
+//    this->StackOffset = 0;
+//    this->DynamicLink.push_back(0);
+//    this->ReturnAddrLink.push_back(0);
+//    this->MidCodeSequence = midCodeSequence;
+//}
 
-std::shared_ptr<Interpreter> Interpreter::getInterpreter_p(std::vector<std::shared_ptr<PCode>> midCodeSequence) {
+std::shared_ptr<Interpreter>
+Interpreter::getInterpreter_p(std::vector<std::shared_ptr<PCode>> midCodeSequence, std::map<std::string, int> labels) {
     if (!instance_p) {
-        instance_p.reset(new Interpreter(midCodeSequence));
+        instance_p.reset(new Interpreter(midCodeSequence, labels));
     } else {
         std::cerr << "warning: Interpreter has been initialized, you get the former one" << std::endl;
     }
@@ -232,16 +236,11 @@ void Interpreter::run() {
             ReturnAddrLink.push_back(PC + 1);
             PC = labels[call_p->funcName];
             //todo: modify call behavior
-            if (call_p->name.size()) {
-                varTable_p->add(call_p->name, DataStack.size());
-                DataStack.push_back(0);
-            }
             DynamicLink.push_back(DataStack.size());
             varTable_p = std::make_shared<VarTable>(varTable_p);
-            for (int i = 1; i <= funcCallStack.size(); ++i) {
-                varTable_p->var_ps[std::string{'%'} + std::to_string(i)] = std::make_shared<VarInformation>(
-                        DataStack.size());
-                DataStack.push_back(funcCallStack[i - 1]);
+            for (int i = 0; i < call_p->inParams.size(); ++i) {
+                varTable_p->add(call_p->formalParams[i], this->DataStack.size());
+                DataStack.push_back(DataStack[varTable_p->find(call_p->inParams[i])]);
             }
             funcCallStack.clear();
             continue;

@@ -73,7 +73,8 @@ public:
 
     void setOs(std::shared_ptr<std::ostream> ostream_p);
 
-    static std::shared_ptr<Interpreter> getInterpreter_p(std::vector<std::shared_ptr<PCode>> midCodeSequence);
+    static std::shared_ptr<Interpreter>
+    getInterpreter_p(std::vector<std::shared_ptr<PCode>> midCodeSequence, std::map<std::string, int> labels);
 
     static std::shared_ptr<Interpreter> getInterpreter_p(std::shared_ptr<std::istream> istream_p);
 

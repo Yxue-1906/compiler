@@ -12,13 +12,15 @@ public:
     const Type type;
 //    const std::string name;
     const std::string funcName;
+    std::vector<std::string> inParams;
     std::vector<std::string> formalParams;
 public:
     CALL(std::string funcName) : type(Type::CALL), funcName(funcName) {}
 
-    CALL(std::string funcName, std::vector<std::string> formalParams)
+    CALL(std::string funcName, std::vector<std::string> inParams, std::vector<std::string> formalParams)
             : type(Type::CALL),
               funcName(funcName),
+              inParams(inParams),
               formalParams(formalParams) {}
 
     virtual std::string to_string() const override {
