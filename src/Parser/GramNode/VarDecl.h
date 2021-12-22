@@ -19,6 +19,7 @@ public:
 
     bool checkValid() override;
 
+    virtual std::string toMidCode() override;
 };
 
 

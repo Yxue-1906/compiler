@@ -8,7 +8,8 @@
 #include "ConstInitVal.h"
 #include "../../Lexer/Token/LBRACK.h"
 #include "../ErrorNode.h"
-#include "../../Exception/MyException/MissingRightBracketException.h"
+#include "../../VM/PCode/ALLO.h"
+#include "../../VM/PCode/STOP.h"
 
 ConstDef::ConstDef(std::vector<std::shared_ptr<GramNode>> sons) : GramNode() {
     setGramName("ConstDef");
@@ -91,8 +92,14 @@ std::string ConstDef::toMidCode() {
     auto constInitVal_p = std::dynamic_pointer_cast<ConstInitVal>(*ite);
     auto values_p = constInitVal_p->toValues();
     ConstDef::symTableGenCode.addConst(*ident, dimension_p, values_p);
-    //todo: generate code into MidCodes
-
+    int size = 1;
+    for (int i: *dimension_p) {
+        size *= i;
+    }
+    GramNode::MidCodeSequence.push_back(std::make_shared<ALLO>(*ident, size));
+    for (int i = 0; i < values_p->size(); ++i) {
+        GramNode::MidCodeSequence.push_back(std::make_shared<STOP>(std::to_string((*values_p)[i]), *ident, i));
+    }
     return "";
 }
 

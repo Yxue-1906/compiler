@@ -61,7 +61,8 @@ bool ConstDecl::checkValid() {
 std::string ConstDecl::toMidCode() {
     auto ite = this->sons.begin() + 2;
     auto constDef_p = std::dynamic_pointer_cast<ConstDef>(*ite);
-    for (; constDef_p && (ite != this->sons.end()); ++ite, std::dynamic_pointer_cast<ConstDef>(*ite)) {
+    for (; constDef_p && (ite < this->sons.end());
+           ite += 2, constDef_p = std::dynamic_pointer_cast<ConstDef>(*ite)) {
         constDef_p->toMidCode();
     }
     return "";

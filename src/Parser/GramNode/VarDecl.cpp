@@ -53,3 +53,12 @@ bool VarDecl::checkValid() {
     return toReturn;
 }
 
+std::string VarDecl::toMidCode() {
+    auto ite = this->sons.begin() + 2;
+    auto varDef_p = std::dynamic_pointer_cast<VarDef>(*ite);
+    for (; varDef_p && (ite < this->sons.end());
+           ite += 2, varDef_p = std::dynamic_pointer_cast<VarDef>(*ite)) {
+        varDef_p//todo:
+    }
+}
+

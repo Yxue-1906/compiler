@@ -6,6 +6,7 @@
 #include "PCode/J.h"
 #include "PCode/LODA.h"
 #include "PCode/GETA.h"
+#include "PCode/STOP.h"
 
 
 std::shared_ptr<Interpreter>Interpreter::instance_p = nullptr;
@@ -449,7 +450,7 @@ void Interpreter::run() {
             if (ret_p->name != "void")
                 DataStack.back() = value;
             continue;
-        } else if (std::dynamic_pointer_cast<STO>(MidCodeSequence[PC])) {
+        }/* else if (std::dynamic_pointer_cast<STO>(MidCodeSequence[PC])) {
             auto sto_p = std::dynamic_pointer_cast<STO>(MidCodeSequence[PC]);
             int addr, value;
             addr = varTable_p->find(sto_p->value);
@@ -460,6 +461,18 @@ void Interpreter::run() {
             addr = varTable_p->find(sto_p->addr);
             addr = DataStack[addr];
             DataStack[addr] = value;
+        }*/ else if (std::dynamic_pointer_cast<STOP>(MidCodeSequence[PC])) {
+            auto stop_p = std::dynamic_pointer_cast<STOP>(MidCodeSequence[PC]);
+            int value = 0;
+            try {
+                value = std::stoi(stop_p->value);
+            } catch (std::exception &e) {
+                int value_addr = varTable_p->find(stop_p->value);
+                value = DataStack[value_addr];
+            }
+            int base = varTable_p->find(stop_p->base);
+            int offset = stop_p->offset;
+            DataStack[base + offset] = value;
         } else {
             //todo: what happened?
             std::cout << "unknown ins" << std::endl;

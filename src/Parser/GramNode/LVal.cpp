@@ -95,7 +95,7 @@ int LVal::toValue() {
     int toReturn = 0;
     auto varDimension = *varType->dimension_p;
     auto varValues = *varType->values_p;
-    for (int i = 1; ite != this->sons.end(); ite += 2, i++) {
+    for (int i = 1; ite < this->sons.end(); ite += 3, i++) {
         auto exp_p = std::dynamic_pointer_cast<Exp>(*ite);
         int pre_offset = 1;
         for (int j = i; j < varDimension.size(); ++j) {

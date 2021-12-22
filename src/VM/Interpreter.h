@@ -41,7 +41,7 @@ private:
     std::vector<int> DataStack;         // all the data allocate at stack
     std::vector<int> DynamicLink;       // ?
     std::vector<int> ReturnAddrLink;    // return address stack
-    std::vector<int> tempVarUseCount;   // is it nessasary
+    std::vector<int> tempVarUseCount;   // is it necessary
     std::vector<int> funcCallStack;     // every param pass toStore a func store here
     int PC = 0;
     int StackOffset{};

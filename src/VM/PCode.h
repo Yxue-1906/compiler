@@ -39,6 +39,7 @@ public:
         PWRAP,          // PWARP : print warp
         RET,            // RET <VarName>|void : delete VarTable, restore PC with RA
         STO,            // STO <Value> <Address> : store value toStore address
+        STOP,           // STOP <Value> <Address> <Offset> : store value toStore address
 
         //todo: NOT, PSTR
     };
