@@ -78,9 +78,21 @@ bool ConstDef::checkValid() {
 
 std::string ConstDef::toMidCode() {
     auto ite = this->sons.begin();
-    auto tokenNode_p = std::dynamic_pointer_cast<TokenNode>(*(ite++));
+    auto tokenNode_p = std::dynamic_pointer_cast<TokenNode>(*ite);
+    ite += 2;
     std::shared_ptr<std::string> ident =
             std::dynamic_pointer_cast<IDENFR>(tokenNode_p->getToken_p())->getValue_p();
+    auto dimension_p = std::make_shared<std::vector<int>>();
+    for (auto constExp_p = std::dynamic_pointer_cast<ConstExp>(*ite);
+         constExp_p; ite += 3, constExp_p = std::dynamic_pointer_cast<ConstExp>(*ite)) {
+        int toPush = constExp_p->toValue();
+        dimension_p->push_back(toPush);
+    }
+    auto constInitVal_p = std::dynamic_pointer_cast<ConstInitVal>(*ite);
+    auto values_p = constInitVal_p->toValues();
+    ConstDef::symTableGenCode.addConst(*ident, dimension_p, values_p);
+    //todo: generate code into MidCodes
 
+    return "";
 }
 

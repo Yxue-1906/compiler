@@ -23,6 +23,8 @@ public:
     bool getType(std::shared_ptr<IdentInfo> &toReturn);
 
     bool getLVal(std::shared_ptr<GramNode> &toReturn);
+
+    int toValue();
 };
 
 

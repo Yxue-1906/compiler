@@ -21,6 +21,8 @@ public:
     virtual bool checkValid() override;
 
     bool getType(std::shared_ptr<IdentInfo> &toReturn);
+
+    int toValue();
 };
 
 

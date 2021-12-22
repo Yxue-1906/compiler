@@ -16,6 +16,8 @@ private:
 
 public:
     static bool create(std::vector<std::shared_ptr<GramNode>> &, std::vector<TokenBase *>::iterator &);
+
+    int toValue();
 };
 
 

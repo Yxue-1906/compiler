@@ -56,3 +56,23 @@ bool ConstInitVal::create(std::vector<std::shared_ptr<GramNode>> &toAdd, std::ve
         return true;
     }
 }
+
+std::shared_ptr<std::vector<int>> ConstInitVal::toValues() {
+    auto ite = this->sons.begin();
+    auto toReturn = std::make_shared<std::vector<int>>();
+    if (std::dynamic_pointer_cast<ConstExp>(*ite)) {
+        auto constExp_p = std::dynamic_pointer_cast<ConstExp>(*ite);
+        toReturn->push_back(constExp_p->toValue());
+        return toReturn;
+    } else {
+        ite++;
+        for (; ite < this->sons.end(); ite += 2) {
+            auto constInitVal_p = std::dynamic_pointer_cast<ConstInitVal>(*ite);
+            auto values = *constInitVal_p->toValues();
+            for (int value: values) {
+                toReturn->push_back(value);
+            }
+        }
+        return toReturn;
+    }
+}

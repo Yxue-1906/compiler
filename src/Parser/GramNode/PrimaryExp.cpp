@@ -129,3 +129,18 @@ bool PrimaryExp::getLVal(std::shared_ptr<GramNode> &toReturn) {
     }
     return false;
 }
+
+int PrimaryExp::toValue() {
+    auto number_p = std::dynamic_pointer_cast<Number>(this->sons[0]);
+    auto lval_p = std::dynamic_pointer_cast<LVal>(this->sons[0]);
+    int toReturn = 0;
+    if (number_p) {
+        toReturn = number_p->toValue();
+    } else if (lval_p) {
+        toReturn = lval_p->toValue();
+    } else {
+        auto exp_p = std::dynamic_pointer_cast<Exp>(this->sons[1]);
+        toReturn = exp_p->toValue();
+    }
+    return toReturn;
+}

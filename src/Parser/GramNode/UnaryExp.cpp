@@ -11,6 +11,7 @@
 #include "../../Exception/MyException/MismatchCallTypeException.h"
 #include "../../Lexer/Token/LPARENT.h"
 #include "../ErrorNode.h"
+#include "../../Lexer/Token/PLUS.h"
 
 UnaryExp::UnaryExp(std::vector<std::shared_ptr<GramNode>> sons) : GramNode() {
     setGramName("UnaryExp");
@@ -151,4 +152,20 @@ bool UnaryExp::getLVal(std::shared_ptr<GramNode> &toReturn) {
         return primaryExp_p->getLVal(toReturn);
     }
     return false;
+}
+
+int UnaryExp::toValue() {
+    auto primaryExp_p = std::dynamic_pointer_cast<PrimaryExp>(this->sons[0]);
+    if (primaryExp_p) {
+        return primaryExp_p->toValue();
+    } else {
+        auto unaryOp_p = std::dynamic_pointer_cast<UnaryOp>(this->sons[0]);
+        auto unaryExp_p = std::dynamic_pointer_cast<UnaryExp>(this->sons[1]);
+        int toReturn = unaryExp_p->toValue();
+        if (unaryOp_p->getType() == UnaryOp::Type::PLUS) {
+            return toReturn;
+        } else {
+            return -toReturn;
+        }
+    }
 }

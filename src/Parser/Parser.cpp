@@ -3,11 +3,13 @@
 //
 
 #include "Parser.h"
+#include "GramNode/ConstDecl.h"
 
 Parser::Parser(std::vector<TokenBase *> &tokenList) : tokenList(tokenList) {
     auto begin = tokenList.begin();
     std::vector<std::shared_ptr<GramNode>> tmp;
-    if (CompUnit::create(tmp, begin)) {
+//    if (CompUnit::create(tmp, begin)) {
+    if (ConstDecl::create(tmp, begin)) {
         root = tmp[0];
     } else {
         std::cout << "stop at line:" << GramNode::nowLine << std::endl;

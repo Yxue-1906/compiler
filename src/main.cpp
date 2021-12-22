@@ -19,6 +19,8 @@ int main() {
     Lexer lexer{std::move(ifs)};
     Parser parser{lexer.getList()};
 //    parser.getRoot()->myOutput();
-    parser.getRoot()->checkValid();
+    auto root = parser.getRoot();
+    if (root->checkValid())
+        root->toMidCode();
     return 0;
 }

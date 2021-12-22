@@ -5,6 +5,8 @@
 #include "MulExp.h"
 #include "UnaryExp.h"
 #include "../TokenNode.h"
+#include "../../Lexer/Token/MULT.h"
+#include "../../Lexer/Token/DIV.h"
 
 MulExp::MulExp(std::vector<std::shared_ptr<GramNode>> sons) : GramNode() {
     setGramName("MulExp");
@@ -111,5 +113,24 @@ bool MulExp::getLVal(std::shared_ptr<GramNode> &toReturn) {
         return unaryExp_p->getLVal(toReturn);
     }
     return false;
+}
+
+int MulExp::toValue() {
+    int toReturn = 0;
+    if (this->sons.size() > 1) {
+        toReturn = std::dynamic_pointer_cast<MulExp>(sons[0])->toValue();
+        auto tokenNode_p = std::dynamic_pointer_cast<TokenNode>(sons[1]);
+        auto unaryExp_p = std::dynamic_pointer_cast<UnaryExp>(sons[2]);
+        if (std::dynamic_pointer_cast<MULT>(tokenNode_p->getToken_p())) {
+            toReturn *= unaryExp_p->toValue();
+        } else if (std::dynamic_pointer_cast<DIV>(tokenNode_p->getToken_p())) {
+            toReturn /= unaryExp_p->toValue();
+        } else {
+            toReturn %= unaryExp_p->toValue();
+        }
+    } else {
+        toReturn = std::dynamic_pointer_cast<UnaryExp>(sons[0])->toValue();
+    }
+    return toReturn;
 }
 

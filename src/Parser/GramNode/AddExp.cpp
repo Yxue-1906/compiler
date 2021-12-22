@@ -5,6 +5,7 @@
 #include "AddExp.h"
 #include "MulExp.h"
 #include "../TokenNode.h"
+#include "../../Lexer/Token/PLUS.h"
 
 AddExp::AddExp(std::vector<std::shared_ptr<GramNode>> sons) : GramNode() {
     setGramName("AddExp");
@@ -109,4 +110,21 @@ bool AddExp::getLVal(std::shared_ptr<GramNode> &toReturn) {
         return mulExp_p->getLVal(toReturn);
     }
     return false;
+}
+
+int AddExp::toValue() {
+    int toReturn = 0;
+    if (this->sons.size() > 1) {
+        toReturn = std::dynamic_pointer_cast<AddExp>(sons[0])->toValue();
+        auto tokenNode_p = std::dynamic_pointer_cast<TokenNode>(sons[1]);
+        auto mulExp_p = std::dynamic_pointer_cast<MulExp>(sons[2]);
+        if (std::dynamic_pointer_cast<PLUS>(tokenNode_p->getToken_p())) {
+            toReturn += mulExp_p->toValue();
+        } else {
+            toReturn -= mulExp_p->toValue();
+        }
+    } else {
+        toReturn = std::dynamic_pointer_cast<MulExp>(sons[0])->toValue();
+    }
+    return toReturn;
 }

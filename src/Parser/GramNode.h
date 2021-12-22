@@ -11,6 +11,7 @@
 #include "../Lexer/TokenBase.h"
 #include "../SymTable/SymTable.h"
 #include "../VM/PCode.h"
+#include "SymTableGenCode/SymTableGenCode.h"
 #include <utility>
 
 class GramNode : public MyOutput {
@@ -21,6 +22,7 @@ protected:
     std::vector<std::shared_ptr<GramNode>> sons;
     static std::vector<std::shared_ptr<PCode>> MidCodeSequence;
     static std::map<std::string, int> labels;
+    static SymTableGenCode symTableGenCode;
 
 public:
     static int nowLine;

@@ -8,6 +8,9 @@
 
 int GramNode::nowLine = 0;
 std::shared_ptr<SymTable>GramNode::nowTable_p = std::make_shared<SymTable>(nullptr);
+SymTableGenCode GramNode::symTableGenCode;
+std::vector<std::shared_ptr<PCode>>GramNode::MidCodeSequence;
+std::map<std::string, int>GramNode::labels;
 
 GramNode::GramNode() = default;
 

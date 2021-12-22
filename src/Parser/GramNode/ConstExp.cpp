@@ -28,3 +28,9 @@ bool ConstExp::create(std::vector<std::shared_ptr<GramNode>> &toAdd, std::vector
     toAdd.push_back(tmp_p);
     return true;
 }
+
+int ConstExp::toValue() {
+    auto addExp_p = std::dynamic_pointer_cast<AddExp>(this->sons[0]);
+    int toReturn = addExp_p->toValue();
+    return toReturn;
+}

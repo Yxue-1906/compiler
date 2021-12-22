@@ -84,4 +84,26 @@ bool LVal::getType(std::shared_ptr<IdentInfo> &toReturn) {
     return false;
 }
 
+int LVal::toValue() {
+    auto ite = this->sons.begin();
+    auto tokenNode_p = std::dynamic_pointer_cast<TokenNode>(*ite);
+    auto ident_p = std::dynamic_pointer_cast<IDENFR>(tokenNode_p->getToken_p());
+    auto varName = *ident_p->getValue_p();
+    auto varType = LVal::symTableGenCode.searchVar(varName);
+    //varType should not be empty
+    ite += 2;
+    int toReturn = 0;
+    auto varDimension = *varType->dimension_p;
+    auto varValues = *varType->values_p;
+    for (int i = 1; ite != this->sons.end(); ite += 2, i++) {
+        auto exp_p = std::dynamic_pointer_cast<Exp>(*ite);
+        int pre_offset = 1;
+        for (int j = i; j < varDimension.size(); ++j) {
+            pre_offset *= varDimension[j];
+        }
+        toReturn += pre_offset * exp_p->toValue();
+    }
+    return varValues[toReturn];
+}
+
 
