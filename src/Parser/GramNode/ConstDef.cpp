@@ -77,9 +77,10 @@ bool ConstDef::checkValid() {
     return true;
 }
 
-std::string ConstDef::toMidCode() {
+std::vector<std::shared_ptr<std::string>> ConstDef::toMidCode() {
     auto ite = this->sons.begin();
     auto tokenNode_p = std::dynamic_pointer_cast<TokenNode>(*ite);
+    std::vector<std::shared_ptr<std::string>> toReturn;
     ite += 2;
     std::shared_ptr<std::string> ident =
             std::dynamic_pointer_cast<IDENFR>(tokenNode_p->getToken_p())->getValue_p();
@@ -100,6 +101,6 @@ std::string ConstDef::toMidCode() {
     for (int i = 0; i < values_p->size(); ++i) {
         GramNode::MidCodeSequence.push_back(std::make_shared<STOP>(std::to_string((*values_p)[i]), *ident, i));
     }
-    return "";
+    return toReturn;
 }
 

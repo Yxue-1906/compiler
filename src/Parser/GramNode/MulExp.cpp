@@ -5,8 +5,9 @@
 #include "MulExp.h"
 #include "UnaryExp.h"
 #include "../TokenNode.h"
-#include "../../Lexer/Token/MULT.h"
-#include "../../Lexer/Token/DIV.h"
+#include "../../VM/PCode/MULT.h"
+#include "../../VM/PCode/DIV.h"
+#include "../../VM/PCode/MOD.h"
 
 MulExp::MulExp(std::vector<std::shared_ptr<GramNode>> sons) : GramNode() {
     setGramName("MulExp");
@@ -121,9 +122,10 @@ int MulExp::toValue() {
         toReturn = std::dynamic_pointer_cast<MulExp>(sons[0])->toValue();
         auto tokenNode_p = std::dynamic_pointer_cast<TokenNode>(sons[1]);
         auto unaryExp_p = std::dynamic_pointer_cast<UnaryExp>(sons[2]);
-        if (std::dynamic_pointer_cast<MULT>(tokenNode_p->getToken_p())) {
+        auto op_p = tokenNode_p->getToken_p();
+        if (op_p->getTokenType() == TokenBase::MULT) {
             toReturn *= unaryExp_p->toValue();
-        } else if (std::dynamic_pointer_cast<DIV>(tokenNode_p->getToken_p())) {
+        } else if (op_p->getTokenType() == TokenBase::DIV) {
             toReturn /= unaryExp_p->toValue();
         } else {
             toReturn %= unaryExp_p->toValue();
@@ -132,5 +134,26 @@ int MulExp::toValue() {
         toReturn = std::dynamic_pointer_cast<UnaryExp>(sons[0])->toValue();
     }
     return toReturn;
+}
+
+std::vector<std::shared_ptr<std::string>> MulExp::toMidCode() {
+    std::vector<std::shared_ptr<std::string>> toReturn;
+    if (this->sons.size() > 1) {
+        auto mulExp_p = std::dynamic_pointer_cast<MulExp>(sons[0]);
+        auto tokenNode_p = std::dynamic_pointer_cast<TokenNode>(sons[1]);
+        auto op_p = tokenNode_p->getToken_p();
+        auto unaryExp_p = std::dynamic_pointer_cast<UnaryExp>(sons[2]);
+        auto tmpVar1_p = mulExp_p->toMidCode()[0];
+        auto tmpVar2_p = unaryExp_p->toMidCode()[0];
+        auto tmpVar_p = std::make_shared<std::string>("%" + std::to_string(nowTmpVarCount++));
+        if (op_p->getTokenType() == TokenBase::MULT) {
+            MidCodeSequence.push_back(std::make_shared<MULT>(*tmpVar1_p, *tmpVar2_p, *tmpVar_p));
+        } else if (op_p->getTokenType() == TokenBase::DIV) {
+            MidCodeSequence.push_back(std::make_shared<DIV>(*tmpVar1_p, *tmpVar2_p, *tmpVar_p));
+        } else {
+            MidCodeSequence.push_back(std::make_shared<MOD>(*tmpVar1_p, *tmpVar2_p, *tmpVar_p));
+
+        }
+    }
 }
 

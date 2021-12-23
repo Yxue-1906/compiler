@@ -19,7 +19,7 @@ public:
             : type(Type::MOD), name1(name1), name2(name2), toStore(toStore) {}
 
     virtual std::string to_string() const override {
-        return std::string{"MOD "} + name1 + ' ' + name2 + ' ' + toStore;
+        return std::string{"MOD "} + name1 + '%' + name2 + "->" + toStore;
     }
 };
 

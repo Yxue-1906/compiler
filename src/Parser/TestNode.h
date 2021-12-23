@@ -27,7 +27,7 @@ public:
         return true;
     }
 
-    virtual std::string toMidCode() override {
+    virtual std::vector<std::shared_ptr<std::string>> toMidCode() override {
         for (auto node: this->sons) {
             node->toMidCode();
         }

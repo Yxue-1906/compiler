@@ -6,6 +6,8 @@
 #include "MulExp.h"
 #include "../TokenNode.h"
 #include "../../Lexer/Token/PLUS.h"
+#include "../../VM/PCode/ADD.h"
+#include "../../VM/PCode/MINUS.h"
 
 AddExp::AddExp(std::vector<std::shared_ptr<GramNode>> sons) : GramNode() {
     setGramName("AddExp");
@@ -125,6 +127,30 @@ int AddExp::toValue() {
         }
     } else {
         toReturn = std::dynamic_pointer_cast<MulExp>(sons[0])->toValue();
+    }
+    return toReturn;
+}
+
+std::vector<std::shared_ptr<std::string>> AddExp::toMidCode() {
+    std::vector<std::shared_ptr<std::string>> toReturn;
+    if (this->sons.size() > 1) {
+        auto addExp_p = std::dynamic_pointer_cast<AddExp>(sons[0]);
+        auto tokenNode_p = std::dynamic_pointer_cast<TokenNode>(sons[1]);
+        auto op_p = tokenNode_p->getToken_p();
+        auto mulExp_p = std::dynamic_pointer_cast<MulExp>(sons[2]);
+        auto tmpVar1_p = addExp_p->toMidCode()[0];
+        auto tmpVar2_p = mulExp_p->toMidCode()[0];
+        std::shared_ptr<std::string> tmpVar_p = std::make_shared<std::string>("%" + std::to_string(nowTmpVarCount++));
+        if (op_p->getTokenType() == TokenBase::PLUS) {
+            MidCodeSequence.push_back(std::make_shared<ADD>(*tmpVar1_p, *tmpVar2_p, *tmpVar_p));
+        } else {
+            MidCodeSequence.push_back(std::make_shared<MINUS>(*tmpVar1_p, *tmpVar2_p, *tmpVar_p));
+        }
+        toReturn.push_back(tmpVar_p);
+    } else {
+        auto mulExp_p = std::dynamic_pointer_cast<MulExp>(sons[0]);
+        auto tmpVar = mulExp_p->toMidCode()[0];
+        toReturn.push_back(tmpVar);
     }
     return toReturn;
 }

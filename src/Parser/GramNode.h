@@ -23,6 +23,7 @@ protected:
     static std::vector<std::shared_ptr<PCode>> MidCodeSequence;
     static std::map<std::string, int> labels;
     static SymTableGenCode symTableGenCode;
+    static int nowTmpVarCount;
 
 public:
     static int nowLine;
@@ -50,7 +51,7 @@ public:
 
     virtual void updateLineNumber();
 
-    virtual std::string toMidCode();
+    virtual std::vector<std::shared_ptr<std::string>> toMidCode();
 };
 
 

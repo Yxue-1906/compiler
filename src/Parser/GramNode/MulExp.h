@@ -28,6 +28,8 @@ public:
 
     bool getLVal(std::shared_ptr<GramNode> &toReturn);
 
+    virtual std::vector<std::shared_ptr<std::string>> toMidCode() override;
+
     int toValue();
 };
 

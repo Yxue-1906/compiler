@@ -46,3 +46,23 @@ bool InitVal::create(std::vector<std::shared_ptr<GramNode>> &toAdd, std::vector<
     }
     return false;
 }
+
+std::vector<std::shared_ptr<std::string>> InitVal::toMidCode() {
+    auto ite = this->sons.begin();
+    std::vector<std::shared_ptr<std::string>> toReturn;
+    if (std::dynamic_pointer_cast<Exp>(*ite)) {
+        auto exp_p = std::dynamic_pointer_cast<Exp>(*ite);
+        auto tmpVar = exp_p->toMidCode()[0];
+        toReturn.push_back(tmpVar);
+    } else {
+        ite++;
+        auto initVal_p = std::dynamic_pointer_cast<InitVal>(*ite);
+        for (; initVal_p && (ite < this->sons.end()); ++ite, initVal_p = std::dynamic_pointer_cast<InitVal>(*ite)) {
+            auto tmpVars = initVal_p->toMidCode();
+            for (auto tmpVar: tmpVars) {
+                toReturn.push_back(tmpVar);
+            }
+        }
+    }
+    return toReturn;
+}

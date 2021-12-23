@@ -66,11 +66,12 @@ bool MainFuncDef::checkValid() {
     return toReturn;
 }
 
-std::string MainFuncDef::toMidCode() {
+std::vector<std::shared_ptr<std::string>> MainFuncDef::toMidCode() {
     labels.emplace("main", MidCodeSequence.size());
     auto block_p = std::dynamic_pointer_cast<Block>(this->sons[4]);
+    std::vector<std::shared_ptr<std::string>> toReturn;
     if (!block_p) {
         block_p->toMidCode();
     }
-    return "";
+    return toReturn;
 }

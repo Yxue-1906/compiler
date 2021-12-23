@@ -42,14 +42,15 @@ void Decl::myOutput() {
     }
 }
 
-bool Decl::checkValid() {//todo: realize checkValid of ConstDecl and VarDecl
+bool Decl::checkValid() {//todo: realize checkValid of VarDecl
     if (!sons.back()->checkValid())
         return false;
     return true;
 }
 
-std::string Decl::toMidCode() {
+std::vector<std::shared_ptr<std::string>> Decl::toMidCode() {
     auto gramNode_p = this->sons[0];
+    std::vector<std::shared_ptr<std::string>> toReturn;
     gramNode_p->toMidCode();
-    return "";
+    return toReturn;
 }

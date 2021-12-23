@@ -19,7 +19,7 @@ public:
 
     virtual bool checkValid() override;
 
-    virtual std::string toMidCode() override;
+    virtual std::vector<std::shared_ptr<std::string>> toMidCode() override;
 };
 
 

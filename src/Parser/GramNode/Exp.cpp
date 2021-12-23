@@ -57,6 +57,11 @@ int Exp::toValue() {
     return addExp_p->toValue();
 }
 
+std::vector<std::shared_ptr<std::string>> Exp::toMidCode() {
+    auto addExp_p = std::dynamic_pointer_cast<AddExp>(sons[0]);
+    return addExp_p->toMidCode();
+}
+
 //bool Exp::create(std::vector<std::shared_ptr<GramNode>> &toAdd, std::vector<TokenBase *>::iterator &ite_p, LVal *lval) {
 //    auto ite = ite_p;
 //    std::vector<std::shared_ptr<GramNode>> son_ps;

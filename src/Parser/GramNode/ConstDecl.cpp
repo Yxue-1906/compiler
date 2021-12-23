@@ -58,12 +58,13 @@ bool ConstDecl::checkValid() {
     return toReturn;
 }
 
-std::string ConstDecl::toMidCode() {
+std::vector<std::shared_ptr<std::string>> ConstDecl::toMidCode() {
     auto ite = this->sons.begin() + 2;
     auto constDef_p = std::dynamic_pointer_cast<ConstDef>(*ite);
+    std::vector<std::shared_ptr<std::string>> toReturn;
     for (; constDef_p && (ite < this->sons.end());
            ite += 2, constDef_p = std::dynamic_pointer_cast<ConstDef>(*ite)) {
         constDef_p->toMidCode();
     }
-    return "";
+    return toReturn;
 }

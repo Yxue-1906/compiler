@@ -78,9 +78,10 @@ bool BlockItem::hasReturn() {
     return lastStmt_p->hasReturn();
 }
 
-std::string BlockItem::toMidCode() {
+std::vector<std::shared_ptr<std::string>> BlockItem::toMidCode() {
     auto gramNode_p = this->sons[0];
+    std::vector<std::shared_ptr<std::string>> toReturn;
     gramNode_p->toMidCode();
-    return "";
+    return toReturn;
 }
 

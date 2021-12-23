@@ -76,7 +76,7 @@ bool VarDef::checkValid() {
     return toReturn;
 }
 
-std::string VarDef::toMidCode() {
+std::vector<std::shared_ptr<std::string>> VarDef::toMidCode() {
     auto ite = this->sons.begin();
     auto tokenNode_p = std::dynamic_pointer_cast<TokenNode>(*ite);
     ite += 2;
@@ -90,6 +90,6 @@ std::string VarDef::toMidCode() {
         dimension_p->push_back(toPush);
     }
     if (ite < this->sons.end()) {
-        auto initVal_p =//todo
+        auto initVal_p = std::dynamic_pointer_cast<InitVal>(*ite);//todo:
     }
 }
