@@ -257,7 +257,7 @@ void Interpreter::run() {
             if (addr != -1)
                 b = DataStack[addr];
             else
-                b = DataStack[addr];
+                b = std::stoi(div_p->name2);
             varTable_p->add(div_p->toStore, DataStack.size());
             DataStack.push_back(a / b);
         } else if (std::dynamic_pointer_cast<EQ>(MidCodeSequence[PC])) {

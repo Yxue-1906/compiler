@@ -9,9 +9,8 @@
 #include "UnaryOp.h"
 #include "../../Exception/MyException/MismatchParamNumException.h"
 #include "../../Exception/MyException/MismatchCallTypeException.h"
-#include "../../Lexer/Token/LPARENT.h"
 #include "../ErrorNode.h"
-#include "../../Lexer/Token/PLUS.h"
+#include "../../VM/PCode/MINUS.h"
 
 UnaryExp::UnaryExp(std::vector<std::shared_ptr<GramNode>> sons) : GramNode() {
     setGramName("UnaryExp");
@@ -168,4 +167,28 @@ int UnaryExp::toValue() {
             return -toReturn;
         }
     }
+}
+
+std::vector<std::shared_ptr<std::string>> UnaryExp::toMidCode() {
+    std::vector<std::shared_ptr<std::string>> toReturn;
+    auto primaryExp_p = std::dynamic_pointer_cast<PrimaryExp>(this->sons[0]);
+    if (primaryExp_p) {
+        toReturn = primaryExp_p->toMidCode();
+    } else {
+        auto unaryExp_p = std::dynamic_pointer_cast<UnaryExp>(sons[2]);
+        if (unaryExp_p) {
+            auto unaryOp_p = std::dynamic_pointer_cast<UnaryOp>(sons[1]);
+            if (unaryOp_p->getType() == UnaryOp::Type::MINUS) {
+                auto tmpVar1_p = unaryExp_p->toMidCode()[0];
+                auto tmpVar_p = std::make_shared<std::string>("%" + std::to_string(nowTmpVarCount++));
+                MidCodeSequence.push_back(std::make_shared<MINUS>("0", *tmpVar1_p, *tmpVar_p));
+                //todo:
+            } else if (unaryOp_p->getType() == UnaryOp::Type::NOT) {
+
+            }
+        } else {
+            //todo:generate midcode for function call
+        }
+    }
+    return toReturn;
 }

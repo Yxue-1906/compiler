@@ -33,6 +33,7 @@ public:
         MINUS,          // MINUS: minus top with sub top, pop them and push the outcome
         MOD,            // MOD: mod top with sub top, pop them and push the outcome
         MULT,           // MULT: multiple top with sub top, pop them and push the outcome
+        NOT,            // NOT <VarName> <toStore> : store !<VarName> to <toStore>
         PINT,           // PINT <VarName> : print value of <VarName>
         PSTR,           // PSTR <Str> : or maybe ...
         PUSH,           // PUSH -> push the value of top into func call stack
