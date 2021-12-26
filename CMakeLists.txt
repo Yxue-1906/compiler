@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.16)
 project(src/Parser)
 
 set(CMAKE_CXX_STANDARD 11)
-#add_definitions(-DDEBUG)
+add_definitions(-DDEBUG)
 add_executable(Parser src/Exception/MyException/AssignToConstException.h
         src/Exception/MyException/ConBreakInNonLoopException.h
         src/Exception/MyException/DupIdentException.h
@@ -172,4 +172,9 @@ add_executable(Parser src/Exception/MyException/AssignToConstException.h
         src/VM/PCode.cpp
         src/VM/PCode.h
         src/VM/VMSymTable.cpp
-        src/VM/VMSymTable.h src/Parser/SymTableGenCode/SymTableGenCode.cpp src/Parser/SymTableGenCode/SymTableGenCode.h src/Parser/TestNode.h src/VM/PCode/STOP.h src/VM/PCode/NOT.h)
+        src/VM/VMSymTable.h
+        src/Parser/SymTableGenCode/SymTableGenCode.cpp
+        src/Parser/SymTableGenCode/SymTableGenCode.h
+        src/Parser/TestNode.h
+        src/VM/PCode/STOP.h
+        src/VM/PCode/NOT.h)

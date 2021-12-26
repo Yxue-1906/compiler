@@ -7,16 +7,18 @@
 
 #include "../PCode.h"
 
-class PWRAP : public PCode {
-public:
-    const Type type;
-public:
-    PWRAP() : type(Type::PWRAP) {}
+namespace INTERPRETER {
+    class PWRAP : public PCode {
+    public:
+        const Type type;
+    public:
+        PWRAP() : type(Type::PWRAP) {}
 
-    virtual std::string to_string() const override {
-        return std::string{"PWARP"};
-    }
-};
+        virtual std::string to_string() const override {
+            return std::string{"PWARP"};
+        }
+    };
+}
 
 
 #endif //VM_PWRAP_H

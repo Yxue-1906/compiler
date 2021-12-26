@@ -42,7 +42,7 @@ void Decl::myOutput() {
     }
 }
 
-bool Decl::checkValid() {//todo: realize checkValid of VarDecl
+bool Decl::checkValid() {
     if (!sons.back()->checkValid())
         return false;
     return true;

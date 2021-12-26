@@ -7,18 +7,20 @@
 
 #include "../PCode.h"
 
-class PUSH : public PCode {
-public:
-    const Type type;
-    const std::string name;
+namespace INTERPRETER {
+    class PUSH : public PCode {
+    public:
+        const Type type;
+        const std::string name;
 
-public:
-    PUSH(std::string name) : type(Type::PUSH), name(name) {}
+    public:
+        PUSH(std::string name) : type(Type::PUSH), name(name) {}
 
-    virtual std::string to_string() const override {
-        return std::string{"PUSH "} + name;
-    }
-};
+        virtual std::string to_string() const override {
+            return std::string{"PUSH "} + name;
+        }
+    };
+}
 
 
 #endif //VM_PUSH_H

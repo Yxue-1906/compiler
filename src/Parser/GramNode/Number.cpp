@@ -30,3 +30,12 @@ int Number::toValue() {
     int toReturn = *intcon_p->getValue_p();
     return toReturn;
 }
+
+std::vector<std::shared_ptr<std::string>> Number::toMidCode() {
+    std::vector<std::shared_ptr<std::string>> toReturn;
+    auto tokenNode_p = std::dynamic_pointer_cast<TokenNode>(this->sons[0]);
+    auto intcon_p = std::dynamic_pointer_cast<INTCON>(tokenNode_p->getToken_p());
+    int value = *intcon_p->getValue_p();
+    toReturn.push_back(std::make_shared<std::string>(std::to_string(value)));
+    return toReturn;
+}

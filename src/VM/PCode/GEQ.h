@@ -7,21 +7,23 @@
 
 #include "../PCode.h"
 
-class GEQ : public PCode {
-public:
-    const Type type;
-    const std::string left;
-    const std::string right;
-    const std::string toStore;
+namespace INTERPRETER {
+    class GEQ : public PCode {
+    public:
+        const Type type;
+        const std::string left;
+        const std::string right;
+        const std::string toStore;
 
-public:
-    GEQ(std::string left, std::string right, std::string toStore)
-            : type(Type::GEQ), left(left), right(right), toStore(toStore) {}
+    public:
+        GEQ(std::string left, std::string right, std::string toStore)
+                : type(Type::GEQ), left(left), right(right), toStore(toStore) {}
 
-    virtual std::string to_string() const override {
-        return std::string{"GEQ "} + left + ' ' + right + ' ' + toStore;
-    }
-};
+        virtual std::string to_string() const override {
+            return std::string{"GEQ "} + left + ' ' + right + ' ' + toStore;
+        }
+    };
+}
 
 
 #endif //VM_GEQ_H

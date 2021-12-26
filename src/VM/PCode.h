@@ -8,6 +8,10 @@
 
 #include "BaseObject.h"
 
+#ifdef ADD
+#undef ADD
+#endif
+
 class PCode : public BaseObject {
 public:
     enum class Type {
@@ -20,7 +24,7 @@ public:
         DIV,            // DIV: divide top with sub top, pop them and push the outcome
         EQ,             // EQ : judge top and sub top is equal, pop them two and push the outcome
         GEQ,
-        GETA,           // GETA <StoreTo> <From> -> get addr of <From>
+        GETA,           // GETA <StoreTo> <From> -> get base of <From>
         GETINT,         // GETINT -> read an integer from console and push it toStore top
         GRE,
         INIT,           // INIT <Size> <InitValues>... -> alloc space and init some of them

@@ -2,6 +2,7 @@
 #include <map>
 #include "Lexer/Lexer.h"
 #include "Parser/Parser.h"
+#include "VM/Interpreter.h"
 
 int main() {
     std::ifstream ifs;
@@ -22,5 +23,8 @@ int main() {
     auto root = parser.getRoot();
     if (root->checkValid())
         root->toMidCode();
+    INTERPRETER::Interpreter interpreter{GramNode::MidCodeSequence, GramNode::labels};
+    interpreter.setOs(std::make_shared<std::ostream>(std::cout.rdbuf()));
+    interpreter.run();
     return 0;
 }

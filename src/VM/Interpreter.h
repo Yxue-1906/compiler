@@ -35,51 +35,53 @@
 #include <stack>
 #include <map>
 
-class Interpreter : public BaseObject {
-private:
-    std::vector<std::shared_ptr<PCode>> MidCodeSequence;
-    std::vector<int> DataStack;         // all the data allocate at stack
-    std::vector<int> DynamicLink;       // ?
-    std::vector<int> ReturnAddrLink;    // return address stack
-    std::vector<int> tempVarUseCount;   // is it necessary
-    std::vector<int> funcCallStack;     // every param pass toStore a func store here
-    int PC = 0;
-    int StackOffset{};
-    std::shared_ptr<std::ostream> os_p = nullptr;
-    std::map<std::string, int> labels;
-    std::shared_ptr<VarTable> varTable_p = std::make_shared<VarTable>(nullptr);
-    std::shared_ptr<FuncTable> funcTable_p = std::make_shared<FuncTable>();
+namespace INTERPRETER {
+    class Interpreter : public BaseObject {
+    private:
+        std::vector<std::shared_ptr<PCode>> MidCodeSequence;
+        std::vector<int> DataStack;         // all the data allocate at stack
+        std::vector<int> DynamicLink;       // ?
+        std::vector<int> ReturnAddrLink;    // return address stack
+        std::vector<int> tempVarUseCount;   // is it necessary
+        std::vector<int> funcCallStack;     // every param pass toStore a func store here
+        int PC = 0;
+        int StackOffset{};
+        std::shared_ptr<std::ostream> os_p = nullptr;
+        std::map<std::string, int> labels;
+        std::shared_ptr<VarTable> varTable_p = std::make_shared<VarTable>(nullptr);
+        std::shared_ptr<FuncTable> funcTable_p = std::make_shared<FuncTable>();
 
-    static std::shared_ptr<Interpreter> instance_p;
-private:
-//    explicit Interpreter() = default;
+        static std::shared_ptr<Interpreter> instance_p;
+    private:
+//    explicit INTERPRETER() = default;
 
-    explicit Interpreter(std::shared_ptr<std::istream> istream_p);
+        explicit Interpreter(std::shared_ptr<std::istream> istream_p);
 
-    explicit Interpreter(std::vector<std::shared_ptr<PCode>> midCodeSequence, std::map<std::string, int> labels);
+    public:
 
-public:
+        Interpreter(Interpreter &) = delete;
 
-    Interpreter(Interpreter &) = delete;
+        Interpreter(Interpreter &&) = delete;
 
-    Interpreter(Interpreter &&) = delete;
+        Interpreter operator=(Interpreter &) = delete;
 
-    Interpreter operator=(Interpreter &) = delete;
+        Interpreter operator=(Interpreter &&) = delete;
 
-    Interpreter operator=(Interpreter &&) = delete;
+        void run();
+//    static std::shared_ptr<INTERPRETER> getInterpreter_p();
 
-    void run();
-//    static std::shared_ptr<Interpreter> getInterpreter_p();
+        void setOs(std::shared_ptr<std::ostream> ostream_p);
 
-    void setOs(std::shared_ptr<std::ostream> ostream_p);
+        static std::shared_ptr<Interpreter>
+        getInterpreter_p(std::vector<std::shared_ptr<PCode>> midCodeSequence, std::map<std::string, int> labels);
 
-    static std::shared_ptr<Interpreter>
-    getInterpreter_p(std::vector<std::shared_ptr<PCode>> midCodeSequence, std::map<std::string, int> labels);
+        static std::shared_ptr<Interpreter> getInterpreter_p(std::shared_ptr<std::istream> istream_p);
 
-    static std::shared_ptr<Interpreter> getInterpreter_p(std::shared_ptr<std::istream> istream_p);
+        virtual std::string to_string() const;
 
-    virtual std::string to_string() const;
-};
+        explicit Interpreter(std::vector<std::shared_ptr<PCode>> midCodeSequence, std::map<std::string, int> labels);
+    };
+}
 
 
 #endif //VM_INTERPRETER_H

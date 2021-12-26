@@ -7,21 +7,23 @@
 
 #include "../PCode.h"
 
-class STOP : public PCode {
-public:
-    const Type type;
-    const std::string value;
-    const std::string base;
-    const int offset;
+namespace INTERPRETER {
+    class STOP : public PCode {
+    public:
+        const Type type;
+        const std::string value;
+        const std::string base;
+        const int offset;
 
-public:
-    STOP(std::string value, std::string base, int offset)
-            : type(Type::STOP), value(value), base(base), offset(offset) {}
+    public:
+        STOP(std::string value, std::string base, int offset)
+                : type(Type::STOP), value(value), base(base), offset(offset) {}
 
-    virtual std::string to_string() const override {
-        return std::string{"STOP "} + value + " " + base + " " + std::to_string(offset);
-    }
-};
+        virtual std::string to_string() const override {
+            return std::string{"STOP "} + value + " " + base + " " + std::to_string(offset);
+        }
+    };
+}
 
 
 #endif //SRC_PARSER_STOP_H

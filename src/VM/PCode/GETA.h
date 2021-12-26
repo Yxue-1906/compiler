@@ -7,20 +7,22 @@
 
 #include "../PCode.h"
 
-class GETA : public PCode {
-public:
-    const Type type;
-    const std::string toStore;
-    const std::string from;
+namespace INTERPRETER {
+    class GETA : public PCode {
+    public:
+        const Type type;
+        const std::string toStore;
+        const std::string from;
 
-public:
-    GETA(std::string toStore, std::string from)
-            : type(Type::GETA), toStore(toStore), from(from) {}
+    public:
+        GETA(std::string toStore, std::string from)
+                : type(Type::GETA), toStore(toStore), from(from) {}
 
-    virtual std::string to_string() const override {
-        return std::string{"GETA &"} + from + "->" + toStore;
-    }
-};
+        virtual std::string to_string() const override {
+            return std::string{"GETA &"} + from + "->" + toStore;
+        }
+    };
+}
 
 
 #endif //VM_GETA_H

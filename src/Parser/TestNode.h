@@ -7,6 +7,8 @@
 
 #include "GramNode.h"
 #include "GramNode/ConstDecl.h"
+#include "GramNode/VarDecl.h"
+#include "../VM/PCode/PINT.h"
 
 class TestNode : public GramNode {
 private:
@@ -21,6 +23,7 @@ public:
         std::vector<std::shared_ptr<GramNode>> son_ps;
         ConstDecl::create(son_ps, ite);
         ConstDecl::create(son_ps, ite);
+        VarDecl::create(son_ps, ite);
         std::shared_ptr<TestNode> tmp_p;
         tmp_p.reset(new TestNode(son_ps));
         toAdd.push_back(tmp_p);
@@ -31,7 +34,8 @@ public:
         for (auto node: this->sons) {
             node->toMidCode();
         }
-        return "";//todo:
+        MidCodeSequence.push_back(std::make_shared<INTERPRETER::PINT>("c"));
+        return std::vector<std::shared_ptr<std::string>>{};
     }
 
 

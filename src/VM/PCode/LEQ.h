@@ -7,21 +7,23 @@
 
 #include "../PCode.h"
 
-class LEQ : public PCode {
-public:
-    const Type type;
-    const std::string left;
-    const std::string right;
-    const std::string toStore;
+namespace INTERPRETER {
+    class LEQ : public PCode {
+    public:
+        const Type type;
+        const std::string left;
+        const std::string right;
+        const std::string toStore;
 
-public:
-    LEQ(std::string left, std::string right, std::string toStore)
-            : type(Type::LEQ), left(left), right(right), toStore(toStore) {}
+    public:
+        LEQ(std::string left, std::string right, std::string toStore)
+                : type(Type::LEQ), left(left), right(right), toStore(toStore) {}
 
-    virtual std::string to_string() const override {
-        return std::string{"LEQ "} + left + ' ' + right + ' ' + toStore;
-    }
-};
+        virtual std::string to_string() const override {
+            return std::string{"LEQ "} + left + ' ' + right + ' ' + toStore;
+        }
+    };
+}
 
 
 #endif //VM_LEQ_H

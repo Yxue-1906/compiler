@@ -7,20 +7,24 @@
 
 #include "../PCode.h"
 
-class STO : public PCode {
-public:
-    const Type type;
-    const std::string value;
-    const std::string addr;
+namespace INTERPRETER {
+    class STO : public PCode {
+    public:
+        const Type type;
+        const std::string value;
+        const std::string base;
+        const std::string offset;
 
-public:
-    STO(std::string value, std::string addr) : type(Type::STO), value(value), addr(addr) {}
+    public:
+        STO(std::string value, std::string base, std::string offset)
+                : type(Type::STO), value(value), base(base), offset(offset) {}
 
-    virtual std::string to_string() const override {
-        return std::string{"STO "} + value + ' ' + addr;
-    }
+        virtual std::string to_string() const override {
+            return std::string{"STO "} + value + "->" + base + '[' + offset + ']';
+        }
 
-};
+    };
+}
 
 
 #endif //VM_STO_H

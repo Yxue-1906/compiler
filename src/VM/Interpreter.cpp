@@ -10,18 +10,18 @@
 #include "PCode/NOT.h"
 
 
-std::shared_ptr<Interpreter>Interpreter::instance_p = nullptr;
+std::shared_ptr<INTERPRETER::Interpreter>INTERPRETER::Interpreter::instance_p = nullptr;
 
-//std::shared_ptr<Interpreter> Interpreter::getInterpreter_p() {
+//std::shared_ptr<INTERPRETER> INTERPRETER::getInterpreter_p() {
 //    if (!instance_p)
-//        instance_p.reset(new Interpreter());
+//        instance_p.reset(new INTERPRETER());
 //    else {
-//        std::cerr << "warning: Interpreter has been initialized, you get the former one" << std::endl;
+//        std::cerr << "warning: INTERPRETER has been initialized, you get the former one" << std::endl;
 //    }
 //    return instance_p;
 //}
 
-Interpreter::Interpreter(std::shared_ptr<std::istream> istream_p) {
+INTERPRETER::Interpreter::Interpreter(std::shared_ptr<std::istream> istream_p) {
     this->StackOffset = 0;
     this->DynamicLink.push_back(0);
     this->ReturnAddrLink.push_back(0);
@@ -109,9 +109,9 @@ Interpreter::Interpreter(std::shared_ptr<std::istream> istream_p) {
             istream >> instantValue;
             MidCodeSequence.push_back(std::make_shared<LIT>(instantValue));
         } else if (ins == "LOD") {
-            std::string name, addr;
-            istream >> name >> addr;
-            MidCodeSequence.push_back(std::make_shared<LOD>(name, addr));
+            std::string toStore, from, offset;
+            istream >> toStore >> from >> offset;
+            MidCodeSequence.push_back(std::make_shared<LOD>(toStore, from, offset));
         } else if (ins == "LODA") {
             std::string toStore, from;
             istream >> toStore >> from;
@@ -133,11 +133,13 @@ Interpreter::Interpreter(std::shared_ptr<std::istream> istream_p) {
             istream >> name1 >> name2 >> toStore;
             MidCodeSequence.push_back(std::make_shared<MULT>(name1, name2, toStore));
         } else if (ins == "STO") {
-            std::string name, addr;
-            istream >> name >> addr;
-            MidCodeSequence.push_back(std::make_shared<STO>(name, addr));
+            std::string value, base, offset;
+            istream >> value >> base >> offset;
+            MidCodeSequence.push_back(std::make_shared<STO>(value, base, offset));
         } else if (ins == "PINT") {
-            MidCodeSequence.push_back(std::make_shared<PINT>());
+            std::string name;
+            istream >> name;
+            MidCodeSequence.push_back(std::make_shared<PINT>(name));
         } else if (ins == "PUSH") {
             std::string name;
             istream >> name;
@@ -172,33 +174,35 @@ Interpreter::Interpreter(std::shared_ptr<std::istream> istream_p) {
     PC = labels["main"];
 }
 
-//Interpreter::Interpreter(std::vector<std::shared_ptr<PCode>> midCodeSequence) {
+//INTERPRETER::INTERPRETER(std::vector<std::shared_ptr<PCode>> midCodeSequence) {
 //    this->StackOffset = 0;
 //    this->DynamicLink.push_back(0);
 //    this->ReturnAddrLink.push_back(0);
 //    this->MidCodeSequence = midCodeSequence;
 //}
 
-std::shared_ptr<Interpreter>
-Interpreter::getInterpreter_p(std::vector<std::shared_ptr<PCode>> midCodeSequence, std::map<std::string, int> labels) {
+std::shared_ptr<INTERPRETER::Interpreter>
+INTERPRETER::Interpreter::getInterpreter_p(std::vector<std::shared_ptr<PCode>> midCodeSequence,
+                                           std::map<std::string, int> labels) {
     if (!instance_p) {
         instance_p.reset(new Interpreter(midCodeSequence, labels));
     } else {
-        std::cerr << "warning: Interpreter has been initialized, you get the former one" << std::endl;
+        std::cerr << "warning: INTERPRETER has been initialized, you get the former one" << std::endl;
     }
     return instance_p;
 }
 
-std::shared_ptr<Interpreter> Interpreter::getInterpreter_p(std::shared_ptr<std::istream> istream_p) {
+std::shared_ptr<INTERPRETER::Interpreter>
+INTERPRETER::Interpreter::getInterpreter_p(std::shared_ptr<std::istream> istream_p) {
     if (!instance_p) {
-        instance_p.reset(new Interpreter(istream_p));
+        instance_p.reset(new Interpreter{istream_p});
     } else {
-        std::cerr << "warning: Interpreter has been initialized, you get the former one" << std::endl;
+        std::cerr << "warning: INTERPRETER has been initialized, you get the former one" << std::endl;
     }
     return instance_p;
 }
 
-void Interpreter::run() {
+void INTERPRETER::Interpreter::run() {
     for (; PC < MidCodeSequence.size();) {
 #ifdef DEBUG
         std::cout << MidCodeSequence[PC]->to_string() << std::endl;
@@ -236,8 +240,8 @@ void Interpreter::run() {
             for (int i = 0; i < allo_p->size; ++i) {
                 DataStack.push_back(0);
             }
-            varTable_p->add(allo_p->name, DataStack.size());
-            DataStack.push_back(addr);
+            varTable_p->add(allo_p->name, addr);
+//            DataStack.push_back(addr);
         } else if (std::dynamic_pointer_cast<CALL>(MidCodeSequence[PC])) {
             auto call_p = std::dynamic_pointer_cast<CALL>(MidCodeSequence[PC]);
             ReturnAddrLink.push_back(PC + 1);
@@ -374,9 +378,26 @@ void Interpreter::run() {
             StackOffset = DataStack.size();
         }*/ else if (std::dynamic_pointer_cast<LOD>(MidCodeSequence[PC])) {
             auto lod_p = std::dynamic_pointer_cast<LOD>(MidCodeSequence[PC]);
-            int addr = varTable_p->find(lod_p->from);
-            varTable_p->add(lod_p->toStore, DataStack.size());
-            DataStack.push_back(DataStack[addr]);
+            int addr, base, offset;
+            addr = varTable_p->find(lod_p->from);
+            if (addr != -1) {
+                base = addr;
+            } else {
+                //should not be -1
+            }
+            addr = varTable_p->find(lod_p->offset);
+            if (addr != -1) {
+                offset = DataStack[addr];
+            } else {
+                offset = std::stoi(lod_p->offset);
+            }
+            addr = varTable_p->find(lod_p->toStore);
+            if (addr != -1) {
+                DataStack[addr] = DataStack[base + offset];
+            } else {
+                varTable_p->add(lod_p->toStore, DataStack.size());
+                DataStack.push_back(DataStack[base + offset]);
+            }
         } else if (std::dynamic_pointer_cast<LODA>(MidCodeSequence[PC])) {
             auto loda_p = std::dynamic_pointer_cast<LODA>(MidCodeSequence[PC]);
             int addr = varTable_p->find(loda_p->from);
@@ -483,9 +504,14 @@ void Interpreter::run() {
             }
         } else if (std::dynamic_pointer_cast<PINT>(MidCodeSequence[PC])) {
             std::ostream &os = *os_p;
-            os << DataStack.back();
-            DataStack.pop_back();
-            StackOffset = DataStack.size();
+            auto pint_p = std::dynamic_pointer_cast<PINT>(MidCodeSequence[PC]);
+            int value = varTable_p->find(pint_p->name);
+            if (value != -1) {
+                value = DataStack[value];
+            } else {
+                value = std::stoi(pint_p->name);
+            }
+            os << value;
         } else if (std::dynamic_pointer_cast<PUSH>(MidCodeSequence[PC])) {
             auto push_p = std::dynamic_pointer_cast<PUSH>(MidCodeSequence[PC]);
             int addr = varTable_p->find(push_p->name);
@@ -515,18 +541,29 @@ void Interpreter::run() {
             if (ret_p->name != "void")
                 DataStack.back() = value;
             continue;
-        }/* else if (std::dynamic_pointer_cast<STO>(MidCodeSequence[PC])) {
+        } else if (std::dynamic_pointer_cast<STO>(MidCodeSequence[PC])) {
             auto sto_p = std::dynamic_pointer_cast<STO>(MidCodeSequence[PC]);
-            int addr, value;
-            addr = varTable_p->find(sto_p->value);
-            if (addr != -1)
-                value = DataStack[addr];
-            else
+            int value, base, offset;
+            base = varTable_p->find(sto_p->base);
+            //base should not be -1
+            if (base == -1) {
+                std::cerr << "error: cant find " << sto_p->base << std::endl;
+                int tmp;
+                std::cin >> tmp;
+                return;
+            }
+            offset = varTable_p->find(sto_p->offset);
+            if (offset == -1) {
+                offset = std::stoi(sto_p->offset);
+            }
+            value = varTable_p->find(sto_p->value);
+            if (value != -1) {
+                value = DataStack[value];
+            } else {
                 value = std::stoi(sto_p->value);
-            addr = varTable_p->find(sto_p->addr);
-            addr = DataStack[addr];
-            DataStack[addr] = value;
-        }*/ else if (std::dynamic_pointer_cast<STOP>(MidCodeSequence[PC])) {
+            }
+            DataStack[base + offset] = value;
+        } else if (std::dynamic_pointer_cast<STOP>(MidCodeSequence[PC])) {
             auto stop_p = std::dynamic_pointer_cast<STOP>(MidCodeSequence[PC]);
             int value = 0;
             try {
@@ -549,16 +586,17 @@ void Interpreter::run() {
     }
 }
 
-void Interpreter::setOs(std::shared_ptr<std::ostream> ostream_p) {
+void INTERPRETER::Interpreter::setOs(std::shared_ptr<std::ostream> ostream_p) {
     if (!os_p)
         os_p = ostream_p;
 }
 
-std::string Interpreter::to_string() const {
+std::string INTERPRETER::Interpreter::to_string() const {
     return std::string();//todo
 }
 
-Interpreter::Interpreter(std::vector<std::shared_ptr<PCode>> midCodeSequence, std::map<std::string, int> labels) {
+INTERPRETER::Interpreter::Interpreter(std::vector<std::shared_ptr<PCode>> midCodeSequence,
+                                      std::map<std::string, int> labels) {
     this->MidCodeSequence = std::move(midCodeSequence);
     this->labels = std::move(labels);
 }

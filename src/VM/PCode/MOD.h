@@ -7,21 +7,23 @@
 
 #include "../PCode.h"
 
-class MOD : public PCode {
-public:
-    const Type type;
-    const std::string name1;
-    const std::string name2;
-    const std::string toStore;
+namespace INTERPRETER {
+    class MOD : public PCode {
+    public:
+        const Type type;
+        const std::string name1;
+        const std::string name2;
+        const std::string toStore;
 
-public:
-    MOD(std::string name1, std::string name2, std::string toStore)
-            : type(Type::MOD), name1(name1), name2(name2), toStore(toStore) {}
+    public:
+        MOD(std::string name1, std::string name2, std::string toStore)
+                : type(Type::MOD), name1(name1), name2(name2), toStore(toStore) {}
 
-    virtual std::string to_string() const override {
-        return std::string{"MOD "} + name1 + '%' + name2 + "->" + toStore;
-    }
-};
+        virtual std::string to_string() const override {
+            return std::string{"MOD "} + name1 + '%' + name2 + "->" + toStore;
+        }
+    };
+}
 
 
 #endif //VM_MOD_H

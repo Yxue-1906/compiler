@@ -7,17 +7,20 @@
 
 #include "../PCode.h"
 
-class PINT : public PCode {
-public:
-    Type type;
+namespace INTERPRETER {
+    class PINT : public PCode {
+    public:
+        Type type;
+        const std::string name;
 
-public:
-    PINT() : type(Type::PINT) {}
+    public:
+        PINT(std::string name) : type(Type::PINT), name(name) {}
 
-    virtual std::string to_string() const {
-        return std::string{"PINT"};
-    }
-};
+        virtual std::string to_string() const {
+            return std::string{"PINT"};
+        }
+    };
+}
 
 
 #endif //VM_PINT_H

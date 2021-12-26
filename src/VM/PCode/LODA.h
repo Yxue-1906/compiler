@@ -7,20 +7,22 @@
 
 #include "../PCode.h"
 
-class LODA : public PCode {
-public:
-    const Type type;
-    const std::string toStore;
-    const std::string from;
+namespace INTERPRETER {
+    class LODA : public PCode {
+    public:
+        const Type type;
+        const std::string toStore;
+        const std::string from;
 
-public:
-    LODA(std::string toStore, std::string from)
-            : type(Type::LODA), toStore(toStore), from(from) {}
+    public:
+        LODA(std::string toStore, std::string from)
+                : type(Type::LODA), toStore(toStore), from(from) {}
 
-    virtual std::string to_string() const override {
-        return std::string{"LODA *"} + from + "->" + toStore;
-    }
-};
+        virtual std::string to_string() const override {
+            return std::string{"LODA *"} + from + "->" + toStore;
+        }
+    };
+}
 
 
 #endif //VM_LODA_H

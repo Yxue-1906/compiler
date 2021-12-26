@@ -54,11 +54,15 @@ bool VarDecl::checkValid() {
 }
 
 std::vector<std::shared_ptr<std::string>> VarDecl::toMidCode() {
-    auto ite = this->sons.begin() + 2;
+    std::vector<std::shared_ptr<std::string>> toReturn;
+    auto ite = this->sons.begin() + 1;
     auto varDef_p = std::dynamic_pointer_cast<VarDef>(*ite);
-    for (; varDef_p && (ite < this->sons.end());
-           ite += 2, varDef_p = std::dynamic_pointer_cast<VarDef>(*ite)) {
-        varDef_p//todo:
+    for (; ite < this->sons.end(); ite += 2) {
+        varDef_p = std::dynamic_pointer_cast<VarDef>(*ite);
+        if (!varDef_p)
+            break;
+        varDef_p->toMidCode();
     }
+    return toReturn;
 }
 

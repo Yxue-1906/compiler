@@ -2,6 +2,7 @@
 // Created by unrelated on 2021/10/18.
 //
 
+#include <arpa/nameser_compat.h>
 #include "AddExp.h"
 #include "MulExp.h"
 #include "../TokenNode.h"
@@ -142,15 +143,14 @@ std::vector<std::shared_ptr<std::string>> AddExp::toMidCode() {
         auto tmpVar2_p = mulExp_p->toMidCode()[0];
         std::shared_ptr<std::string> tmpVar_p = std::make_shared<std::string>("%" + std::to_string(nowTmpVarCount++));
         if (op_p->getTokenType() == TokenBase::PLUS) {
-            MidCodeSequence.push_back(std::make_shared<ADD>(*tmpVar1_p, *tmpVar2_p, *tmpVar_p));
+            MidCodeSequence.push_back(std::make_shared<INTERPRETER::ADD>(*tmpVar1_p, *tmpVar2_p, *tmpVar_p));
         } else {
-            MidCodeSequence.push_back(std::make_shared<MINUS>(*tmpVar1_p, *tmpVar2_p, *tmpVar_p));
+            MidCodeSequence.push_back(std::make_shared<INTERPRETER::MINUS>(*tmpVar1_p, *tmpVar2_p, *tmpVar_p));
         }
         toReturn.push_back(tmpVar_p);
     } else {
         auto mulExp_p = std::dynamic_pointer_cast<MulExp>(sons[0]);
-        auto tmpVar = mulExp_p->toMidCode()[0];
-        toReturn.push_back(tmpVar);
+        toReturn = mulExp_p->toMidCode();
     }
     return toReturn;
 }

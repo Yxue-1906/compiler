@@ -144,3 +144,20 @@ int PrimaryExp::toValue() {
     }
     return toReturn;
 }
+
+std::vector<std::shared_ptr<std::string>> PrimaryExp::toMidCode() {
+    std::vector<std::shared_ptr<std::string>> toReturn;
+    if (this->sons.size() > 1) {
+        auto exp_p = std::dynamic_pointer_cast<Exp>(sons[1]);
+        toReturn = exp_p->toMidCode();
+    } else {
+        auto number_p = std::dynamic_pointer_cast<Number>(sons[0]);
+        if (number_p) {
+            toReturn = number_p->toMidCode();
+        } else {
+            auto lval_p = std::dynamic_pointer_cast<LVal>(sons[0]);
+            toReturn = lval_p->toMidCode();
+        }
+    }
+    return toReturn;
+}

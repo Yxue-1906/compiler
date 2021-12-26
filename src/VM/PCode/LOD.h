@@ -7,20 +7,23 @@
 
 #include "../PCode.h"
 
-class LOD : public PCode {
-public:
-    const Type type;
-    const std::string toStore;
-    const std::string from;
+namespace INTERPRETER {
+    class LOD : public PCode {
+    public:
+        const Type type;
+        const std::string toStore;
+        const std::string from;
+        const std::string offset;
 
-public:
-    LOD(std::string to, std::string from)
-            : type(Type::LOD), toStore(to), from(from) {}
+    public:
+        LOD(std::string toStore, std::string from, std::string offset)
+                : type(Type::LOD), toStore(toStore), from(from), offset(offset) {}
 
-    virtual std::string to_string() const override {
-        return std::string{"LOD "} + from + "->" + toStore;
-    }
-};
+        virtual std::string to_string() const override {
+            return std::string{"LOD "} + from + '[' + offset + ']' + "->" + toStore;
+        }
+    };
+}
 
 
 #endif //VM_LOD_H

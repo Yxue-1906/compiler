@@ -7,17 +7,19 @@
 
 #include "../PCode.h"
 
-class J : public PCode {
-public:
-    const Type type;
-    const std::string label;
-public:
-    J(std::string label) : type(Type::J), label(label) {}
+namespace INTERPRETER {
+    class J : public PCode {
+    public:
+        const Type type;
+        const std::string label;
+    public:
+        J(std::string label) : type(Type::J), label(label) {}
 
-    virtual std::string to_string() const override {
-        return std::string{"J "} + label;
-    }
-};
+        virtual std::string to_string() const override {
+            return std::string{"J "} + label;
+        }
+    };
+}
 
 
 #endif //VM_J_H

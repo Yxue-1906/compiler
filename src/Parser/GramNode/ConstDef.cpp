@@ -10,6 +10,7 @@
 #include "../ErrorNode.h"
 #include "../../VM/PCode/ALLO.h"
 #include "../../VM/PCode/STOP.h"
+#include "../../VM/PCode/STO.h"
 
 ConstDef::ConstDef(std::vector<std::shared_ptr<GramNode>> sons) : GramNode() {
     setGramName("ConstDef");
@@ -85,21 +86,24 @@ std::vector<std::shared_ptr<std::string>> ConstDef::toMidCode() {
     std::shared_ptr<std::string> ident =
             std::dynamic_pointer_cast<IDENFR>(tokenNode_p->getToken_p())->getValue_p();
     auto dimension_p = std::make_shared<std::vector<int>>();
-    for (auto constExp_p = std::dynamic_pointer_cast<ConstExp>(*ite);
-         constExp_p; ite += 3, constExp_p = std::dynamic_pointer_cast<ConstExp>(*ite)) {
+    for (auto constExp_p = std::dynamic_pointer_cast<ConstExp>(*ite); ite < this->sons.end(); ite += 3) {
+        constExp_p = std::dynamic_pointer_cast<ConstExp>(*ite);
+        if (!constExp_p)
+            break;
         int toPush = constExp_p->toValue();
         dimension_p->push_back(toPush);
     }
-    auto constInitVal_p = std::dynamic_pointer_cast<ConstInitVal>(*ite);
-    auto values_p = constInitVal_p->toValues();
-    ConstDef::symTableGenCode.addConst(*ident, dimension_p, values_p);
     int size = 1;
     for (int i: *dimension_p) {
         size *= i;
     }
-    GramNode::MidCodeSequence.push_back(std::make_shared<ALLO>(*ident, size));
+    GramNode::MidCodeSequence.push_back(std::make_shared<INTERPRETER::ALLO>(*ident, size));
+    auto constInitVal_p = std::dynamic_pointer_cast<ConstInitVal>(*ite);
+    auto values_p = constInitVal_p->toValues();
+    ConstDef::symTableGenCode.addConst(*ident, dimension_p, values_p);
     for (int i = 0; i < values_p->size(); ++i) {
-        GramNode::MidCodeSequence.push_back(std::make_shared<STOP>(std::to_string((*values_p)[i]), *ident, i));
+        auto value_p = std::make_shared<std::string>(std::to_string((*values_p)[i]));
+        GramNode::MidCodeSequence.push_back(std::make_shared<INTERPRETER::STO>(*value_p, *ident, std::to_string(i)));
     }
     return toReturn;
 }

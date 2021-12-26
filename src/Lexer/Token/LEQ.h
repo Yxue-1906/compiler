@@ -5,7 +5,6 @@
 #ifndef PARSER_LEQ_H
 #define PARSER_LEQ_H
 
-
 class LEQ : public Token<std::string> {
 private:
 public:
@@ -14,5 +13,6 @@ public:
 
 public:
 };
+
 
 #endif //PARSER_LEQ_H

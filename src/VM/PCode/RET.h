@@ -7,18 +7,20 @@
 
 #include "../PCode.h"
 
-class RET : public PCode {
-public:
-    const Type type;
-    const std::string name;
+namespace INTERPRETER {
+    class RET : public PCode {
+    public:
+        const Type type;
+        const std::string name;
 
-public:
-    RET(std::string name) : type(Type::RET), name(name) {}
+    public:
+        RET(std::string name) : type(Type::RET), name(name) {}
 
-    virtual std::string to_string() const override {
-        return std::string{"RET"};
-    }
-};
+        virtual std::string to_string() const override {
+            return std::string{"RET"};
+        }
+    };
+}
 
 
 #endif //VM_RET_H

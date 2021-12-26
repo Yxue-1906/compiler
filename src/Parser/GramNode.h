@@ -20,13 +20,14 @@ private:
     static std::shared_ptr<SymTable> nowTable_p;
 protected:
     std::vector<std::shared_ptr<GramNode>> sons;
-    static std::vector<std::shared_ptr<PCode>> MidCodeSequence;
-    static std::map<std::string, int> labels;
     static SymTableGenCode symTableGenCode;
     static int nowTmpVarCount;
 
 public:
     static int nowLine;
+    static std::vector<std::shared_ptr<PCode>> MidCodeSequence;
+    static std::map<std::string, int> labels;
+
 protected:
     GramNode();
 

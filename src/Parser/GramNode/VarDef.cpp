@@ -9,6 +9,8 @@
 #include "../ErrorNode.h"
 #include "../../Exception/MyException/MissingRightBracketException.h"
 #include "../../Lexer/Token/LBRACK.h"
+#include "../../VM/PCode/ALLO.h"
+#include "../../VM/PCode/STO.h"
 
 VarDef::VarDef(std::vector<std::shared_ptr<GramNode>> sons) : GramNode() {
     setGramName("VarDef");
@@ -77,19 +79,31 @@ bool VarDef::checkValid() {
 }
 
 std::vector<std::shared_ptr<std::string>> VarDef::toMidCode() {
+    std::vector<std::shared_ptr<std::string>> toReturn;
     auto ite = this->sons.begin();
     auto tokenNode_p = std::dynamic_pointer_cast<TokenNode>(*ite);
     ite += 2;
     std::shared_ptr<std::string> ident =
             std::dynamic_pointer_cast<IDENFR>(tokenNode_p->getToken_p())->getValue_p();
     auto dimension_p = std::make_shared<std::vector<int>>();
-    for (auto constExp_p = std::dynamic_pointer_cast<ConstExp>(*ite);
-         constExp_p && (ite < this->sons.end());
-         ite += 3, constExp_p = std::dynamic_pointer_cast<ConstExp>(*ite)) {
+    for (auto constExp_p = std::dynamic_pointer_cast<ConstExp>(*ite); ite < this->sons.end(); ite += 3) {
+        constExp_p = std::dynamic_pointer_cast<ConstExp>(*ite);
+        if (!constExp_p)
+            break;
         int toPush = constExp_p->toValue();
         dimension_p->push_back(toPush);
     }
-    if (ite < this->sons.end()) {
-        auto initVal_p = std::dynamic_pointer_cast<InitVal>(*ite);//todo:
+    int size = 1;
+    for (int i: *dimension_p) {
+        size *= i;
     }
+    MidCodeSequence.push_back(std::make_shared<INTERPRETER::ALLO>(*ident, size));
+    if (ite < this->sons.end() && std::dynamic_pointer_cast<InitVal>(*ite)) {
+        auto initVal_p = std::dynamic_pointer_cast<InitVal>(*ite);
+        auto initVals_p = initVal_p->toMidCode();
+        for (int i = 0; i < initVals_p.size(); ++i) {
+            MidCodeSequence.push_back(std::make_shared<INTERPRETER::STO>(*initVals_p[i], *ident, std::to_string(i)));
+        }
+    }
+    return toReturn;
 }

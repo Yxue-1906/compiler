@@ -22,6 +22,8 @@ public:
 
     bool getType(std::shared_ptr<IdentInfo> &toReturn);
 
+    virtual std::vector<std::shared_ptr<std::string>> toMidCode() override;
+
     int toValue();
 };
 

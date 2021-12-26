@@ -147,13 +147,17 @@ std::vector<std::shared_ptr<std::string>> MulExp::toMidCode() {
         auto tmpVar2_p = unaryExp_p->toMidCode()[0];
         auto tmpVar_p = std::make_shared<std::string>("%" + std::to_string(nowTmpVarCount++));
         if (op_p->getTokenType() == TokenBase::MULT) {
-            MidCodeSequence.push_back(std::make_shared<MULT>(*tmpVar1_p, *tmpVar2_p, *tmpVar_p));
+            MidCodeSequence.push_back(std::make_shared<INTERPRETER::MULT>(*tmpVar1_p, *tmpVar2_p, *tmpVar_p));
         } else if (op_p->getTokenType() == TokenBase::DIV) {
-            MidCodeSequence.push_back(std::make_shared<DIV>(*tmpVar1_p, *tmpVar2_p, *tmpVar_p));
+            MidCodeSequence.push_back(std::make_shared<INTERPRETER::DIV>(*tmpVar1_p, *tmpVar2_p, *tmpVar_p));
         } else {
-            MidCodeSequence.push_back(std::make_shared<MOD>(*tmpVar1_p, *tmpVar2_p, *tmpVar_p));
-
+            MidCodeSequence.push_back(std::make_shared<INTERPRETER::MOD>(*tmpVar1_p, *tmpVar2_p, *tmpVar_p));
         }
+        toReturn.push_back(tmpVar_p);
+    } else {
+        auto unaryExp_p = std::dynamic_pointer_cast<UnaryExp>(sons[0]);
+        toReturn = unaryExp_p->toMidCode();
     }
+    return toReturn;
 }
 

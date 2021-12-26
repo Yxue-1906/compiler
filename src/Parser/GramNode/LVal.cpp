@@ -9,6 +9,10 @@
 #include "../ErrorNode.h"
 #include "../../Exception/MyException/MissingRightBracketException.h"
 #include "../../Lexer/Token/RBRACK.h"
+#include "../../VM/PCode/ALLO.h"
+#include "../../VM/PCode/MULT.h"
+#include "../../VM/PCode/ADD.h"
+#include "../../VM/PCode/LOD.h"
 
 LVal::LVal(std::vector<std::shared_ptr<GramNode>> sons) : GramNode() {
     setGramName("LVal");
@@ -92,7 +96,7 @@ int LVal::toValue() {
     auto varType = LVal::symTableGenCode.searchVar(varName);
     //varType should not be empty
     ite += 2;
-    int toReturn = 0;
+    int offset = 0;
     auto varDimension = *varType->dimension_p;
     auto varValues = *varType->values_p;
     for (int i = 1; ite < this->sons.end(); ite += 3, i++) {
@@ -101,9 +105,40 @@ int LVal::toValue() {
         for (int j = i; j < varDimension.size(); ++j) {
             pre_offset *= varDimension[j];
         }
-        toReturn += pre_offset * exp_p->toValue();
+        offset += pre_offset * exp_p->toValue();
     }
-    return varValues[toReturn];
+    return varValues[offset];
+}
+
+std::vector<std::shared_ptr<std::string>> LVal::toMidCode() {
+    std::vector<std::shared_ptr<std::string>> toReturn;
+    auto ite = this->sons.begin();
+    auto tokenNode_p = std::dynamic_pointer_cast<TokenNode>(*ite);
+    auto ident_p = std::dynamic_pointer_cast<IDENFR>(tokenNode_p->getToken_p());
+    auto varName = *ident_p->getValue_p();
+    auto varType = symTableGenCode.searchVar(varName);
+    ite += 2;
+
+    auto offset_p = std::make_shared<std::string>("%" + std::to_string(nowTmpVarCount++));
+    MidCodeSequence.push_back(std::make_shared<INTERPRETER::ALLO>(*offset_p, 1));
+    auto varDimension = *varType->dimension_p;
+    for (int i = 1; ite < this->sons.end(); ite += 3, i++) {
+        auto exp_p = std::dynamic_pointer_cast<Exp>(*ite);
+        auto expTmpVars = exp_p->toMidCode();
+        std::string dimension = *expTmpVars[0];
+        int pre_offset = 1;
+        for (int j = i; j < varDimension.size(); ++j) {
+            pre_offset *= varDimension[j];
+        }
+        auto tmpOffset_p = std::make_shared<std::string>("%" + std::to_string(nowTmpVarCount++));
+        MidCodeSequence.push_back(std::make_shared<INTERPRETER::MULT>(dimension,
+                                                                      std::to_string(pre_offset),
+                                                                      *tmpOffset_p));
+        MidCodeSequence.push_back(std::make_shared<INTERPRETER::ADD>(*offset_p, *tmpOffset_p, *offset_p));
+    }
+    MidCodeSequence.push_back(std::make_shared<INTERPRETER::LOD>(*offset_p, varName, *offset_p));
+    toReturn.push_back(offset_p);
+    return toReturn;
 }
 
 
