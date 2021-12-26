@@ -7,6 +7,7 @@
 #include "PCode/LODA.h"
 #include "PCode/GETA.h"
 #include "PCode/STOP.h"
+#include "PCode/NOT.h"
 
 
 std::shared_ptr<Interpreter>Interpreter::instance_p = nullptr;
@@ -215,8 +216,13 @@ void Interpreter::run() {
                 b = DataStack[addr];
             else
                 b = DataStack[addr];
-            varTable_p->add(add_p->toStore, DataStack.size());
-            DataStack.push_back(a + b);
+            addr = varTable_p->find(add_p->toStore);
+            if (addr != -1) {
+                DataStack[addr] = a + b;
+            } else {
+                varTable_p->add(add_p->toStore, DataStack.size());
+                DataStack.push_back(a + b);
+            }
         } else if (std::dynamic_pointer_cast<BR>(MidCodeSequence[PC])) {
             auto br_p = std::dynamic_pointer_cast<BR>(MidCodeSequence[PC]);
             if (DataStack.back())
@@ -236,7 +242,7 @@ void Interpreter::run() {
             auto call_p = std::dynamic_pointer_cast<CALL>(MidCodeSequence[PC]);
             ReturnAddrLink.push_back(PC + 1);
             PC = labels[call_p->funcName];
-            //todo: modify call behavior
+            //todo: finished?
             DynamicLink.push_back(DataStack.size());
             varTable_p = std::make_shared<VarTable>(varTable_p);
             for (int i = 0; i < call_p->inParams.size(); ++i) {
@@ -258,8 +264,13 @@ void Interpreter::run() {
                 b = DataStack[addr];
             else
                 b = std::stoi(div_p->name2);
-            varTable_p->add(div_p->toStore, DataStack.size());
-            DataStack.push_back(a / b);
+            addr = varTable_p->find(div_p->toStore);
+            if (addr != -1) {
+                DataStack[addr] = a / b;
+            } else {
+                varTable_p->add(div_p->toStore, DataStack.size());
+                DataStack.push_back(a / b);
+            }
         } else if (std::dynamic_pointer_cast<EQ>(MidCodeSequence[PC])) {
             auto eq_p = std::dynamic_pointer_cast<EQ>(MidCodeSequence[PC]);
             int a, b, addr;
@@ -273,23 +284,33 @@ void Interpreter::run() {
                 b = DataStack[addr];
             else
                 b = std::stoi(eq_p->right);
-            varTable_p->add(eq_p->toStore, DataStack.size());
-            DataStack.push_back(a == b);
+            addr = varTable_p->find(eq_p->toStore);
+            if (addr != -1) {
+                DataStack[addr] = a == b;
+            } else {
+                varTable_p->add(eq_p->toStore, DataStack.size());
+                DataStack.push_back(a == b);
+            }
         } else if (std::dynamic_pointer_cast<GEQ>(MidCodeSequence[PC])) {
-            auto eq_p = std::dynamic_pointer_cast<GEQ>(MidCodeSequence[PC]);
+            auto geq_p = std::dynamic_pointer_cast<GEQ>(MidCodeSequence[PC]);
             int a, b, addr;
-            addr = varTable_p->find(eq_p->left);
+            addr = varTable_p->find(geq_p->left);
             if (addr != -1)
                 a = DataStack[addr];
             else
-                a = std::stoi(eq_p->left);
-            addr = varTable_p->find(eq_p->right);
+                a = std::stoi(geq_p->left);
+            addr = varTable_p->find(geq_p->right);
             if (addr != -1)
                 b = DataStack[addr];
             else
-                a = std::stoi(eq_p->right);
-            varTable_p->add(eq_p->toStore, DataStack.size());
-            DataStack.push_back(a >= b);
+                a = std::stoi(geq_p->right);
+            addr = varTable_p->find(geq_p->toStore);
+            if (addr != -1) {
+                DataStack[addr] = a >= b;
+            } else {
+                varTable_p->add(geq_p->toStore, DataStack.size());
+                DataStack.push_back(a >= b);
+            }
         } else if (std::dynamic_pointer_cast<GETA>(MidCodeSequence[PC])) {
             auto geta_p = std::dynamic_pointer_cast<GETA>(MidCodeSequence[PC]);
             int addr = varTable_p->find(geta_p->from);
@@ -304,39 +325,49 @@ void Interpreter::run() {
             std::cin >> value;
             DataStack[addr] = value;
         } else if (std::dynamic_pointer_cast<GRE>(MidCodeSequence[PC])) {
-            auto eq_p = std::dynamic_pointer_cast<GRE>(MidCodeSequence[PC]);
+            auto gre_p = std::dynamic_pointer_cast<GRE>(MidCodeSequence[PC]);
             int a, b, addr;
-            addr = varTable_p->find(eq_p->left);
+            addr = varTable_p->find(gre_p->left);
             if (addr != -1)
                 a = DataStack[addr];
             else
-                a = std::stoi(eq_p->left);
-            addr = varTable_p->find(eq_p->right);
+                a = std::stoi(gre_p->left);
+            addr = varTable_p->find(gre_p->right);
             if (addr != -1)
                 b = DataStack[addr];
             else
-                a = std::stoi(eq_p->right);
-            varTable_p->add(eq_p->toStore, DataStack.size());
-            DataStack.push_back(a > b);
+                a = std::stoi(gre_p->right);
+            addr = varTable_p->find(gre_p->toStore);
+            if (addr != -1) {
+                DataStack[addr] = a > b;
+            } else {
+                varTable_p->add(gre_p->toStore, DataStack.size());
+                DataStack.push_back(a > b);
+            }
         } else if (std::dynamic_pointer_cast<J>(MidCodeSequence[PC])) {
             auto j_p = std::dynamic_pointer_cast<J>(MidCodeSequence[PC]);
             PC = labels[j_p->label];
             continue;
         } else if (std::dynamic_pointer_cast<LEQ>(MidCodeSequence[PC])) {
-            auto eq_p = std::dynamic_pointer_cast<LEQ>(MidCodeSequence[PC]);
+            auto leq_p = std::dynamic_pointer_cast<LEQ>(MidCodeSequence[PC]);
             int a, b, addr;
-            addr = varTable_p->find(eq_p->left);
+            addr = varTable_p->find(leq_p->left);
             if (addr != -1)
                 a = DataStack[addr];
             else
-                a = std::stoi(eq_p->left);
-            addr = varTable_p->find(eq_p->right);
+                a = std::stoi(leq_p->left);
+            addr = varTable_p->find(leq_p->right);
             if (addr != -1)
                 b = DataStack[addr];
             else
-                a = std::stoi(eq_p->right);
-            varTable_p->add(eq_p->toStore, DataStack.size());
-            DataStack.push_back(a <= b);
+                a = std::stoi(leq_p->right);
+            addr = varTable_p->find(leq_p->toStore);
+            if (addr != -1) {
+                DataStack[addr] = a <= b;
+            } else {
+                varTable_p->add(leq_p->toStore, DataStack.size());
+                DataStack.push_back(a <= b);
+            }
         }/* else if (std::dynamic_pointer_cast<LIT>(MidCodeSequence[PC])) {
             auto lit_p = std::dynamic_pointer_cast<LIT>(MidCodeSequence[PC]);
             DataStack.push_back(lit_p->instantValue);
@@ -354,23 +385,26 @@ void Interpreter::run() {
             } else {
                 // not support instant num now
             }
-            varTable_p->add(loda_p->toStore, DataStack.size());
-            DataStack.push_back(DataStack[addr]);
         } else if (std::dynamic_pointer_cast<LSS>(MidCodeSequence[PC])) {
-            auto eq_p = std::dynamic_pointer_cast<LSS>(MidCodeSequence[PC]);
+            auto lss_p = std::dynamic_pointer_cast<LSS>(MidCodeSequence[PC]);
             int a, b, addr;
-            addr = varTable_p->find(eq_p->left);
+            addr = varTable_p->find(lss_p->left);
             if (addr != -1)
                 a = DataStack[addr];
             else
-                a = std::stoi(eq_p->left);
-            addr = varTable_p->find(eq_p->right);
+                a = std::stoi(lss_p->left);
+            addr = varTable_p->find(lss_p->right);
             if (addr != -1)
                 b = DataStack[addr];
             else
-                a = std::stoi(eq_p->right);
-            varTable_p->add(eq_p->toStore, DataStack.size());
-            DataStack.push_back(a < b);
+                a = std::stoi(lss_p->right);
+            addr = varTable_p->find(lss_p->toStore);
+            if (addr != -1) {
+                DataStack[addr] = a < b;
+            } else {
+                varTable_p->add(lss_p->toStore, DataStack.size());
+                DataStack.push_back(a < b);
+            }
         } else if (std::dynamic_pointer_cast<MINUS>(MidCodeSequence[PC])) {
             auto minus_p = std::dynamic_pointer_cast<MINUS>(MidCodeSequence[PC]);
             int a, b, addr;
@@ -384,8 +418,13 @@ void Interpreter::run() {
                 b = DataStack[addr];
             else
                 b = std::stoi(minus_p->name2);
-            varTable_p->add(minus_p->toStore, DataStack.size());
-            DataStack.push_back(a - b);
+            addr = varTable_p->find(minus_p->toStore);
+            if (addr != -1) {
+                DataStack[addr] = a - b;
+            } else {
+                varTable_p->add(minus_p->toStore, DataStack.size());
+                DataStack.push_back(a - b);
+            }
         } else if (std::dynamic_pointer_cast<MOD>(MidCodeSequence[PC])) {
             auto mod_p = std::dynamic_pointer_cast<MOD>(MidCodeSequence[PC]);
             int a, b, addr;
@@ -398,9 +437,14 @@ void Interpreter::run() {
             if (addr != -1)
                 b = DataStack[addr];
             else
-                b = DataStack[addr];
-            varTable_p->add(mod_p->toStore, DataStack.size());
-            DataStack.push_back(a % b);
+                b = std::stoi(mod_p->name2);
+            addr = varTable_p->find(mod_p->toStore);
+            if (addr != -1) {
+                DataStack[addr] = a % b;
+            } else {
+                varTable_p->add(mod_p->toStore, DataStack.size());
+                DataStack.push_back(a % b);
+            }
         } else if (std::dynamic_pointer_cast<MULT>(MidCodeSequence[PC])) {
             auto mult_p = std::dynamic_pointer_cast<MULT>(MidCodeSequence[PC]);
             int a, b, addr;
@@ -413,9 +457,30 @@ void Interpreter::run() {
             if (addr != -1)
                 b = DataStack[addr];
             else
-                b = DataStack[addr];
-            varTable_p->add(mult_p->toStore, DataStack.size());
-            DataStack.push_back(a * b);
+                b = std::stoi(mult_p->name2);
+            addr = varTable_p->find(mult_p->toStore);
+            if (addr != -1) {
+                DataStack[addr] = a * b;
+            } else {
+                varTable_p->add(mult_p->toStore, DataStack.size());
+                DataStack.push_back(a * b);
+            }
+        } else if (std::dynamic_pointer_cast<NOT>(MidCodeSequence[PC])) {
+            auto not_p = std::dynamic_pointer_cast<NOT>(MidCodeSequence[PC]);
+            int value, addr;
+            addr = varTable_p->find(not_p->right);
+            if (addr != -1) {
+                value = DataStack[addr];
+            } else {
+                value = std::stoi(not_p->right);
+            }
+            addr = varTable_p->find(not_p->toStore);
+            if (addr != -1) {
+                DataStack[addr] = !value;
+            } else {
+                varTable_p->add(not_p->toStore, DataStack.size());
+                DataStack.push_back(!value);
+            }
         } else if (std::dynamic_pointer_cast<PINT>(MidCodeSequence[PC])) {
             std::ostream &os = *os_p;
             os << DataStack.back();
