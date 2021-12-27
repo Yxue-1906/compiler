@@ -113,9 +113,9 @@ INTERPRETER::Interpreter::Interpreter(std::shared_ptr<std::istream> istream_p) {
             istream >> toStore >> from >> offset;
             MidCodeSequence.push_back(std::make_shared<LOD>(toStore, from, offset));
         } else if (ins == "LODA") {
-            std::string toStore, from;
-            istream >> toStore >> from;
-            MidCodeSequence.push_back(std::make_shared<LODA>(toStore, from));
+            std::string toStore, from, offset;
+            istream >> toStore >> from >> offset;
+            MidCodeSequence.push_back(std::make_shared<LODA>(toStore, from, offset));
         } else if (ins == "LSS") {
             std::string left, right, toStore;
             istream >> left >> right >> toStore;
@@ -250,8 +250,19 @@ void INTERPRETER::Interpreter::run() {
             DynamicLink.push_back(DataStack.size());
             varTable_p = std::make_shared<VarTable>(varTable_p);
             for (int i = 0; i < call_p->inParams.size(); ++i) {
-                varTable_p->add(call_p->formalParams[i], DataStack.size());
-                DataStack.push_back(DataStack[varTable_p->find(call_p->inParams[i])]);
+                int value, addr;
+                addr = varTable_p->find(call_p->inParams[i]);
+                if (addr != -1) {
+                    value = DataStack[addr];
+                } else {
+                    value = std::stoi(call_p->inParams[i]);
+                }
+                if (call_p->formalParams[i][0] == '&') {
+                    varTable_p->add(call_p->formalParams[i].substr(1), value);
+                } else {
+                    varTable_p->add(call_p->formalParams[i], DataStack.size());
+                    DataStack.push_back(value);
+                }
             }
             funcCallStack.clear();
             continue;
@@ -400,11 +411,25 @@ void INTERPRETER::Interpreter::run() {
             }
         } else if (std::dynamic_pointer_cast<LODA>(MidCodeSequence[PC])) {
             auto loda_p = std::dynamic_pointer_cast<LODA>(MidCodeSequence[PC]);
-            int addr = varTable_p->find(loda_p->from);
+            int from, offset, addr;
+            addr = varTable_p->find(loda_p->from);
             if (addr != -1) {
-                addr = DataStack[addr];
+                from = addr;
             } else {
                 // not support instant num now
+            }
+            addr = varTable_p->find(loda_p->offset);
+            if (addr != -1) {
+                offset = DataStack[addr];
+            } else {
+                offset = std::stoi(loda_p->offset);
+            }
+            addr = varTable_p->find(loda_p->toStore);
+            if (addr != -1) {
+                DataStack[addr] = from + offset;
+            } else {
+                varTable_p->add(loda_p->toStore, DataStack.size());
+                DataStack.push_back(from + offset);
             }
         } else if (std::dynamic_pointer_cast<LSS>(MidCodeSequence[PC])) {
             auto lss_p = std::dynamic_pointer_cast<LSS>(MidCodeSequence[PC]);
@@ -527,9 +552,14 @@ void INTERPRETER::Interpreter::run() {
             os << std::endl;
         } else if (std::dynamic_pointer_cast<RET>(MidCodeSequence[PC])) {
             auto ret_p = std::dynamic_pointer_cast<RET>(MidCodeSequence[PC]);
-            int value;
+            int value, addr;
             if (ret_p->name != "void") {
-                value = DataStack[varTable_p->var_ps[ret_p->name]->addr];
+                addr = varTable_p->find(ret_p->name);
+                if (addr != -1) {
+                    value = DataStack[addr];
+                } else {
+                    value = std::stoi(ret_p->name);
+                }
             }
             varTable_p = varTable_p->formerTable_p;
             PC = ReturnAddrLink.back();
@@ -538,8 +568,15 @@ void INTERPRETER::Interpreter::run() {
                 DataStack.pop_back();
             DynamicLink.pop_back();
             tempVarUseCount.pop_back();
-            if (ret_p->name != "void")
-                DataStack.back() = value;
+            if (ret_p->name != "void") {
+                addr = varTable_p->find("%ret");
+                if (addr != -1) {
+                    DataStack[addr] = value;
+                } else {
+                    varTable_p->add("%ret", DataStack.size());
+                    DataStack.push_back(value);
+                }
+            }
             continue;
         } else if (std::dynamic_pointer_cast<STO>(MidCodeSequence[PC])) {
             auto sto_p = std::dynamic_pointer_cast<STO>(MidCodeSequence[PC]);

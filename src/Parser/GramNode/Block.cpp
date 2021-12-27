@@ -88,10 +88,15 @@ int Block::getRightBracketLineNumber() {
 
 std::vector<std::shared_ptr<std::string>> Block::toMidCode() {
     auto ite = this->sons.begin() + 1;
-    auto blockItem_p = std::dynamic_pointer_cast<BlockItem>(*ite);
     std::vector<std::shared_ptr<std::string>> toReturn;
-    for (; blockItem_p; ite++, std::dynamic_pointer_cast<BlockItem>(*ite)) {
+    symTableGenCode.newStack();
+    std::shared_ptr<BlockItem> blockItem_p;
+    for (; ite < this->sons.end(); ite++) {
+        blockItem_p = std::dynamic_pointer_cast<BlockItem>(*ite);
+        if (!blockItem_p)
+            break;
         blockItem_p->toMidCode();
     }
+    symTableGenCode.deleteStack();
     return toReturn;
 }

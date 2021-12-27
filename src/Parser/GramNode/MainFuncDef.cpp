@@ -9,6 +9,7 @@
 #include "../../Exception/MyException/MissingRightParenthesisException.h"
 #include "../../Lexer/Token/MAINTK.h"
 #include "../../Exception/MyException/MismatchReturnForNonVoidException.h"
+#include "../../VM/PCode/RET.h"
 
 MainFuncDef::MainFuncDef(std::vector<std::shared_ptr<GramNode>> sons) : GramNode() {
     setGramName("MainFuncDef");
@@ -70,8 +71,6 @@ std::vector<std::shared_ptr<std::string>> MainFuncDef::toMidCode() {
     labels.emplace("main", MidCodeSequence.size());
     auto block_p = std::dynamic_pointer_cast<Block>(this->sons[4]);
     std::vector<std::shared_ptr<std::string>> toReturn;
-    if (!block_p) {
-        block_p->toMidCode();
-    }
+    block_p->toMidCode();
     return toReturn;
 }
