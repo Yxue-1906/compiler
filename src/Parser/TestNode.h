@@ -21,8 +21,8 @@ public:
     static bool create(std::vector<std::shared_ptr<GramNode>> &toAdd, std::vector<TokenBase *>::iterator &ite_p) {
         auto ite = ite_p;
         std::vector<std::shared_ptr<GramNode>> son_ps;
-        ConstDecl::create(son_ps, ite);
-        ConstDecl::create(son_ps, ite);
+        VarDecl::create(son_ps, ite);
+        VarDecl::create(son_ps, ite);
         VarDecl::create(son_ps, ite);
         std::shared_ptr<TestNode> tmp_p;
         tmp_p.reset(new TestNode(son_ps));
@@ -34,7 +34,7 @@ public:
         for (auto node: this->sons) {
             node->toMidCode();
         }
-        MidCodeSequence.push_back(std::make_shared<INTERPRETER::PINT>("c"));
+        MidCodeSequence.push_back(std::make_shared<INTERPRETER::PINT>("d"));
         return std::vector<std::shared_ptr<std::string>>{};
     }
 

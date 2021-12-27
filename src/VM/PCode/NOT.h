@@ -18,7 +18,8 @@ namespace INTERPRETER {
         NOT(std::string right, std::string toStore)
                 : type(Type::NOT), right(right), toStore(toStore) {}
 
-        virtual std::string to_string() const override {
+        virtual std::string
+        to_string(std::shared_ptr<VarTable> varTable_p, const std::vector<int> &DataStack) const override {
             return std::string{"NOT "} + right + "->" + toStore;
         }
     };

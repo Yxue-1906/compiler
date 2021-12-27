@@ -15,7 +15,8 @@ namespace INTERPRETER {
     public:
         J(std::string label) : type(Type::J), label(label) {}
 
-        virtual std::string to_string() const override {
+        virtual std::string
+        to_string(std::shared_ptr<VarTable> varTable_p, const std::vector<int> &DataStack) const override {
             return std::string{"J "} + label;
         }
     };

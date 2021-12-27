@@ -17,7 +17,7 @@ public:
     std::shared_ptr<std::vector<int>> values_p;
 
     VarTypeGenCode(std::string name, std::shared_ptr<std::vector<int>> dimension_p)
-            : name(name), dimension_p() {}
+            : name(name), dimension_p(dimension_p) {}
 
     VarTypeGenCode(std::string name, std::shared_ptr<std::vector<int>> dimension_p,
                    std::shared_ptr<std::vector<int>> values_p)

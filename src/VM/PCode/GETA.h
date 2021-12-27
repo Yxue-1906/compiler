@@ -18,7 +18,8 @@ namespace INTERPRETER {
         GETA(std::string toStore, std::string from)
                 : type(Type::GETA), toStore(toStore), from(from) {}
 
-        virtual std::string to_string() const override {
+        virtual std::string
+        to_string(std::shared_ptr<VarTable> varTable_p, const std::vector<int> &DataStack) const override {
             return std::string{"GETA &"} + from + "->" + toStore;
         }
     };

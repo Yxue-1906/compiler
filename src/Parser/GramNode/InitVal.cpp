@@ -54,9 +54,12 @@ std::vector<std::shared_ptr<std::string>> InitVal::toMidCode() {
         auto exp_p = std::dynamic_pointer_cast<Exp>(*ite);
         toReturn = exp_p->toMidCode();
     } else {
-        ite++;
-        auto initVal_p = std::dynamic_pointer_cast<InitVal>(*ite);
-        for (; initVal_p && (ite < this->sons.end()); ++ite, initVal_p = std::dynamic_pointer_cast<InitVal>(*ite)) {
+        ite++;;
+        std::shared_ptr<InitVal> initVal_p;
+        for (; ite < this->sons.end(); ite += 2) {
+            initVal_p = std::dynamic_pointer_cast<InitVal>(*ite);
+            if (!initVal_p)
+                break;
             auto tmpVars = initVal_p->toMidCode();
             for (auto tmpVar: tmpVars) {
                 toReturn.push_back(tmpVar);

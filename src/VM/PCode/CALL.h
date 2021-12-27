@@ -24,8 +24,9 @@ namespace INTERPRETER {
                   inParams(inParams),
                   formalParams(formalParams) {}
 
-        virtual std::string to_string() const override {
-            return std::string{"CALL "} + funcName;
+        virtual std::string
+        to_string(std::shared_ptr<VarTable> varTable_p, const std::vector<int> &DataStack) const override {
+            return std::string{"CALL "} + funcName;//todo
         }
     };
 }

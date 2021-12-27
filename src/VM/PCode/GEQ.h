@@ -5,6 +5,7 @@
 #ifndef VM_GEQ_H
 #define VM_GEQ_H
 
+#include <memory>
 #include "../PCode.h"
 
 namespace INTERPRETER {
@@ -19,7 +20,8 @@ namespace INTERPRETER {
         GEQ(std::string left, std::string right, std::string toStore)
                 : type(Type::GEQ), left(left), right(right), toStore(toStore) {}
 
-        virtual std::string to_string() const override {
+        virtual std::string
+        to_string(std::shared_ptr<VarTable> varTable_p, const std::vector<int> &DataStack) const override {
             return std::string{"GEQ "} + left + ' ' + right + ' ' + toStore;
         }
     };

@@ -205,7 +205,7 @@ INTERPRETER::Interpreter::getInterpreter_p(std::shared_ptr<std::istream> istream
 void INTERPRETER::Interpreter::run() {
     for (; PC < MidCodeSequence.size();) {
 #ifdef DEBUG
-        std::cout << MidCodeSequence[PC]->to_string() << std::endl;
+        std::cout << MidCodeSequence[PC]->to_string(varTable_p, DataStack) << std::endl;
 #endif
         if (std::dynamic_pointer_cast<ADD>(MidCodeSequence[PC])) {
             auto add_p = std::dynamic_pointer_cast<ADD>(MidCodeSequence[PC]);
@@ -219,7 +219,7 @@ void INTERPRETER::Interpreter::run() {
             if (addr != -1)
                 b = DataStack[addr];
             else
-                b = DataStack[addr];
+                b = std::stoi(add_p->name2);
             addr = varTable_p->find(add_p->toStore);
             if (addr != -1) {
                 DataStack[addr] = a + b;
@@ -250,7 +250,7 @@ void INTERPRETER::Interpreter::run() {
             DynamicLink.push_back(DataStack.size());
             varTable_p = std::make_shared<VarTable>(varTable_p);
             for (int i = 0; i < call_p->inParams.size(); ++i) {
-                varTable_p->add(call_p->formalParams[i], this->DataStack.size());
+                varTable_p->add(call_p->formalParams[i], DataStack.size());
                 DataStack.push_back(DataStack[varTable_p->find(call_p->inParams[i])]);
             }
             funcCallStack.clear();
@@ -591,7 +591,7 @@ void INTERPRETER::Interpreter::setOs(std::shared_ptr<std::ostream> ostream_p) {
         os_p = ostream_p;
 }
 
-std::string INTERPRETER::Interpreter::to_string() const {
+std::string INTERPRETER::Interpreter::to_string(std::shared_ptr<VarTable> varTable_p) const {
     return std::string();//todo
 }
 

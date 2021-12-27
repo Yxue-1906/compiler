@@ -68,7 +68,6 @@ namespace INTERPRETER {
         Interpreter operator=(Interpreter &&) = delete;
 
         void run();
-//    static std::shared_ptr<INTERPRETER> getInterpreter_p();
 
         void setOs(std::shared_ptr<std::ostream> ostream_p);
 
@@ -77,7 +76,7 @@ namespace INTERPRETER {
 
         static std::shared_ptr<Interpreter> getInterpreter_p(std::shared_ptr<std::istream> istream_p);
 
-        virtual std::string to_string() const;
+        virtual std::string to_string(std::shared_ptr<VarTable> varTable_p) const;
 
         explicit Interpreter(std::vector<std::shared_ptr<PCode>> midCodeSequence, std::map<std::string, int> labels);
     };

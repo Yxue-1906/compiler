@@ -19,8 +19,9 @@ namespace INTERPRETER {
         EQ(std::string left, std::string right, std::string toStore)
                 : type(Type::EQ), left(left), right(right), toStore(toStore) {}
 
-        virtual std::string to_string() const override {
-            return std::string{"EQ "} + left + ' ' + right + ' ' + toStore;
+        virtual std::string
+        to_string(std::shared_ptr<VarTable> varTable_p, const std::vector<int> &DataStack) const override {
+            return std::string{"EQ "} + left + ' ' + right + ' ' + toStore;//todo
         }
     };
 }

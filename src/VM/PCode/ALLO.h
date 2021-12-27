@@ -17,7 +17,8 @@ namespace INTERPRETER {
     public:
         ALLO(std::string name, int size) : type(Type::ALLO), name(name), size(size) {}
 
-        virtual std::string to_string() const override {
+        virtual std::string
+        to_string(std::shared_ptr<VarTable> varTable_p, const std::vector<int> &DataStack) const override {
             return std::string{"ALLO "} + name + ' ' + std::to_string(size);
         }
     };

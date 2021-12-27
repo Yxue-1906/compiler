@@ -7,10 +7,11 @@
 
 #include <string>
 #include <vector>
+#include <memory>
 
 class BaseObject {
 public:
-    virtual std::string to_string() const = 0;
+    virtual std::string to_string() const { return ""; }
 };
 
 

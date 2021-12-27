@@ -19,7 +19,8 @@ namespace INTERPRETER {
         STOP(std::string value, std::string base, int offset)
                 : type(Type::STOP), value(value), base(base), offset(offset) {}
 
-        virtual std::string to_string() const override {
+        virtual std::string
+        to_string(std::shared_ptr<VarTable> varTable_p, const std::vector<int> &DataStack) const override {
             return std::string{"STOP "} + value + " " + base + " " + std::to_string(offset);
         }
     };

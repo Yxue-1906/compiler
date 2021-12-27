@@ -7,6 +7,7 @@
 
 
 #include "BaseObject.h"
+#include "VMSymTable.h"
 
 #ifdef ADD
 #undef ADD
@@ -50,6 +51,8 @@ public:
     };
 
 public:
+    virtual std::string
+    to_string(std::shared_ptr<VarTable> varTable_p, const std::vector<int> &DataStack) const = 0;
 };
 
 using Type = PCode::Type;

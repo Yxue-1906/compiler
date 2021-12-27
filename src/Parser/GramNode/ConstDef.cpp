@@ -9,7 +9,6 @@
 #include "../../Lexer/Token/LBRACK.h"
 #include "../ErrorNode.h"
 #include "../../VM/PCode/ALLO.h"
-#include "../../VM/PCode/STOP.h"
 #include "../../VM/PCode/STO.h"
 
 ConstDef::ConstDef(std::vector<std::shared_ptr<GramNode>> sons) : GramNode() {
@@ -97,10 +96,10 @@ std::vector<std::shared_ptr<std::string>> ConstDef::toMidCode() {
     for (int i: *dimension_p) {
         size *= i;
     }
-    GramNode::MidCodeSequence.push_back(std::make_shared<INTERPRETER::ALLO>(*ident, size));
+    MidCodeSequence.push_back(std::make_shared<INTERPRETER::ALLO>(*ident, size));
     auto constInitVal_p = std::dynamic_pointer_cast<ConstInitVal>(*ite);
     auto values_p = constInitVal_p->toValues();
-    ConstDef::symTableGenCode.addConst(*ident, dimension_p, values_p);
+    symTableGenCode.addConst(*ident, dimension_p, values_p);
     for (int i = 0; i < values_p->size(); ++i) {
         auto value_p = std::make_shared<std::string>(std::to_string((*values_p)[i]));
         GramNode::MidCodeSequence.push_back(std::make_shared<INTERPRETER::STO>(*value_p, *ident, std::to_string(i)));

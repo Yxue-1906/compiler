@@ -16,7 +16,8 @@ namespace INTERPRETER {
     public:
         GETINT(std::string addr) : type(Type::GETINT), addr(addr) {}
 
-        virtual std::string to_string() const override {
+        virtual std::string
+        to_string(std::shared_ptr<VarTable> varTable_p, const std::vector<int> &DataStack) const override {
             return std::string{"GETINT "} + addr;
         }
     };

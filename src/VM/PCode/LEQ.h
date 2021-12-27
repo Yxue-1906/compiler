@@ -19,7 +19,8 @@ namespace INTERPRETER {
         LEQ(std::string left, std::string right, std::string toStore)
                 : type(Type::LEQ), left(left), right(right), toStore(toStore) {}
 
-        virtual std::string to_string() const override {
+        virtual std::string
+        to_string(std::shared_ptr<VarTable> varTable_p, const std::vector<int> &DataStack) const override {
             return std::string{"LEQ "} + left + ' ' + right + ' ' + toStore;
         }
     };
