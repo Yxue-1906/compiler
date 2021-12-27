@@ -114,3 +114,18 @@ bool FuncDef::checkValid() {
         toReturn &= block_p->checkReturn(false);
     return toReturn;
 }
+
+std::vector<std::shared_ptr<std::string>> FuncDef::toMidCode() {
+    std::vector<std::shared_ptr<std::string>> toReturn;
+    auto ite = sons.begin() + 1;
+    auto tokenNode_p = std::dynamic_pointer_cast<TokenNode>(*ite);
+    auto ident_p = std::dynamic_pointer_cast<IDENFR>(tokenNode_p->getToken_p())->getValue_p();
+    labels.emplace(*ident_p, MidCodeSequence.size());
+    ite += 2;
+    auto funcFParams_p = std::dynamic_pointer_cast<FuncFParams>(*ite);
+    if (funcFParams_p) {
+        funcFParams_p->toMidCode();
+    }
+    //todo
+
+}
