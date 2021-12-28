@@ -68,7 +68,7 @@ bool MainFuncDef::checkValid() {
 }
 
 std::vector<std::shared_ptr<std::string>> MainFuncDef::toMidCode() {
-    labels.emplace("main", MidCodeSequence.size());
+    labels.emplace("$main", MidCodeSequence.size());
     auto block_p = std::dynamic_pointer_cast<Block>(this->sons[4]);
     std::vector<std::shared_ptr<std::string>> toReturn;
     block_p->toMidCode();

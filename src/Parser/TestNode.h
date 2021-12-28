@@ -30,10 +30,12 @@ public:
     }
 
     virtual std::vector<std::shared_ptr<std::string>> toMidCode() override {
+        labels.emplace("$init", MidCodeSequence.size());
         for (auto node: this->sons) {
             node->toMidCode();
         }
 //        MidCodeSequence.push_back(std::make_shared<INTERPRETER::PINT>("b"));
+        labels.emplace("$end", MidCodeSequence.size());
         return std::vector<std::shared_ptr<std::string>>{};
     }
 

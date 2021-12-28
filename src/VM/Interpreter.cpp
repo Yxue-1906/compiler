@@ -636,4 +636,10 @@ INTERPRETER::Interpreter::Interpreter(std::vector<std::shared_ptr<PCode>> midCod
                                       std::map<std::string, int> labels) {
     this->MidCodeSequence = std::move(midCodeSequence);
     this->labels = std::move(labels);
+    auto ite = this->labels.find("$start");
+    if (ite != this->labels.end()) {
+        PC = ite->second;
+    } else {
+        PC = 0;
+    }
 }

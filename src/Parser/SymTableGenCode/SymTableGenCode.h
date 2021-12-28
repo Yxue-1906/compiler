@@ -63,6 +63,10 @@ public:
         return nullptr;
     }
 
+    void addFunc(std::string name, std::vector<std::shared_ptr<VarTypeGenCode>> formalParams_p) {
+        funcTable.emplace(name, std::make_shared<FuncTypeGenCode>())//todo
+    }
+
     void addConst(std::string name, std::shared_ptr<std::vector<int>> dimension_p,
                   std::shared_ptr<std::vector<int>> values_p) {
         this->varTableStack.back()->emplace(name, std::make_shared<VarTypeGenCode>(name, dimension_p, values_p));

@@ -83,8 +83,7 @@ std::vector<std::shared_ptr<std::string>> VarDef::toMidCode() {
     auto ite = this->sons.begin();
     auto tokenNode_p = std::dynamic_pointer_cast<TokenNode>(*ite);
     ite += 2;
-    std::shared_ptr<std::string> ident =
-            std::dynamic_pointer_cast<IDENFR>(tokenNode_p->getToken_p())->getValue_p();
+    auto ident_p = std::dynamic_pointer_cast<IDENFR>(tokenNode_p->getToken_p())->getValue_p();
     auto dimension_p = std::make_shared<std::vector<int>>();
     std::shared_ptr<ConstExp> constExp_p;
     for (; ite < this->sons.end(); ite += 3) {
@@ -98,13 +97,13 @@ std::vector<std::shared_ptr<std::string>> VarDef::toMidCode() {
     for (int i: *dimension_p) {
         size *= i;
     }
-    MidCodeSequence.push_back(std::make_shared<INTERPRETER::ALLO>(*ident, size));
-    symTableGenCode.addVar(*ident, dimension_p);
+    MidCodeSequence.push_back(std::make_shared<INTERPRETER::ALLO>(*ident_p, size));
+    symTableGenCode.addVar(*ident_p, dimension_p);
     if (ite < this->sons.end() && std::dynamic_pointer_cast<InitVal>(*ite)) {
         auto initVal_p = std::dynamic_pointer_cast<InitVal>(*ite);
         auto initVals_p = initVal_p->toMidCode();
         for (int i = 0; i < initVals_p.size(); ++i) {
-            MidCodeSequence.push_back(std::make_shared<INTERPRETER::STO>(*initVals_p[i], *ident, std::to_string(i)));
+            MidCodeSequence.push_back(std::make_shared<INTERPRETER::STO>(*initVals_p[i], *ident_p, std::to_string(i)));
         }
     }
     return toReturn;

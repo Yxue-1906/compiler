@@ -53,3 +53,18 @@ bool FuncFParams::getParamTypes(std::vector<std::pair<std::shared_ptr<IDENFR>, s
     toReturn = this->params;
     return true;
 }
+
+std::vector<std::shared_ptr<std::string>> FuncFParams::toMidCode() {
+    std::vector<std::shared_ptr<std::string>> toReturn;
+    auto ite = sons.begin();
+    std::shared_ptr<FuncFParam> funcFParam_p;
+    for (; ite < sons.end(); ite += 2) {
+        funcFParam_p = std::dynamic_pointer_cast<FuncFParam>(*ite);
+        if (!funcFParam_p)
+            break;
+        for (const auto& i: funcFParam_p->toMidCode()) {
+            toReturn.push_back(i);
+        }
+    }
+    return toReturn;
+}

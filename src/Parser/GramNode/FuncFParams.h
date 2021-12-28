@@ -21,6 +21,8 @@ public:
     virtual bool checkValid() override;
 
     bool getParamTypes(std::vector<std::pair<std::shared_ptr<IDENFR>, std::shared_ptr<IdentInfo>>> &toReturn);
+
+    virtual std::vector<std::shared_ptr<std::string>> toMidCode() override;
 };
 
 

@@ -120,12 +120,20 @@ std::vector<std::shared_ptr<std::string>> FuncDef::toMidCode() {
     auto ite = sons.begin() + 1;
     auto tokenNode_p = std::dynamic_pointer_cast<TokenNode>(*ite);
     auto ident_p = std::dynamic_pointer_cast<IDENFR>(tokenNode_p->getToken_p())->getValue_p();
+    std::vector<std::shared_ptr<std::string>> formalParams_p;
     labels.emplace(*ident_p, MidCodeSequence.size());
     ite += 2;
+    symTableGenCode.newStack();
     auto funcFParams_p = std::dynamic_pointer_cast<FuncFParams>(*ite);
     if (funcFParams_p) {
         funcFParams_p->toMidCode();
+        ite += 2;
+    } else {
+        ite++;
     }
-    //todo
-
+    auto block_p = std::dynamic_pointer_cast<Block>(*ite);
+    block_p->toMidCode();
+    symTableGenCode.deleteStack();
+    symTableGenCode.//todo: use getParam
+    return toReturn;
 }
