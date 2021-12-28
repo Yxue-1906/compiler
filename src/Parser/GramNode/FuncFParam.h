@@ -23,7 +23,7 @@ public:
 
     bool getParamType(std::pair<std::shared_ptr<IDENFR>, std::shared_ptr<IdentInfo>> &toReturn);
 
-    virtual std::vector<std::shared_ptr<std::string>> toMidCode() override;
+    std::pair<std::string, std::string> getParam();
 };
 
 

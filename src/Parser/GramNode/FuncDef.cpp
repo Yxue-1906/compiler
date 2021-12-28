@@ -125,8 +125,9 @@ std::vector<std::shared_ptr<std::string>> FuncDef::toMidCode() {
     ite += 2;
     symTableGenCode.newStack();
     auto funcFParams_p = std::dynamic_pointer_cast<FuncFParams>(*ite);
+    auto paramCalledNames_p = std::make_shared<std::vector<std::string>>();
     if (funcFParams_p) {
-        funcFParams_p->toMidCode();
+        paramCalledNames_p = funcFParams_p->getParams();
         ite += 2;
     } else {
         ite++;
@@ -134,6 +135,6 @@ std::vector<std::shared_ptr<std::string>> FuncDef::toMidCode() {
     auto block_p = std::dynamic_pointer_cast<Block>(*ite);
     block_p->toMidCode();
     symTableGenCode.deleteStack();
-    symTableGenCode.//todo: use getParam
+    symTableGenCode.addFunc_s(*ident_p, paramCalledNames_p);
     return toReturn;
 }

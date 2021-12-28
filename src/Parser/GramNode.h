@@ -22,6 +22,9 @@ protected:
     std::vector<std::shared_ptr<GramNode>> sons;
     static SymTableGenCode symTableGenCode;
     static int nowTmpVarCount;
+    static std::shared_ptr<std::vector<int>> breakLabels;
+    static std::shared_ptr<std::vector<int>> continueLabels;
+    static std::shared_ptr<std::vector<int>> returnLabels;
 
 public:
     static int nowLine;

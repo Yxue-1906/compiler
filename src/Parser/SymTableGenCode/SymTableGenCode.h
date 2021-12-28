@@ -38,6 +38,7 @@ class SymTableGenCode {
 public:
     std::vector<std::shared_ptr<std::map<std::string, std::shared_ptr<VarTypeGenCode>>>> varTableStack;
     std::map<std::string, std::shared_ptr<FuncTypeGenCode>> funcTable;
+    std::map<std::string, std::shared_ptr<std::vector<std::string>>> funcTable_s;
 
 public:
     SymTableGenCode() {
@@ -63,8 +64,16 @@ public:
         return nullptr;
     }
 
-    void addFunc(std::string name, std::vector<std::shared_ptr<VarTypeGenCode>> formalParams_p) {
-        funcTable.emplace(name, std::make_shared<FuncTypeGenCode>())//todo
+    void addFunc(std::string name, std::vector<std::pair<std::string, std::shared_ptr<std::vector<int>>>> paramInfos) {
+        std::vector<std::shared_ptr<VarTypeGenCode>> paramTypes;
+        for (auto paramInfoPair: paramInfos) {
+            paramTypes.push_back(std::make_shared<VarTypeGenCode>(paramInfoPair.first, paramInfoPair.second));
+        }
+        funcTable.emplace(name, std::make_shared<FuncTypeGenCode>(name, paramTypes));
+    }
+
+    void addFunc_s(std::string name, std::shared_ptr<std::vector<std::string>> paramNames_p) {
+        funcTable_s.emplace(name, paramNames_p);
     }
 
     void addConst(std::string name, std::shared_ptr<std::vector<int>> dimension_p,

@@ -77,6 +77,46 @@ bool FuncFParam::getParamType(std::pair<std::shared_ptr<IDENFR>, std::shared_ptr
     return true;
 }
 
+std::pair<std::string, std::string> FuncFParam::getParam() {
+    std::pair<std::string, std::string> toReturn;
+    auto ite = sons.begin() + 1;
+    auto tokenNode_p = std::dynamic_pointer_cast<TokenNode>(*ite);
+    ++ite;
+    auto ident_p = std::dynamic_pointer_cast<IDENFR>(tokenNode_p->getToken_p())->getValue_p();
+    toReturn.first = *ident_p;
+    auto dimension_p = std::make_shared<std::vector<int>>();
+    std::shared_ptr<ConstExp> constExp_p;
+    for (; ite < sons.end();) {
+        tokenNode_p = std::dynamic_pointer_cast<TokenNode>(*ite);
+        if (tokenNode_p) {
+            if (tokenNode_p->getToken_p()->getTokenType() == TokenBase::LBRACK) {
+                ++ite;
+                constExp_p = std::dynamic_pointer_cast<ConstExp>(*ite);
+                if (constExp_p) {
+                    int toPush = constExp_p->toValue();
+                    dimension_p->push_back(toPush);
+                    ite += 2;
+                } else {
+                    dimension_p->push_back(0);
+                    ite++;
+                }
+            } else {
+                //should not happen;
+                int tmp;
+                std::cout << "error occured here" << std::endl;
+                std::cin >> tmp;
+            }
+        }
+    }
+    symTableGenCode.addVar(*ident_p, dimension_p);
+    if (dimension_p->empty()) {
+        toReturn.second = *ident_p;
+    } else {
+        toReturn.second = "&" + *ident_p;
+    }
+    return toReturn;
+}
+/*
 std::vector<std::shared_ptr<std::string>> FuncFParam::toMidCode() {
     std::vector<std::shared_ptr<std::string>> toReturn;
     auto ite = sons.begin() + 1;
@@ -115,5 +155,6 @@ std::vector<std::shared_ptr<std::string>> FuncFParam::toMidCode() {
     }
     return toReturn;
 }
+*/
 
 

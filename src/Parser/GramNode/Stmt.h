@@ -27,6 +27,8 @@ public:
     virtual bool checkValid() override;
 
     bool hasReturn();
+
+    virtual std::vector<std::shared_ptr<std::string>> toMidCode() override;
 };
 
 #endif //PARSER_STMT_H

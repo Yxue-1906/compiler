@@ -329,5 +329,59 @@ bool Stmt::hasReturn() {
         return false;
 }
 
+std::vector<std::shared_ptr<std::string>> Stmt::toMidCode() {
+    std::vector<std::shared_ptr<std::string>> toReturn;
+    auto ite = sons.begin();
+    auto tokenNode = std::dynamic_pointer_cast<TokenNode>(*ite);
+    if (tokenNode) {
+        auto tokenType=tokenNode->getToken_p()->getTokenType();
+        if (tokenNode->getToken_p()->getTokenType() == TokenBase::SEMICN) {
+            return toReturn;
+        }
+        if (tokenNode->getToken_p()->getTokenType() == TokenBase::IFTK) {
+            //todo: if (cond) block else block
+            return toReturn;
+        }
+        if (tokenNode->getToken_p()->getTokenType() == TokenBase::WHILETK) {
+            //todo: while (cond) block
+            return toReturn;
+        }
+        if (tokenNode->getToken_p()->getTokenType() == TokenBase::BREAKTK) {
+            //todo: break;
+            return toReturn;
+        }
+        if (tokenNode->getToken_p()->getTokenType() == TokenBase::CONTINUETK) {
+            //todo: continue;
+            return toReturn;
+        }
+        if (tokenNode->getToken_p()->getTokenType() == TokenBase::RETURNTK) {
+            //todo: return [exp]
+            return toReturn;
+        }
+        if (tokenNode->getToken_p()->getTokenType() == TokenBase::PRINTFTK) {
+            //todo: printf
+            return toReturn;
+        }
+        //should not run to here
+    } else {
+        auto exp_p = std::dynamic_pointer_cast<Exp>(*ite);
+        if (exp_p) {
+            //todo
+            return toReturn;
+        }
+        auto lval_p = std::dynamic_pointer_cast<LVal>(*ite);
+        if (lval_p) {
+            //todo:
+            return toReturn;
+        }
+        auto block_p = std::dynamic_pointer_cast<Block>(*ite);
+        if (block_p) {
+            //todo:
+            return toReturn;
+        }
+        //should not run to here?
+    }
+}
+
 
 

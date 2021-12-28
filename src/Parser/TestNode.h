@@ -10,6 +10,7 @@
 #include "GramNode/VarDecl.h"
 #include "../VM/PCode/PINT.h"
 #include "GramNode/MainFuncDef.h"
+#include "GramNode/FuncDef.h"
 
 class TestNode : public GramNode {
 private:
@@ -22,7 +23,10 @@ public:
     static bool create(std::vector<std::shared_ptr<GramNode>> &toAdd, std::vector<TokenBase *>::iterator &ite_p) {
         auto ite = ite_p;
         std::vector<std::shared_ptr<GramNode>> son_ps;
-        MainFuncDef::create(son_ps, ite);
+        //test begin
+        FuncDef::create(son_ps, ite);
+
+        //test end
         std::shared_ptr<TestNode> tmp_p;
         tmp_p.reset(new TestNode(son_ps));
         toAdd.push_back(tmp_p);
