@@ -341,7 +341,9 @@ std::vector<std::shared_ptr<std::string>> Stmt::toMidCode() {
             return toReturn;
         }
         if (tokenNode_p->getToken_p()->getTokenType() == TokenBase::IFTK) {
-            //todo: if (cond) block else block
+            ite++;
+            auto cond_p = std::dynamic_pointer_cast<Cond>(*ite);
+            cond_p->toMidCode();
             return toReturn;
         }
         if (tokenNode_p->getToken_p()->getTokenType() == TokenBase::WHILETK) {

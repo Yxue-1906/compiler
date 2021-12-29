@@ -147,7 +147,7 @@ add_executable(Parser src/Exception/MyException/AssignToConstException.h
         src/VM/Interpreter.h
         src/VM/PCode/ADD.h
         src/VM/PCode/ALLO.h
-        src/VM/PCode/BR.h
+        src/VM/PCode/BRT.h
         src/VM/PCode/CALL.h
         src/VM/PCode/DIV.h
         src/VM/PCode/EQ.h
@@ -177,4 +177,4 @@ add_executable(Parser src/Exception/MyException/AssignToConstException.h
         src/Parser/SymTableGenCode/SymTableGenCode.h
         src/Parser/TestNode.h
         src/VM/PCode/STOP.h
-        src/VM/PCode/NOT.h src/VM/PCode/PSTR.h)
+        src/VM/PCode/NOT.h src/VM/PCode/PSTR.h src/VM/PCode/AND.h src/VM/PCode/OR.h src/VM/PCode/NEQ.h src/VM/PCode/BRF.h)

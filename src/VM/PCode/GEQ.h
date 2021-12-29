@@ -22,7 +22,25 @@ namespace INTERPRETER {
 
         virtual std::string
         to_string(std::shared_ptr<VarTable> varTable_p, const std::vector<int> &DataStack) const override {
-            return std::string{"GEQ "} + left + ' ' + right + ' ' + toStore;
+            std::string toReturn = "GEQ ";
+            int addr;
+            addr = varTable_p->find(left);
+            if (addr != -1) {
+                int leftVar = DataStack[addr];
+                toReturn += left + ":" + std::to_string(leftVar);
+            } else {
+                toReturn += left;
+            }
+            toReturn += " >= ";
+            addr = varTable_p->find(right);
+            if (addr != -1) {
+                int rightVar = DataStack[addr];
+                toReturn += right + ":" + std::to_string(rightVar);
+            } else {
+                toReturn += right;
+            }
+            toReturn += " -> " + toStore;
+            return toReturn;
         }
     };
 }

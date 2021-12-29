@@ -1,14 +1,14 @@
 //
-// Created by unrelated on 2021/11/21.
+// Created by unrelated on 2021/12/29.
 //
 
-#ifndef VM_LEQ_H
-#define VM_LEQ_H
+#ifndef SRC_PARSER_NEQ_H
+#define SRC_PARSER_NEQ_H
 
 #include "../PCode.h"
 
 namespace INTERPRETER {
-    class LEQ : public PCode {
+    class NEQ : public PCode {
     public:
         const Type type;
         const std::string left;
@@ -16,12 +16,12 @@ namespace INTERPRETER {
         const std::string toStore;
 
     public:
-        LEQ(std::string left, std::string right, std::string toStore)
-                : type(Type::LEQ), left(left), right(right), toStore(toStore) {}
+        NEQ(std::string left, std::string right, std::string toStore)
+                : type(Type::NEQ), left(left), right(right), toStore(toStore) {}
 
         virtual std::string
         to_string(std::shared_ptr<VarTable> varTable_p, const std::vector<int> &DataStack) const override {
-            std::string toReturn = "LEQ ";
+            std::string toReturn = "NEQ ";
             int addr;
             addr = varTable_p->find(left);
             if (addr != -1) {
@@ -30,7 +30,7 @@ namespace INTERPRETER {
             } else {
                 toReturn += left;
             }
-            toReturn += " <= ";
+            toReturn += " != ";
             addr = varTable_p->find(right);
             if (addr != -1) {
                 int rightVar = DataStack[addr];
@@ -44,5 +44,4 @@ namespace INTERPRETER {
     };
 }
 
-
-#endif //VM_LEQ_H
+#endif //SRC_PARSER_NEQ_H

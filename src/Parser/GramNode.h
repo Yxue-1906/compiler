@@ -24,6 +24,9 @@ protected:
     static std::shared_ptr<std::vector<int>> breakLabels;
     static std::shared_ptr<std::vector<int>> continueLabels;
     static std::shared_ptr<std::vector<int>> returnLabels;
+    static std::shared_ptr<std::vector<int>> orLabels;
+    static std::shared_ptr<std::vector<int>> andLabels;
+    static int nowLabelCount;
 
 public:
     static int nowLine;

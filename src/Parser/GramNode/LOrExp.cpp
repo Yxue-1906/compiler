@@ -5,6 +5,9 @@
 #include "LOrExp.h"
 #include "LAndExp.h"
 #include "../TokenNode.h"
+#include "../../VM/PCode/BRT.h"
+#include "../../VM/PCode/BRF.h"
+#include "../../VM/PCode/OR.h"
 
 LOrExp::LOrExp(std::vector<std::shared_ptr<GramNode>> sons) : GramNode() {
     setGramName("LOrExp");
@@ -47,4 +50,56 @@ bool LOrExp::checkValid() {
         toReturn &= i->checkValid();
     }
     return toReturn;
+}
+
+std::vector<std::shared_ptr<std::string>> LOrExp::toMidCode() {
+    //todo:
+    std::vector<std::shared_ptr<std::string>> toReturn;
+    if (sons.size() > 1) {
+        auto lOrExp_p = std::dynamic_pointer_cast<LOrExp>(sons[0]);
+        auto tokenNode_p = std::dynamic_pointer_cast<TokenBase>(sons[1]);
+        auto lAndExp_p = std::dynamic_pointer_cast<LAndExp>(sons[2]);
+        auto tmpVar1_p = lOrExp_p->toMidCode()[0];
+        auto formerAndLabels = andLabels;
+        auto tmpVar2_p = lAndExp_p->toMidCode()[0];
+        std::string nowLabel = "%" + std::to_string(nowLabelCount++);
+        for (int i: *andLabels) {
+            auto brf_p = std::dynamic_pointer_cast<INTERPRETER::BRF>(MidCodeSequence[i]);
+            if (brf_p) {
+                brf_p->setLabel(nowLabel);
+            } else {
+                //should not run to here!
+                int tmp;
+                std::cout << "error! get null ptr" << std::endl;
+                std::cin >> tmp;
+            }
+        }
+        andLabels = formerAndLabels;
+        MidCodeSequence.push_back(std::make_shared<INTERPRETER::OR>(*tmpVar1_p, *tmpVar2_p, *tmpVar1_p));
+        orLabels->push_back(MidCodeSequence.size());
+        labels.emplace(nowLabel, MidCodeSequence.size());
+        MidCodeSequence.push_back(std::make_shared<INTERPRETER::BRT>(*toReturn[0]));
+        toReturn.push_back(tmpVar1_p);
+    } else {
+        auto formerAndLabels = andLabels;
+        andLabels = std::make_shared<std::vector<int>>();
+        auto lAndExp_p = std::dynamic_pointer_cast<LAndExp>(sons[0]);
+        toReturn = lAndExp_p->toMidCode();
+        orLabels->push_back(MidCodeSequence.size());
+        std::string nowLabel = "%" + std::to_string(nowLabelCount++);
+        for (int i: *andLabels) {
+            auto brf_p = std::dynamic_pointer_cast<INTERPRETER::BRF>(MidCodeSequence[i]);
+            if (brf_p) {
+                brf_p->setLabel(nowLabel);
+            } else {
+                //should not run to here!
+                int tmp;
+                std::cout << "error! get null ptr" << std::endl;
+                std::cin >> tmp;
+            }
+        }
+        andLabels = formerAndLabels;
+        labels.emplace(nowLabel, MidCodeSequence.size());
+        MidCodeSequence.push_back(std::make_shared<INTERPRETER::BRT>(*toReturn[0]));
+    }
 }

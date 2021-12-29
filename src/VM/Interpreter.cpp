@@ -9,6 +9,10 @@
 #include "PCode/STOP.h"
 #include "PCode/NOT.h"
 #include "PCode/PSTR.h"
+#include "PCode/NEQ.h"
+#include "PCode/AND.h"
+#include "PCode/OR.h"
+#include "PCode/BRF.h"
 
 
 std::shared_ptr<INTERPRETER::Interpreter>INTERPRETER::Interpreter::instance_p = nullptr;
@@ -55,10 +59,10 @@ INTERPRETER::Interpreter::Interpreter(std::shared_ptr<std::istream> istream_p) {
             int size;
             istream >> name >> size;
             MidCodeSequence.push_back(std::make_shared<ALLO>(name, size));
-        } else if (ins == "BR") {
+        } else if (ins == "BRT") {
             std::string label1, label2;
             istream >> label1 >> label2;
-            MidCodeSequence.push_back(std::make_shared<BR>(label1, label2));
+            MidCodeSequence.push_back(std::make_shared<BRT>(label1, label2));
         } else if (ins == "CALL") {
             std::string funcName;
             std::string param;
@@ -228,13 +232,6 @@ void INTERPRETER::Interpreter::run() {
                 varTable_p->add(add_p->toStore, DataStack.size());
                 DataStack.push_back(a + b);
             }
-        } else if (std::dynamic_pointer_cast<BR>(MidCodeSequence[PC])) {
-            auto br_p = std::dynamic_pointer_cast<BR>(MidCodeSequence[PC]);
-            if (DataStack.back())
-                PC = labels[br_p->label1];
-            else
-                PC = labels[br_p->label2];
-            continue;
         } else if (std::dynamic_pointer_cast<ALLO>(MidCodeSequence[PC])) {
             auto allo_p = std::dynamic_pointer_cast<ALLO>(MidCodeSequence[PC]);
             int addr = DataStack.size();
@@ -243,6 +240,52 @@ void INTERPRETER::Interpreter::run() {
             }
             varTable_p->add(allo_p->name, addr);
 //            DataStack.push_back(addr);
+        } else if (std::dynamic_pointer_cast<AND>(MidCodeSequence[PC])) {
+            auto and_p = std::dynamic_pointer_cast<AND>(MidCodeSequence[PC]);
+            int a, b, addr;
+            addr = varTable_p->find(and_p->name1);
+            if (addr != -1)
+                a = DataStack[addr];
+            else
+                a = std::stoi(and_p->name1);
+            addr = varTable_p->find(and_p->name2);
+            if (addr != -1)
+                b = DataStack[addr];
+            else
+                b = std::stoi(and_p->name2);
+            addr = varTable_p->find(and_p->toStore);
+            if (addr != -1) {
+                DataStack[addr] = a && b;
+            } else {
+                varTable_p->add(and_p->toStore, DataStack.size());
+                DataStack.push_back(a && b);
+            }
+        } else if (std::dynamic_pointer_cast<BRF>(MidCodeSequence[PC])) {
+            auto brf_p = std::dynamic_pointer_cast<BRT>(MidCodeSequence[PC]);
+            int judge, addr;
+            addr = varTable_p->find(brf_p->judge);
+            if (addr != -1) {
+                judge = DataStack[addr];
+            } else {
+                judge = std::stoi(brf_p->judge);
+            }
+            if (!judge) {
+                PC = labels[brf_p->label];
+                continue;
+            }
+        } else if (std::dynamic_pointer_cast<BRT>(MidCodeSequence[PC])) {
+            auto brt_p = std::dynamic_pointer_cast<BRT>(MidCodeSequence[PC]);
+            int judge, addr;
+            addr = varTable_p->find(brt_p->judge);
+            if (addr != -1) {
+                judge = DataStack[addr];
+            } else {
+                judge = std::stoi(brt_p->judge);
+            }
+            if (judge) {
+                PC = labels[brt_p->label];
+                continue;
+            }
         } else if (std::dynamic_pointer_cast<CALL>(MidCodeSequence[PC])) {
             auto call_p = std::dynamic_pointer_cast<CALL>(MidCodeSequence[PC]);
             ReturnAddrLink.push_back(PC + 1);
@@ -512,6 +555,28 @@ void INTERPRETER::Interpreter::run() {
                 varTable_p->add(mult_p->toStore, DataStack.size());
                 DataStack.push_back(a * b);
             }
+        } else if (std::dynamic_pointer_cast<NEQ>(MidCodeSequence[PC])) {
+            auto neq_p = std::dynamic_pointer_cast<NEQ>(MidCodeSequence[PC]);
+            int a, b, addr;
+            addr = varTable_p->find(neq_p->left);
+            if (addr != -1) {
+                a = DataStack[addr];
+            } else {
+                a = std::stoi(neq_p->left);
+            }
+            addr = varTable_p->find(neq_p->right);
+            if (addr != -1) {
+                b = DataStack[addr];
+            } else {
+                b = std::stoi(neq_p->right);
+            }
+            addr = varTable_p->find(neq_p->toStore);
+            if (addr != -1) {
+                DataStack[addr] = a != b;
+            } else {
+                varTable_p->add(neq_p->toStore, DataStack.size());
+                DataStack.push_back(a != b);
+            }
         } else if (std::dynamic_pointer_cast<NOT>(MidCodeSequence[PC])) {
             auto not_p = std::dynamic_pointer_cast<NOT>(MidCodeSequence[PC]);
             int value, addr;
@@ -527,6 +592,26 @@ void INTERPRETER::Interpreter::run() {
             } else {
                 varTable_p->add(not_p->toStore, DataStack.size());
                 DataStack.push_back(!value);
+            }
+        } else if (std::dynamic_pointer_cast<OR>(MidCodeSequence[PC])) {
+            auto or_p = std::dynamic_pointer_cast<OR>(MidCodeSequence[PC]);
+            int a, b, addr;
+            addr = varTable_p->find(or_p->name1);
+            if (addr != -1)
+                a = DataStack[addr];
+            else
+                a = std::stoi(or_p->name1);
+            addr = varTable_p->find(or_p->name2);
+            if (addr != -1)
+                b = DataStack[addr];
+            else
+                b = std::stoi(or_p->name2);
+            addr = varTable_p->find(or_p->toStore);
+            if (addr != -1) {
+                DataStack[addr] = a || b;
+            } else {
+                varTable_p->add(or_p->toStore, DataStack.size());
+                DataStack.push_back(a || b);
             }
         } else if (std::dynamic_pointer_cast<PINT>(MidCodeSequence[PC])) {
             std::ostream &os = *os_p;

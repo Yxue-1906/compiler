@@ -11,6 +11,12 @@ std::shared_ptr<SymTable>GramNode::nowTable_p = std::make_shared<SymTable>(nullp
 SymTableGenCode GramNode::symTableGenCode;
 std::vector<std::shared_ptr<PCode>>GramNode::MidCodeSequence;
 std::map<std::string, int>GramNode::labels;
+std::shared_ptr<std::vector<int>> GramNode::breakLabels;
+std::shared_ptr<std::vector<int>> GramNode::continueLabels;
+std::shared_ptr<std::vector<int>> GramNode::returnLabels;
+std::shared_ptr<std::vector<int>> GramNode::orLabels;
+std::shared_ptr<std::vector<int>> GramNode::andLabels;
+int GramNode::nowLabelCount = 0;
 
 GramNode::GramNode() = default;
 

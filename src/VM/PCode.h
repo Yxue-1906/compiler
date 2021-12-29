@@ -18,8 +18,10 @@ public:
     enum class Type {
         ADD,            // ADD: add top with sub top, pop them and push the outcome
         ALLO,           // ALLO <Name> <Size> -> alloc space in the stack and store the address toStore <Name>
+        AND,
         BEND,           // BEND : end the block -> delete top VarTable
-        BR,             // BR <Label1> <Label2>: jump toStore <Label> when top is true, and pop it
+        BRF,            // BRF <judge> <label>: jump to label if <judge> is false
+        BRT,            // BRT <judge> <label>: jump to label if <judge> is true
         BSTA,           // BSTA : start a new block -> open a new VarTable
         CALL,           // CALL <FuncName> : store PC+1 toStore RA, make a new VarTable, store from toStore PC
         DIV,            // DIV: divide top with sub top, pop them and push the outcome
@@ -38,7 +40,9 @@ public:
         MINUS,          // MINUS: minus top with sub top, pop them and push the outcome
         MOD,            // MOD: mod top with sub top, pop them and push the outcome
         MULT,           // MULT: multiple top with sub top, pop them and push the outcome
+        NEQ,
         NOT,            // NOT <VarName> <toStore> : store !<VarName> to <toStore>
+        OR,
         PINT,           // PINT <VarName> : print value of <VarName>
         PSTR,           // PSTR <Str> : or maybe ...
         PUSH,           // PUSH -> push the value of top into func call stack
