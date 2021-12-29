@@ -13,6 +13,7 @@
 #include "../../VM/PCode/MULT.h"
 #include "../../VM/PCode/ADD.h"
 #include "../../VM/PCode/LOD.h"
+#include "../../VM/PCode/LODA.h"
 
 LVal::LVal(std::vector<std::shared_ptr<GramNode>> sons) : GramNode() {
     setGramName("LVal");
@@ -114,12 +115,13 @@ std::vector<std::shared_ptr<std::string>> LVal::toMidCode() {
     std::vector<std::shared_ptr<std::string>> toReturn;
     auto ite = this->sons.begin();
     auto tokenNode_p = std::dynamic_pointer_cast<TokenNode>(*ite);
-    auto ident_p = std::dynamic_pointer_cast<IDENFR>(tokenNode_p->getToken_p());
-    auto varName = *ident_p->getValue_p();
+    auto ident_p = std::dynamic_pointer_cast<IDENFR>(tokenNode_p->getToken_p())->getValue_p();
+    auto varName = *ident_p;
     auto varType = symTableGenCode.searchVar(varName);
+    varName = varType->tmpName;
     ite += 2;
 
-    auto offset_p = std::make_shared<std::string>("%" + std::to_string(nowTmpVarCount++));
+    auto offset_p = symTableGenCode.getNewTmpVarName();
     MidCodeSequence.push_back(std::make_shared<INTERPRETER::ALLO>(*offset_p, 1));
     auto varDimension = *varType->dimension_p;
     for (int i = 1; ite < this->sons.end(); ite += 3, i++) {
@@ -130,7 +132,7 @@ std::vector<std::shared_ptr<std::string>> LVal::toMidCode() {
         for (int j = i; j < varDimension.size(); ++j) {
             pre_offset *= varDimension[j];
         }
-        auto tmpOffset_p = std::make_shared<std::string>("%" + std::to_string(nowTmpVarCount++));
+        auto tmpOffset_p = symTableGenCode.getNewTmpVarName();
         MidCodeSequence.push_back(std::make_shared<INTERPRETER::MULT>(dimension,
                                                                       std::to_string(pre_offset),
                                                                       *tmpOffset_p));
@@ -138,6 +140,38 @@ std::vector<std::shared_ptr<std::string>> LVal::toMidCode() {
     }
     MidCodeSequence.push_back(std::make_shared<INTERPRETER::LOD>(*offset_p, varName, *offset_p));
     toReturn.push_back(offset_p);
+    return toReturn;
+}
+
+std::pair<std::shared_ptr<std::string>, std::shared_ptr<std::string>> LVal::getAddr() {
+    std::pair<std::shared_ptr<std::string>, std::shared_ptr<std::string>> toReturn;
+    auto ite = sons.begin();
+    auto tokenNode_p = std::dynamic_pointer_cast<TokenNode>(*ite);
+    auto ident_p = std::dynamic_pointer_cast<IDENFR>(tokenNode_p->getToken_p())->getValue_p();
+    auto varName = *ident_p;
+    auto varType = symTableGenCode.searchVar(varName);
+    varName = varType->tmpName;
+    ite += 2;
+
+    auto offset_p = symTableGenCode.getNewTmpVarName();
+    MidCodeSequence.push_back(std::make_shared<INTERPRETER::ALLO>(*offset_p, 1));
+    auto varDimension = *varType->dimension_p;
+    for (int i = 1; ite < sons.end(); ite += 3, i++) {
+        auto exp_p = std::dynamic_pointer_cast<Exp>(*ite);
+        auto expTmpVars = exp_p->toMidCode();
+        std::string dimension = *expTmpVars[0];
+        int pre_offset = 1;
+        for (int j = i; j < varDimension.size(); ++j) {
+            pre_offset *= varDimension[j];
+        }
+        auto tmpOffset_p = symTableGenCode.getNewTmpVarName();
+        MidCodeSequence.push_back(std::make_shared<INTERPRETER::MULT>(dimension,
+                                                                      std::to_string(pre_offset),
+                                                                      *tmpOffset_p));
+        MidCodeSequence.push_back(std::make_shared<INTERPRETER::ADD>(*offset_p, *tmpOffset_p, *offset_p));
+    }
+    toReturn.first = std::make_shared<std::string>(varName);
+    toReturn.second = offset_p;
     return toReturn;
 }
 

@@ -97,13 +97,15 @@ std::vector<std::shared_ptr<std::string>> VarDef::toMidCode() {
     for (int i: *dimension_p) {
         size *= i;
     }
-    MidCodeSequence.push_back(std::make_shared<INTERPRETER::ALLO>(*ident_p, size));
     symTableGenCode.addVar(*ident_p, dimension_p);
+    auto varType = symTableGenCode.searchVar(*ident_p);
+    MidCodeSequence.push_back(std::make_shared<INTERPRETER::ALLO>(varType->tmpName, size));
     if (ite < this->sons.end() && std::dynamic_pointer_cast<InitVal>(*ite)) {
         auto initVal_p = std::dynamic_pointer_cast<InitVal>(*ite);
         auto initVals_p = initVal_p->toMidCode();
         for (int i = 0; i < initVals_p.size(); ++i) {
-            MidCodeSequence.push_back(std::make_shared<INTERPRETER::STO>(*initVals_p[i], *ident_p, std::to_string(i)));
+            MidCodeSequence.push_back(
+                    std::make_shared<INTERPRETER::STO>(*initVals_p[i], varType->tmpName, std::to_string(i)));
         }
     }
     return toReturn;

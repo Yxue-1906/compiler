@@ -96,13 +96,14 @@ std::vector<std::shared_ptr<std::string>> ConstDef::toMidCode() {
     for (int i: *dimension_p) {
         size *= i;
     }
-    MidCodeSequence.push_back(std::make_shared<INTERPRETER::ALLO>(*ident, size));
     auto constInitVal_p = std::dynamic_pointer_cast<ConstInitVal>(*ite);
     auto values_p = constInitVal_p->toValues();
     symTableGenCode.addConst(*ident, dimension_p, values_p);
+    auto varType = symTableGenCode.searchVar(*ident);
+    MidCodeSequence.push_back(std::make_shared<INTERPRETER::ALLO>(varType->tmpName, size));
     for (int i = 0; i < values_p->size(); ++i) {
         auto value_p = std::make_shared<std::string>(std::to_string((*values_p)[i]));
-        GramNode::MidCodeSequence.push_back(std::make_shared<INTERPRETER::STO>(*value_p, *ident, std::to_string(i)));
+        MidCodeSequence.push_back(std::make_shared<INTERPRETER::STO>(*value_p, varType->tmpName, std::to_string(i)));
     }
     return toReturn;
 }

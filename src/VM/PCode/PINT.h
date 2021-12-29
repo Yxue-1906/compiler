@@ -19,7 +19,16 @@ namespace INTERPRETER {
 
         virtual std::string
         to_string(std::shared_ptr<VarTable> varTable_p, const std::vector<int> &DataStack) const {
-            return std::string{"PINT"};
+            std::string toReturn = "PINT ";
+            int value, addr;
+            addr = varTable_p->find(name);
+            if (addr != -1) {
+                value = DataStack[addr];
+                toReturn += name + ":" + std::to_string(value);
+            } else {
+                toReturn += name;
+            }
+            return toReturn;
         }
     };
 }

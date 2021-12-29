@@ -141,7 +141,7 @@ std::vector<std::shared_ptr<std::string>> AddExp::toMidCode() {
         auto mulExp_p = std::dynamic_pointer_cast<MulExp>(sons[2]);
         auto tmpVar1_p = addExp_p->toMidCode()[0];
         auto tmpVar2_p = mulExp_p->toMidCode()[0];
-        std::shared_ptr<std::string> tmpVar_p = std::make_shared<std::string>("%" + std::to_string(nowTmpVarCount++));
+        auto tmpVar_p = symTableGenCode.getNewTmpVarName();
         if (op_p->getTokenType() == TokenBase::PLUS) {
             MidCodeSequence.push_back(std::make_shared<INTERPRETER::ADD>(*tmpVar1_p, *tmpVar2_p, *tmpVar_p));
         } else {

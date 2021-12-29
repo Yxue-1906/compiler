@@ -8,6 +8,7 @@
 #include "PCode/GETA.h"
 #include "PCode/STOP.h"
 #include "PCode/NOT.h"
+#include "PCode/PSTR.h"
 
 
 std::shared_ptr<INTERPRETER::Interpreter>INTERPRETER::Interpreter::instance_p = nullptr;
@@ -537,6 +538,13 @@ void INTERPRETER::Interpreter::run() {
                 value = std::stoi(pint_p->name);
             }
             os << value;
+#ifdef DEBUG
+            os<<std::endl;
+#endif
+        } else if (std::dynamic_pointer_cast<PSTR>(MidCodeSequence[PC])) {
+            std::ostream &os = *os_p;
+            auto pstr_p = std::dynamic_pointer_cast<PSTR>(MidCodeSequence[PC]);
+            os << pstr_p->str;
         } else if (std::dynamic_pointer_cast<PUSH>(MidCodeSequence[PC])) {
             auto push_p = std::dynamic_pointer_cast<PUSH>(MidCodeSequence[PC]);
             int addr = varTable_p->find(push_p->name);
@@ -592,6 +600,8 @@ void INTERPRETER::Interpreter::run() {
             offset = varTable_p->find(sto_p->offset);
             if (offset == -1) {
                 offset = std::stoi(sto_p->offset);
+            } else {
+                offset = DataStack[offset];
             }
             value = varTable_p->find(sto_p->value);
             if (value != -1) {
@@ -600,7 +610,7 @@ void INTERPRETER::Interpreter::run() {
                 value = std::stoi(sto_p->value);
             }
             DataStack[base + offset] = value;
-        } else if (std::dynamic_pointer_cast<STOP>(MidCodeSequence[PC])) {
+        }/* else if (std::dynamic_pointer_cast<STOP>(MidCodeSequence[PC])) {
             auto stop_p = std::dynamic_pointer_cast<STOP>(MidCodeSequence[PC]);
             int value = 0;
             try {
@@ -612,7 +622,7 @@ void INTERPRETER::Interpreter::run() {
             int base = varTable_p->find(stop_p->base);
             int offset = stop_p->offset;
             DataStack[base + offset] = value;
-        } else {
+        }*/ else {
             //todo: what happened?
             std::cout << "unknown ins" << std::endl;
             int tmp;

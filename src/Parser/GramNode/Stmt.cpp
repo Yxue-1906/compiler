@@ -18,6 +18,9 @@
 #include "../../Exception/MyException/ConBreakInNonLoopException.h"
 #include "../../Exception/MyException/AssignToConstException.h"
 #include "../../Exception/MyException/MismatchReturnForVoidException.h"
+#include "../../VM/PCode/STO.h"
+#include "../../VM/PCode/PSTR.h"
+#include "../../VM/PCode/PINT.h"
 
 Stmt::Stmt(std::vector<std::shared_ptr<GramNode>> sons, bool isLoop, bool isVoid)
         : GramNode(), isLoop(isLoop), isVoid(isVoid) {
@@ -332,55 +335,106 @@ bool Stmt::hasReturn() {
 std::vector<std::shared_ptr<std::string>> Stmt::toMidCode() {
     std::vector<std::shared_ptr<std::string>> toReturn;
     auto ite = sons.begin();
-    auto tokenNode = std::dynamic_pointer_cast<TokenNode>(*ite);
-    if (tokenNode) {
-        auto tokenType=tokenNode->getToken_p()->getTokenType();
-        if (tokenNode->getToken_p()->getTokenType() == TokenBase::SEMICN) {
+    auto tokenNode_p = std::dynamic_pointer_cast<TokenNode>(*ite);
+    if (tokenNode_p) {
+        if (tokenNode_p->getToken_p()->getTokenType() == TokenBase::SEMICN) {
             return toReturn;
         }
-        if (tokenNode->getToken_p()->getTokenType() == TokenBase::IFTK) {
+        if (tokenNode_p->getToken_p()->getTokenType() == TokenBase::IFTK) {
             //todo: if (cond) block else block
             return toReturn;
         }
-        if (tokenNode->getToken_p()->getTokenType() == TokenBase::WHILETK) {
+        if (tokenNode_p->getToken_p()->getTokenType() == TokenBase::WHILETK) {
             //todo: while (cond) block
             return toReturn;
         }
-        if (tokenNode->getToken_p()->getTokenType() == TokenBase::BREAKTK) {
+        if (tokenNode_p->getToken_p()->getTokenType() == TokenBase::BREAKTK) {
             //todo: break;
             return toReturn;
         }
-        if (tokenNode->getToken_p()->getTokenType() == TokenBase::CONTINUETK) {
+        if (tokenNode_p->getToken_p()->getTokenType() == TokenBase::CONTINUETK) {
             //todo: continue;
             return toReturn;
         }
-        if (tokenNode->getToken_p()->getTokenType() == TokenBase::RETURNTK) {
+        if (tokenNode_p->getToken_p()->getTokenType() == TokenBase::RETURNTK) {
             //todo: return [exp]
             return toReturn;
         }
-        if (tokenNode->getToken_p()->getTokenType() == TokenBase::PRINTFTK) {
-            //todo: printf
+        if (tokenNode_p->getToken_p()->getTokenType() == TokenBase::PRINTFTK) {
+            ite += 2;
+            tokenNode_p = std::dynamic_pointer_cast<TokenNode>(*ite);
+            auto formatString_p = std::dynamic_pointer_cast<STRCON>(tokenNode_p->getToken_p())->getValue_p();
+            auto formatString = std::string{formatString_p->substr(1, formatString_p->size() - 2)};
+            ite += 2;
+            for (int i = 0; i < formatString.size();) {
+                if (formatString[i] == '%' && i + 1 < formatString.size() && formatString[i + 1] == 'd') {
+                    auto exp_p = std::dynamic_pointer_cast<Exp>(*ite);
+                    auto tmpVars_p = exp_p->toMidCode();
+                    auto tmpVar = *tmpVars_p[0];
+                    MidCodeSequence.push_back(std::make_shared<INTERPRETER::PINT>(tmpVar));
+                    i += 2;
+                    ite += 2;
+                    continue;
+                }
+                if (formatString[i] == '\\' && i + 1 < formatString.size() && formatString[i + 1] == 'n') {
+                    MidCodeSequence.push_back(std::make_shared<INTERPRETER::PSTR>("\n"));
+                    i += 2;
+                    continue;
+                }
+                MidCodeSequence.push_back(std::make_shared<INTERPRETER::PSTR>(std::string{formatString[i]}));
+                ++i;
+            }
             return toReturn;
         }
         //should not run to here
     } else {
         auto exp_p = std::dynamic_pointer_cast<Exp>(*ite);
         if (exp_p) {
-            //todo
+            exp_p->toMidCode();
             return toReturn;
         }
         auto lval_p = std::dynamic_pointer_cast<LVal>(*ite);
         if (lval_p) {
-            //todo:
-            return toReturn;
+            ite += 2;
+            auto lvalBaseOffset = lval_p->getAddr();
+            exp_p = std::dynamic_pointer_cast<Exp>(*ite);
+            if (exp_p) {
+                auto tmpVars = exp_p->toMidCode();
+                auto tmpVar_p = tmpVars[0];
+                MidCodeSequence.push_back(std::make_shared<INTERPRETER::STO>(
+                        *tmpVar_p,
+                        *lvalBaseOffset.first,
+                        *lvalBaseOffset.second));
+                return toReturn;
+            }
+            tokenNode_p = std::dynamic_pointer_cast<TokenNode>(*ite);
+            if (tokenNode_p && tokenNode_p->getToken_p()->getTokenType() == TokenBase::GETINTTK) {
+                int value;
+                std::cin >> value;
+                MidCodeSequence.push_back(std::make_shared<INTERPRETER::STO>(
+                        std::to_string(value),
+                        *lvalBaseOffset.first,
+                        *lvalBaseOffset.second));
+                return toReturn;
+            }
+            //should not run to here!
+            int tmp;
+            std::cout << "error occurred when run to stmt->lval" << std::endl;
+            std::cin >> tmp;
         }
         auto block_p = std::dynamic_pointer_cast<Block>(*ite);
         if (block_p) {
-            //todo:
+            symTableGenCode.newStack();
+            block_p->toMidCode();
+            symTableGenCode.deleteStack();
             return toReturn;
         }
         //should not run to here?
     }
+    //should not run to here
+    int tmp;
+    std::cout << "error occurred in stmt" << std::endl;
+    std::cin >> tmp;
 }
 
 

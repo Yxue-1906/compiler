@@ -25,6 +25,8 @@ public:
     virtual std::vector<std::shared_ptr<std::string>> toMidCode() override;
 
     int toValue();
+
+    std::pair<std::shared_ptr<std::string>, std::shared_ptr<std::string>> getAddr();
 };
 
 

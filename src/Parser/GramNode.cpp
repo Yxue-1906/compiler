@@ -11,7 +11,6 @@ std::shared_ptr<SymTable>GramNode::nowTable_p = std::make_shared<SymTable>(nullp
 SymTableGenCode GramNode::symTableGenCode;
 std::vector<std::shared_ptr<PCode>>GramNode::MidCodeSequence;
 std::map<std::string, int>GramNode::labels;
-int GramNode::nowTmpVarCount = 0;
 
 GramNode::GramNode() = default;
 

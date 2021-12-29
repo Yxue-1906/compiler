@@ -13,15 +13,16 @@
 class VarTypeGenCode {
 public:
     const std::string name;
+    const std::string tmpName;
     std::shared_ptr<std::vector<int>> dimension_p;
     std::shared_ptr<std::vector<int>> values_p;
 
-    VarTypeGenCode(std::string name, std::shared_ptr<std::vector<int>> dimension_p)
-            : name(name), dimension_p(dimension_p) {}
+    VarTypeGenCode(std::string name, std::string tmpName, std::shared_ptr<std::vector<int>> dimension_p)
+            : name(name), tmpName(tmpName), dimension_p(dimension_p) {}
 
-    VarTypeGenCode(std::string name, std::shared_ptr<std::vector<int>> dimension_p,
+    VarTypeGenCode(std::string name, std::string tmpName, std::shared_ptr<std::vector<int>> dimension_p,
                    std::shared_ptr<std::vector<int>> values_p)
-            : name(name), dimension_p(dimension_p), values_p(values_p) {}
+            : name(name), tmpName(tmpName), dimension_p(dimension_p), values_p(values_p) {}
 
 };
 
@@ -39,6 +40,7 @@ public:
     std::vector<std::shared_ptr<std::map<std::string, std::shared_ptr<VarTypeGenCode>>>> varTableStack;
     std::map<std::string, std::shared_ptr<FuncTypeGenCode>> funcTable;
     std::map<std::string, std::shared_ptr<std::vector<std::string>>> funcTable_s;
+    int nowTmpVarCount = 0;
 
 public:
     SymTableGenCode() {
@@ -64,13 +66,13 @@ public:
         return nullptr;
     }
 
-    void addFunc(std::string name, std::vector<std::pair<std::string, std::shared_ptr<std::vector<int>>>> paramInfos) {
+/*    void addFunc(std::string name, std::vector<std::pair<std::string, std::shared_ptr<std::vector<int>>>> paramInfos) {
         std::vector<std::shared_ptr<VarTypeGenCode>> paramTypes;
         for (auto paramInfoPair: paramInfos) {
             paramTypes.push_back(std::make_shared<VarTypeGenCode>(paramInfoPair.first, paramInfoPair.second));
         }
         funcTable.emplace(name, std::make_shared<FuncTypeGenCode>(name, paramTypes));
-    }
+    }*/
 
     void addFunc_s(std::string name, std::shared_ptr<std::vector<std::string>> paramNames_p) {
         funcTable_s.emplace(name, paramNames_p);
@@ -78,12 +80,22 @@ public:
 
     void addConst(std::string name, std::shared_ptr<std::vector<int>> dimension_p,
                   std::shared_ptr<std::vector<int>> values_p) {
-        this->varTableStack.back()->emplace(name, std::make_shared<VarTypeGenCode>(name, dimension_p, values_p));
+        this->varTableStack.back()->emplace(name,
+                                            std::make_shared<VarTypeGenCode>(name,
+                                                                             "%" + std::to_string(nowTmpVarCount++),
+                                                                             dimension_p, values_p));
 
     }
 
     void addVar(std::string name, std::shared_ptr<std::vector<int>> dimension_p) {
-        this->varTableStack.back()->emplace(name, std::make_shared<VarTypeGenCode>(name, dimension_p));
+        this->varTableStack.back()->emplace(name,
+                                            std::make_shared<VarTypeGenCode>(name,
+                                                                             "%" + std::to_string(nowTmpVarCount++),
+                                                                             dimension_p));
+    }
+
+    std::shared_ptr<std::string> getNewTmpVarName() {
+        return std::make_shared<std::string>("%" + std::to_string(nowTmpVarCount++));
     }
 
     void newStack() {

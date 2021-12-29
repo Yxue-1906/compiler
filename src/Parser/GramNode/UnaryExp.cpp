@@ -181,12 +181,12 @@ std::vector<std::shared_ptr<std::string>> UnaryExp::toMidCode() {
             auto unaryExp_p = std::dynamic_pointer_cast<UnaryExp>(sons[1]);
             if (unaryOp_p->getType() == UnaryOp::Type::MINUS) {
                 auto tmpVar1_p = unaryExp_p->toMidCode()[0];
-                auto tmpVar_p = std::make_shared<std::string>("%" + std::to_string(nowTmpVarCount++));
+                auto tmpVar_p = symTableGenCode.getNewTmpVarName();
                 MidCodeSequence.push_back(std::make_shared<INTERPRETER::MINUS>("0", *tmpVar1_p, *tmpVar_p));
                 toReturn.push_back(tmpVar_p);
             } else if (unaryOp_p->getType() == UnaryOp::Type::NOT) {
                 auto tmpVar1_p = unaryExp_p->toMidCode()[0];
-                auto tmpVar_p = std::make_shared<std::string>("%" + std::to_string(nowTmpVarCount++));
+                auto tmpVar_p = symTableGenCode.getNewTmpVarName();
                 MidCodeSequence.push_back(std::make_shared<INTERPRETER::NOT>(*tmpVar1_p, *tmpVar_p));
                 toReturn.push_back(tmpVar_p);
             } else {

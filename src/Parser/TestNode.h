@@ -11,6 +11,8 @@
 #include "../VM/PCode/PINT.h"
 #include "GramNode/MainFuncDef.h"
 #include "GramNode/FuncDef.h"
+#include "../VM/PCode/J.h"
+#include "../VM/PCode/LOD.h"
 
 class TestNode : public GramNode {
 private:
@@ -24,7 +26,7 @@ public:
         auto ite = ite_p;
         std::vector<std::shared_ptr<GramNode>> son_ps;
         //test begin
-        FuncDef::create(son_ps, ite);
+        MainFuncDef::create(son_ps, ite);
 
         //test end
         std::shared_ptr<TestNode> tmp_p;
@@ -35,6 +37,7 @@ public:
 
     virtual std::vector<std::shared_ptr<std::string>> toMidCode() override {
         labels.emplace("$init", MidCodeSequence.size());
+        MidCodeSequence.push_back(std::make_shared<INTERPRETER::J>("$main"));
         for (auto node: this->sons) {
             node->toMidCode();
         }
