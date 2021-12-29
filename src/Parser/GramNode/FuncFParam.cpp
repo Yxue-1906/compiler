@@ -109,10 +109,11 @@ std::pair<std::string, std::string> FuncFParam::getParam() {
         }
     }
     symTableGenCode.addVar(*ident_p, dimension_p);
+    auto varInfo = symTableGenCode.searchVar(*ident_p);
     if (dimension_p->empty()) {
-        toReturn.second = *ident_p;
+        toReturn.second = varInfo->tmpName;
     } else {
-        toReturn.second = "&" + *ident_p;
+        toReturn.second = "&" + varInfo->tmpName;
     }
     return toReturn;
 }

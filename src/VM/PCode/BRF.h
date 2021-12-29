@@ -19,6 +19,9 @@ namespace INTERPRETER {
         BRF(std::string judge)
                 : type(Type::BRT), judge(judge) {}
 
+        BRF(std::string judge, std::string label)
+                : type(Type::BRT), judge(judge), label(label) {}
+
         void setLabel(std::string label) {
             this->label = std::move(label);
         }

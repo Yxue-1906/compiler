@@ -21,6 +21,10 @@
 #include "../../VM/PCode/STO.h"
 #include "../../VM/PCode/PSTR.h"
 #include "../../VM/PCode/PINT.h"
+#include "../../VM/PCode/BRT.h"
+#include "../../VM/PCode/BRF.h"
+#include "../../VM/PCode/J.h"
+#include "../../VM/PCode/RET.h"
 
 Stmt::Stmt(std::vector<std::shared_ptr<GramNode>> sons, bool isLoop, bool isVoid)
         : GramNode(), isLoop(isLoop), isVoid(isVoid) {
@@ -341,25 +345,121 @@ std::vector<std::shared_ptr<std::string>> Stmt::toMidCode() {
             return toReturn;
         }
         if (tokenNode_p->getToken_p()->getTokenType() == TokenBase::IFTK) {
-            ite++;
+            //todo: maybe finished
+            ite += 2;
             auto cond_p = std::dynamic_pointer_cast<Cond>(*ite);
-            cond_p->toMidCode();
+            auto formerOrLabels = orLabels;
+            orLabels = std::make_shared<std::vector<int>>();
+            auto tmpVars_p = cond_p->toMidCode();
+            auto nowLabel = "$" + std::to_string(nowLabelCount++);
+            for (int i: *orLabels) {
+                auto brt_p = std::dynamic_pointer_cast<INTERPRETER::BRT>(MidCodeSequence[i]);
+                if (brt_p) {
+                    brt_p->setLabel(nowLabel);
+                } else {
+                    //should not run to here!
+                    int tmp;
+                    std::cout << "error!" << std::endl;
+                    std::cin >> tmp;
+                }
+            }
+            orLabels = formerOrLabels;
+            labels.emplace(nowLabel, MidCodeSequence.size() + 1);
+            nowLabel = "$" + std::to_string(nowLabelCount++);
+            MidCodeSequence.push_back(std::make_shared<INTERPRETER::BRF>(*tmpVars_p[0], nowLabel));
+            ite += 2;
+            auto stmt_p = std::dynamic_pointer_cast<Stmt>(*ite);
+            stmt_p->toMidCode();
+            ite += 2;
+            if (ite < sons.end()) {
+                labels.emplace(nowLabel, MidCodeSequence.size() + 1);
+                nowLabel = "$" + std::to_string(nowLabelCount++);
+                MidCodeSequence.push_back(std::make_shared<INTERPRETER::J>(nowLabel));
+                stmt_p = std::dynamic_pointer_cast<Stmt>(*ite);
+                stmt_p->toMidCode();
+                labels.emplace(nowLabel, MidCodeSequence.size());
+            } else {
+                labels.emplace(nowLabel, MidCodeSequence.size());
+            }
             return toReturn;
         }
         if (tokenNode_p->getToken_p()->getTokenType() == TokenBase::WHILETK) {
             //todo: while (cond) block
+            ite += 2;
+            auto cond_p = std::dynamic_pointer_cast<Cond>(*ite);
+            auto beforeCondLabel = "$" + std::to_string(nowLabelCount++);
+            labels.emplace(beforeCondLabel, MidCodeSequence.size());
+            auto formerOrLabels = orLabels;
+            orLabels = std::make_shared<std::vector<int>>();
+            auto tmpVars_p = cond_p->toMidCode();
+            auto fromOrLabel = "$" + std::to_string(nowLabelCount++);
+            for (int i: *orLabels) {
+                auto brt_p = std::dynamic_pointer_cast<INTERPRETER::BRT>(MidCodeSequence[i]);
+                if (brt_p) {
+                    brt_p->setLabel(fromOrLabel);
+                } else {
+                    //should not run to here!
+                    int tmp;
+                    std::cout << "error!" << std::endl;
+                    std::cin >> tmp;
+                }
+            }
+            orLabels = formerOrLabels;
+            labels.emplace(fromOrLabel, MidCodeSequence.size() + 1);
+            ite += 2;
+            auto afterBlockLabel = "$" + std::to_string(nowLabelCount++);
+            MidCodeSequence.push_back(std::make_shared<INTERPRETER::BRF>(*tmpVars_p[0], afterBlockLabel));
+            auto formerBreakLabels = breakLabels;
+            auto formerContinueLabels = continueLabels;
+            breakLabels = std::make_shared<std::vector<int>>();
+            continueLabels = std::make_shared<std::vector<int>>();
+            auto stmt_p = std::dynamic_pointer_cast<Stmt>(*ite);
+            stmt_p->toMidCode();
+            for (int i: *breakLabels) {
+                auto j_p = std::dynamic_pointer_cast<INTERPRETER::J>(MidCodeSequence[i]);
+                if (j_p) {
+                    j_p->setLabel(afterBlockLabel);
+                } else {
+                    //should not run to here!
+                    int tmp;
+                    std::cout << "error!" << std::endl;
+                    std::cin >> tmp;
+                }
+            }
+            for (int i: *continueLabels) {
+                auto j_p = std::dynamic_pointer_cast<INTERPRETER::J>(MidCodeSequence[i]);
+                if (j_p) {
+                    j_p->setLabel(beforeCondLabel);
+                } else {
+                    //should not run to here!
+                    int tmp;
+                    std::cout << "error!" << std::endl;
+                    std::cin >> tmp;
+                }
+            }
+            breakLabels = formerBreakLabels;
+            continueLabels = formerContinueLabels;
+            MidCodeSequence.push_back(std::make_shared<INTERPRETER::J>(beforeCondLabel));
+            labels.emplace(afterBlockLabel, MidCodeSequence.size());
             return toReturn;
         }
         if (tokenNode_p->getToken_p()->getTokenType() == TokenBase::BREAKTK) {
-            //todo: break;
+            breakLabels->push_back(MidCodeSequence.size());
+            MidCodeSequence.push_back(std::make_shared<INTERPRETER::J>());
             return toReturn;
         }
         if (tokenNode_p->getToken_p()->getTokenType() == TokenBase::CONTINUETK) {
-            //todo: continue;
+            continueLabels->push_back(MidCodeSequence.size());
+            MidCodeSequence.push_back(std::make_shared<INTERPRETER::J>());
             return toReturn;
         }
         if (tokenNode_p->getToken_p()->getTokenType() == TokenBase::RETURNTK) {
-            //todo: return [exp]
+            if (sons.size() > 1) {
+                auto exp_p = std::dynamic_pointer_cast<Exp>(sons[1]);
+                auto tmpVars_p = exp_p->toMidCode();
+                MidCodeSequence.push_back(std::make_shared<INTERPRETER::STO>(*tmpVars_p[0], "%ret", "0"));
+            }
+            MidCodeSequence.push_back(std::make_shared<INTERPRETER::RET>());
             return toReturn;
         }
         if (tokenNode_p->getToken_p()->getTokenType() == TokenBase::PRINTFTK) {

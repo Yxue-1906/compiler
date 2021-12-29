@@ -61,8 +61,9 @@ std::vector<std::shared_ptr<std::string>> LOrExp::toMidCode() {
         auto lAndExp_p = std::dynamic_pointer_cast<LAndExp>(sons[2]);
         auto tmpVar1_p = lOrExp_p->toMidCode()[0];
         auto formerAndLabels = andLabels;
+        andLabels = std::make_shared<std::vector<int>>();
         auto tmpVar2_p = lAndExp_p->toMidCode()[0];
-        std::string nowLabel = "%" + std::to_string(nowLabelCount++);
+        std::string nowLabel = "$" + std::to_string(nowLabelCount++);
         for (int i: *andLabels) {
             auto brf_p = std::dynamic_pointer_cast<INTERPRETER::BRF>(MidCodeSequence[i]);
             if (brf_p) {
@@ -78,7 +79,7 @@ std::vector<std::shared_ptr<std::string>> LOrExp::toMidCode() {
         MidCodeSequence.push_back(std::make_shared<INTERPRETER::OR>(*tmpVar1_p, *tmpVar2_p, *tmpVar1_p));
         orLabels->push_back(MidCodeSequence.size());
         labels.emplace(nowLabel, MidCodeSequence.size());
-        MidCodeSequence.push_back(std::make_shared<INTERPRETER::BRT>(*toReturn[0]));
+        MidCodeSequence.push_back(std::make_shared<INTERPRETER::BRT>(*tmpVar1_p));
         toReturn.push_back(tmpVar1_p);
     } else {
         auto formerAndLabels = andLabels;
@@ -86,7 +87,7 @@ std::vector<std::shared_ptr<std::string>> LOrExp::toMidCode() {
         auto lAndExp_p = std::dynamic_pointer_cast<LAndExp>(sons[0]);
         toReturn = lAndExp_p->toMidCode();
         orLabels->push_back(MidCodeSequence.size());
-        std::string nowLabel = "%" + std::to_string(nowLabelCount++);
+        std::string nowLabel = "$" + std::to_string(nowLabelCount++);
         for (int i: *andLabels) {
             auto brf_p = std::dynamic_pointer_cast<INTERPRETER::BRF>(MidCodeSequence[i]);
             if (brf_p) {
@@ -102,4 +103,5 @@ std::vector<std::shared_ptr<std::string>> LOrExp::toMidCode() {
         labels.emplace(nowLabel, MidCodeSequence.size());
         MidCodeSequence.push_back(std::make_shared<INTERPRETER::BRT>(*toReturn[0]));
     }
+    return toReturn;
 }

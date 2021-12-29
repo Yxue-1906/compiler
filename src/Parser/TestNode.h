@@ -26,6 +26,7 @@ public:
         auto ite = ite_p;
         std::vector<std::shared_ptr<GramNode>> son_ps;
         //test begin
+        FuncDef::create(son_ps, ite);
         MainFuncDef::create(son_ps, ite);
 
         //test end
@@ -41,7 +42,6 @@ public:
         for (auto node: this->sons) {
             node->toMidCode();
         }
-//        MidCodeSequence.push_back(std::make_shared<INTERPRETER::PINT>("b"));
         labels.emplace("$end", MidCodeSequence.size());
         return std::vector<std::shared_ptr<std::string>>{};
     }

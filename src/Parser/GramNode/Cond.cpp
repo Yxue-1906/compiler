@@ -36,5 +36,6 @@ bool Cond::checkValid() {
 
 std::vector<std::shared_ptr<std::string>> Cond::toMidCode() {
     auto lOrExp_p = std::dynamic_pointer_cast<LOrExp>(sons[0]);
-    //todo:
+    auto toReturn = lOrExp_p->toMidCode();
+    return toReturn;
 }

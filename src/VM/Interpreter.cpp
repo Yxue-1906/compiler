@@ -152,9 +152,7 @@ INTERPRETER::Interpreter::Interpreter(std::shared_ptr<std::istream> istream_p) {
         } else if (ins == "PWARP") {
             MidCodeSequence.push_back(std::make_shared<PWRAP>());
         } else if (ins == "RET") {
-            std::string name;
-            istream >> name;
-            MidCodeSequence.push_back(std::make_shared<RET>(name));
+            MidCodeSequence.push_back(std::make_shared<RET>());
         }/* else if (ins == "LA") {
             Mid
         }*/ else if (ins.back() == ':') {
@@ -261,7 +259,7 @@ void INTERPRETER::Interpreter::run() {
                 DataStack.push_back(a && b);
             }
         } else if (std::dynamic_pointer_cast<BRF>(MidCodeSequence[PC])) {
-            auto brf_p = std::dynamic_pointer_cast<BRT>(MidCodeSequence[PC]);
+            auto brf_p = std::dynamic_pointer_cast<BRF>(MidCodeSequence[PC]);
             int judge, addr;
             addr = varTable_p->find(brf_p->judge);
             if (addr != -1) {
@@ -345,7 +343,7 @@ void INTERPRETER::Interpreter::run() {
                 b = std::stoi(eq_p->right);
             addr = varTable_p->find(eq_p->toStore);
             if (addr != -1) {
-                DataStack[addr] = a == b;
+                DataStack[addr] = (a == b);
             } else {
                 varTable_p->add(eq_p->toStore, DataStack.size());
                 DataStack.push_back(a == b);
@@ -362,10 +360,10 @@ void INTERPRETER::Interpreter::run() {
             if (addr != -1)
                 b = DataStack[addr];
             else
-                a = std::stoi(geq_p->right);
+                b = std::stoi(geq_p->right);
             addr = varTable_p->find(geq_p->toStore);
             if (addr != -1) {
-                DataStack[addr] = a >= b;
+                DataStack[addr] = (a >= b);
             } else {
                 varTable_p->add(geq_p->toStore, DataStack.size());
                 DataStack.push_back(a >= b);
@@ -395,10 +393,10 @@ void INTERPRETER::Interpreter::run() {
             if (addr != -1)
                 b = DataStack[addr];
             else
-                a = std::stoi(gre_p->right);
+                b = std::stoi(gre_p->right);
             addr = varTable_p->find(gre_p->toStore);
             if (addr != -1) {
-                DataStack[addr] = a > b;
+                DataStack[addr] = (a > b);
             } else {
                 varTable_p->add(gre_p->toStore, DataStack.size());
                 DataStack.push_back(a > b);
@@ -419,10 +417,10 @@ void INTERPRETER::Interpreter::run() {
             if (addr != -1)
                 b = DataStack[addr];
             else
-                a = std::stoi(leq_p->right);
+                b = std::stoi(leq_p->right);
             addr = varTable_p->find(leq_p->toStore);
             if (addr != -1) {
-                DataStack[addr] = a <= b;
+                DataStack[addr] = (a <= b);
             } else {
                 varTable_p->add(leq_p->toStore, DataStack.size());
                 DataStack.push_back(a <= b);
@@ -487,10 +485,10 @@ void INTERPRETER::Interpreter::run() {
             if (addr != -1)
                 b = DataStack[addr];
             else
-                a = std::stoi(lss_p->right);
+                b = std::stoi(lss_p->right);
             addr = varTable_p->find(lss_p->toStore);
             if (addr != -1) {
-                DataStack[addr] = a < b;
+                DataStack[addr] = (a < b);
             } else {
                 varTable_p->add(lss_p->toStore, DataStack.size());
                 DataStack.push_back(a < b);
@@ -572,7 +570,7 @@ void INTERPRETER::Interpreter::run() {
             }
             addr = varTable_p->find(neq_p->toStore);
             if (addr != -1) {
-                DataStack[addr] = a != b;
+                DataStack[addr] = (a != b);
             } else {
                 varTable_p->add(neq_p->toStore, DataStack.size());
                 DataStack.push_back(a != b);
@@ -624,7 +622,7 @@ void INTERPRETER::Interpreter::run() {
             }
             os << value;
 #ifdef DEBUG
-            os<<std::endl;
+            os << std::endl;
 #endif
         } else if (std::dynamic_pointer_cast<PSTR>(MidCodeSequence[PC])) {
             std::ostream &os = *os_p;
@@ -645,15 +643,6 @@ void INTERPRETER::Interpreter::run() {
             os << std::endl;
         } else if (std::dynamic_pointer_cast<RET>(MidCodeSequence[PC])) {
             auto ret_p = std::dynamic_pointer_cast<RET>(MidCodeSequence[PC]);
-            int value, addr;
-            if (ret_p->name != "void") {
-                addr = varTable_p->find(ret_p->name);
-                if (addr != -1) {
-                    value = DataStack[addr];
-                } else {
-                    value = std::stoi(ret_p->name);
-                }
-            }
             varTable_p = varTable_p->formerTable_p;
             PC = ReturnAddrLink.back();
             ReturnAddrLink.pop_back();
@@ -661,15 +650,6 @@ void INTERPRETER::Interpreter::run() {
                 DataStack.pop_back();
             DynamicLink.pop_back();
             tempVarUseCount.pop_back();
-            if (ret_p->name != "void") {
-                addr = varTable_p->find("%ret");
-                if (addr != -1) {
-                    DataStack[addr] = value;
-                } else {
-                    varTable_p->add("%ret", DataStack.size());
-                    DataStack.push_back(value);
-                }
-            }
             continue;
         } else if (std::dynamic_pointer_cast<STO>(MidCodeSequence[PC])) {
             auto sto_p = std::dynamic_pointer_cast<STO>(MidCodeSequence[PC]);
@@ -731,6 +711,8 @@ INTERPRETER::Interpreter::Interpreter(std::vector<std::shared_ptr<PCode>> midCod
                                       std::map<std::string, int> labels) {
     this->MidCodeSequence = std::move(midCodeSequence);
     this->labels = std::move(labels);
+    this->DataStack.push_back(0);
+    this->varTable_p->add("%ret", 0);
     auto ite = this->labels.find("$start");
     if (ite != this->labels.end()) {
         PC = ite->second;

@@ -58,6 +58,14 @@ public:
         return nullptr;
     }
 
+    std::shared_ptr<std::vector<std::string>> searchFunc_s(std::string name) {
+        auto find = funcTable_s.find(name);
+        if (find != funcTable_s.end()) {
+            return find->second;
+        }
+        return nullptr;
+    }
+
     std::shared_ptr<FuncTypeGenCode> searchFunc(std::string name) {
         auto find = funcTable.find(name);
         if (find != funcTable.end()) {

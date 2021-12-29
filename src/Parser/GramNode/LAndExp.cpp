@@ -7,6 +7,8 @@
 #include "../TokenNode.h"
 #include "../../VM/PCode/AND.h"
 #include "../../VM/PCode/BRF.h"
+#include "../../VM/PCode/LOD.h"
+#include "../../VM/PCode/ADD.h"
 
 LAndExp::LAndExp(std::vector<std::shared_ptr<GramNode>> sons) : GramNode() {
     setGramName("LAndExp");
@@ -65,9 +67,12 @@ std::vector<std::shared_ptr<std::string>> LAndExp::toMidCode() {
         toReturn.push_back(tmpVar1_p);
     } else {
         auto eqExp_p = std::dynamic_pointer_cast<EqExp>(sons[0]);
-        toReturn = eqExp_p->toMidCode();
+        auto tmpVars_p = eqExp_p->toMidCode();
+        auto tmpVar_p = symTableGenCode.getNewTmpVarName();
+        MidCodeSequence.push_back(std::make_shared<INTERPRETER::ADD>(*tmpVars_p[0], "0", *tmpVar_p));
         andLabels->push_back(MidCodeSequence.size());
-        MidCodeSequence.push_back(std::make_shared<INTERPRETER::BRF>(*toReturn[0]));
+        MidCodeSequence.push_back(std::make_shared<INTERPRETER::BRF>(*tmpVar_p));
+        toReturn.push_back(tmpVar_p);
     }
     return toReturn;
 }

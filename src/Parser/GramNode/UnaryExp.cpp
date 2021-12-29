@@ -12,6 +12,8 @@
 #include "../ErrorNode.h"
 #include "../../VM/PCode/MINUS.h"
 #include "../../VM/PCode/NOT.h"
+#include "../../VM/PCode/CALL.h"
+#include "../../VM/PCode/LOD.h"
 
 UnaryExp::UnaryExp(std::vector<std::shared_ptr<GramNode>> sons) : GramNode() {
     setGramName("UnaryExp");
@@ -194,6 +196,21 @@ std::vector<std::shared_ptr<std::string>> UnaryExp::toMidCode() {
             }
         } else {
             //todo:generate midcode for function call
+            auto ite = sons.begin();
+            auto tokenNode_p = std::dynamic_pointer_cast<TokenNode>(*ite);
+            auto ident_p = std::dynamic_pointer_cast<IDENFR>(tokenNode_p->getToken_p())->getValue_p();
+            ite += 2;
+            std::vector<std::string> params;
+            auto funcRParams_p = std::dynamic_pointer_cast<FuncRParams>(*ite);
+            if (funcRParams_p) {
+                params = *funcRParams_p->getParams();
+            }
+            auto funcInfo = symTableGenCode.searchFunc_s(*ident_p);
+            MidCodeSequence.push_back(std::make_shared<INTERPRETER::CALL>(*ident_p, params, *funcInfo));
+            auto tmpVar_p = symTableGenCode.getNewTmpVarName();
+            MidCodeSequence.push_back(std::make_shared<INTERPRETER::LOD>(*tmpVar_p, "%ret", "0"));
+            toReturn.push_back(tmpVar_p);
+            return toReturn;
         }
     }
     return toReturn;
