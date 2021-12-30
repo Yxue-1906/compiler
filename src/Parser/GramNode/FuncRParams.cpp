@@ -65,7 +65,7 @@ std::shared_ptr<std::vector<std::string>> FuncRParams::getParams() {
     auto toReturn = std::make_shared<std::vector<std::string>>();
     auto ite = sons.begin();
     std::shared_ptr<Exp> exp_p;
-    for (; ite < sons.end(); ++ite) {
+    for (; ite < sons.end(); ite += 2) {
         exp_p = std::dynamic_pointer_cast<Exp>(*ite);
         if (!exp_p)
             break;

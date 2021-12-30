@@ -94,9 +94,9 @@ INTERPRETER::Interpreter::Interpreter(std::shared_ptr<std::istream> istream_p) {
             istream >> toStore >> from;
             MidCodeSequence.push_back(std::make_shared<GETA>(toStore, from));
         } else if (ins == "GETINT") {
-            std::string addr;
-            istream >> addr;
-            MidCodeSequence.push_back(std::make_shared<GETINT>(addr));
+            std::string base, offset;
+            istream >> base >> offset;
+            MidCodeSequence.push_back(std::make_shared<GETINT>(base, offset));
         } else if (ins == "GRE") {
             std::string left, right, toStore;
             istream >> left >> right >> toStore;
@@ -207,7 +207,7 @@ INTERPRETER::Interpreter::getInterpreter_p(std::shared_ptr<std::istream> istream
 
 void INTERPRETER::Interpreter::run() {
     for (; PC < MidCodeSequence.size();) {
-#ifdef DEBUG
+#ifdef VM_DEBUG
         std::cout << MidCodeSequence[PC]->to_string(varTable_p, DataStack) << std::endl;
 #endif
         if (std::dynamic_pointer_cast<ADD>(MidCodeSequence[PC])) {
@@ -375,12 +375,16 @@ void INTERPRETER::Interpreter::run() {
             DataStack.push_back(addr);
         } else if (std::dynamic_pointer_cast<GETINT>(MidCodeSequence[PC])) {
             auto getint_p = std::dynamic_pointer_cast<GETINT>(MidCodeSequence[PC]);
-            int addr = varTable_p->find(getint_p->addr), value;
-            if (addr != -1) {
-                addr = DataStack[addr];
+            int value, base, offset;
+            base = varTable_p->find(getint_p->base);
+            offset = varTable_p->find(getint_p->offset);
+            if (offset == -1) {
+                offset = std::stoi(getint_p->offset);
+            } else {
+                offset = DataStack[offset];
             }
             std::cin >> value;
-            DataStack[addr] = value;
+            DataStack[base + offset] = value;
         } else if (std::dynamic_pointer_cast<GRE>(MidCodeSequence[PC])) {
             auto gre_p = std::dynamic_pointer_cast<GRE>(MidCodeSequence[PC]);
             int a, b, addr;
@@ -437,6 +441,9 @@ void INTERPRETER::Interpreter::run() {
                 base = addr;
             } else {
                 //should not be -1
+                std::cout << "error! can't find base" << std::endl;
+                int tmp;
+                std::cin >> tmp;
             }
             addr = varTable_p->find(lod_p->offset);
             if (addr != -1) {

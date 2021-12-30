@@ -12,6 +12,7 @@
 #include "../../Exception/MyException/MismatchReturnForVoidException.h"
 #include "../../Exception/MyException/MismatchReturnForNonVoidException.h"
 #include "../../Lexer/Token/RBRACK.h"
+#include "../../VM/PCode/RET.h"
 
 FuncDef::FuncDef(std::vector<std::shared_ptr<GramNode>> sons) : GramNode() {
     setGramName("FuncDef");
@@ -132,9 +133,13 @@ std::vector<std::shared_ptr<std::string>> FuncDef::toMidCode() {
     } else {
         ite++;
     }
+    symTableGenCode.addFunc_s(*ident_p, paramCalledNames_p);
     auto block_p = std::dynamic_pointer_cast<Block>(*ite);
     block_p->toMidCode();
     symTableGenCode.deleteStack();
-    symTableGenCode.addFunc_s(*ident_p, paramCalledNames_p);
+    auto funcType_p = std::dynamic_pointer_cast<FuncType>(sons[0]);
+    if (funcType_p->isVoid()) {
+        MidCodeSequence.push_back(std::make_shared<INTERPRETER::RET>());
+    }
     return toReturn;
 }

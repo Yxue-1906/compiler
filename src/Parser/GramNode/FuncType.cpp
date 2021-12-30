@@ -46,3 +46,10 @@ bool FuncType::checkValid() {
     return true;
 }
 
+bool FuncType::isVoid() {
+    auto tokenNode_p = std::dynamic_pointer_cast<TokenNode>(sons[0]);
+    if (tokenNode_p->getToken_p()->getTokenType() == TokenBase::VOIDTK)
+        return true;
+    return false;
+}
+

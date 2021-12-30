@@ -6,6 +6,8 @@
 #include "Decl.h"
 #include "FuncDef.h"
 #include "MainFuncDef.h"
+#include "../../VM/PCode/CALL.h"
+#include "../../VM/PCode/J.h"
 
 CompUnit::CompUnit(std::vector<std::shared_ptr<GramNode>> sons) : GramNode() {
     setGramName("CompUnit");
@@ -51,5 +53,32 @@ bool CompUnit::checkValid() {
     for (auto &i: this->sons) {
         toReturn &= i->checkValid();
     }
+    return toReturn;
+}
+
+std::vector<std::shared_ptr<std::string>> CompUnit::toMidCode() {
+    std::vector<std::shared_ptr<std::string>> toReturn;
+    auto ite = sons.begin();
+    labels.emplace("$init", MidCodeSequence.size());
+    std::shared_ptr<Decl> decl_p;
+    for (; ite < sons.end(); ++ite) {
+        decl_p = std::dynamic_pointer_cast<Decl>(*ite);
+        if (!decl_p)
+            break;
+        decl_p->toMidCode();
+    }
+    MidCodeSequence.push_back(
+            std::make_shared<INTERPRETER::CALL>("$main", std::vector<std::string>{}, std::vector<std::string>{}));
+    MidCodeSequence.push_back(std::make_shared<INTERPRETER::J>("$end"));
+    std::shared_ptr<FuncDef> funcDef_p = std::dynamic_pointer_cast<FuncDef>(*ite);
+    for (; ite < sons.end(); ++ite) {
+        funcDef_p = std::dynamic_pointer_cast<FuncDef>(*ite);
+        if (!funcDef_p)
+            break;
+        funcDef_p->toMidCode();
+    }
+    auto mainFuncDef = std::dynamic_pointer_cast<MainFuncDef>(*ite);
+    mainFuncDef->toMidCode();
+    labels.emplace("$end", MidCodeSequence.size());
     return toReturn;
 }

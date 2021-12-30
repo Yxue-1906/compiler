@@ -25,6 +25,7 @@
 #include "../../VM/PCode/BRF.h"
 #include "../../VM/PCode/J.h"
 #include "../../VM/PCode/RET.h"
+#include "../../VM/PCode/GETINT.h"
 
 Stmt::Stmt(std::vector<std::shared_ptr<GramNode>> sons, bool isLoop, bool isVoid)
         : GramNode(), isLoop(isLoop), isVoid(isVoid) {
@@ -454,7 +455,7 @@ std::vector<std::shared_ptr<std::string>> Stmt::toMidCode() {
             return toReturn;
         }
         if (tokenNode_p->getToken_p()->getTokenType() == TokenBase::RETURNTK) {
-            if (sons.size() > 1) {
+            if (sons.size() > 2) {
                 auto exp_p = std::dynamic_pointer_cast<Exp>(sons[1]);
                 auto tmpVars_p = exp_p->toMidCode();
                 MidCodeSequence.push_back(std::make_shared<INTERPRETER::STO>(*tmpVars_p[0], "%ret", "0"));
@@ -511,10 +512,7 @@ std::vector<std::shared_ptr<std::string>> Stmt::toMidCode() {
             }
             tokenNode_p = std::dynamic_pointer_cast<TokenNode>(*ite);
             if (tokenNode_p && tokenNode_p->getToken_p()->getTokenType() == TokenBase::GETINTTK) {
-                int value;
-                std::cin >> value;
-                MidCodeSequence.push_back(std::make_shared<INTERPRETER::STO>(
-                        std::to_string(value),
+                MidCodeSequence.push_back(std::make_shared<INTERPRETER::GETINT>(
                         *lvalBaseOffset.first,
                         *lvalBaseOffset.second));
                 return toReturn;

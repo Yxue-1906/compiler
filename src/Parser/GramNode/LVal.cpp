@@ -124,7 +124,8 @@ std::vector<std::shared_ptr<std::string>> LVal::toMidCode() {
     auto offset_p = symTableGenCode.getNewTmpVarName();
     MidCodeSequence.push_back(std::make_shared<INTERPRETER::ALLO>(*offset_p, 1));
     auto varDimension = *varType->dimension_p;
-    for (int i = 1; ite < this->sons.end(); ite += 3, i++) {
+    int i = 1;
+    for (; ite < this->sons.end(); ite += 3, i++) {
         auto exp_p = std::dynamic_pointer_cast<Exp>(*ite);
         auto expTmpVars = exp_p->toMidCode();
         std::string dimension = *expTmpVars[0];
@@ -138,7 +139,11 @@ std::vector<std::shared_ptr<std::string>> LVal::toMidCode() {
                                                                       *tmpOffset_p));
         MidCodeSequence.push_back(std::make_shared<INTERPRETER::ADD>(*offset_p, *tmpOffset_p, *offset_p));
     }
-    MidCodeSequence.push_back(std::make_shared<INTERPRETER::LOD>(*offset_p, varName, *offset_p));
+    if (i <= varDimension.size()) {
+        MidCodeSequence.push_back(std::make_shared<INTERPRETER::LODA>(*offset_p, varName, *offset_p));
+    } else {
+        MidCodeSequence.push_back(std::make_shared<INTERPRETER::LOD>(*offset_p, varName, *offset_p));
+    }
     toReturn.push_back(offset_p);
     return toReturn;
 }

@@ -26,7 +26,21 @@ namespace INTERPRETER {
 
         virtual std::string
         to_string(std::shared_ptr<VarTable> varTable_p, const std::vector<int> &DataStack) const override {
-            return std::string{"CALL "} + funcName;//todo
+            std::string toReturn = "CALL " + funcName + " ";
+            for (int i = 0; i < inParams.size(); ++i) {
+                int value;
+                value = varTable_p->find(inParams[i]);
+                if (value != -1) {
+                    value = DataStack[value];
+                    toReturn += inParams[i] + ":" + std::to_string(value);
+                } else {
+                    toReturn += inParams[i];
+                }
+                toReturn += "->";
+                toReturn += formalParams[i];
+                toReturn += " ";
+            }
+            return toReturn;
         }
     };
 }

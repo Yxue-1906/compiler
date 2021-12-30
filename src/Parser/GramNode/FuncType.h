@@ -20,6 +20,8 @@ public:
     bool getReturnType(std::shared_ptr<IdentInfo> &toReturn);
 
     virtual bool checkValid() override;
+
+    bool isVoid();
 };
 
 
