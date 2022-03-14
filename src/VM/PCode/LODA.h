@@ -30,7 +30,7 @@ namespace INTERPRETER {
                 //should not here
                 int tmp;
                 std::cout << "cant find " << from << std::endl;
-                std::cin >> tmp;
+//                std::cin >> tmp;
             }
             toReturn += "&" + from;
             addr = varTable_p->find(offset);

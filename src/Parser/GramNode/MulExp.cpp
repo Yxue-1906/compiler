@@ -8,6 +8,7 @@
 #include "../../VM/PCode/MULT.h"
 #include "../../VM/PCode/DIV.h"
 #include "../../VM/PCode/MOD.h"
+#include "../../VM/PCode/ALLO.h"
 
 MulExp::MulExp(std::vector<std::shared_ptr<GramNode>> sons) : GramNode() {
     setGramName("MulExp");
@@ -146,6 +147,7 @@ std::vector<std::shared_ptr<std::string>> MulExp::toMidCode() {
         auto tmpVar1_p = mulExp_p->toMidCode()[0];
         auto tmpVar2_p = unaryExp_p->toMidCode()[0];
         auto tmpVar_p = symTableGenCode.getNewTmpVarName();
+        MidCodeSequence.push_back(std::make_shared<INTERPRETER::ALLO>(*tmpVar_p, 1));
         if (op_p->getTokenType() == TokenBase::MULT) {
             MidCodeSequence.push_back(std::make_shared<INTERPRETER::MULT>(*tmpVar1_p, *tmpVar2_p, *tmpVar_p));
         } else if (op_p->getTokenType() == TokenBase::DIV) {

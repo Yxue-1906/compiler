@@ -516,25 +516,25 @@ std::vector<std::shared_ptr<std::string>> Stmt::toMidCode() {
                         *lvalBaseOffset.first,
                         *lvalBaseOffset.second));
                 return toReturn;
-            }
-            //should not run to here!
-            int tmp;
-            std::cout << "error occurred when run to stmt->lval" << std::endl;
-            std::cin >> tmp;
-        }
-        auto block_p = std::dynamic_pointer_cast<Block>(*ite);
-        if (block_p) {
+            }auto block_p = std::dynamic_pointer_cast<Block>(*ite);
+          if (block_p) {
             symTableGenCode.newStack();
             block_p->toMidCode();
             symTableGenCode.deleteStack();
             return toReturn;
+          }
+            //should not run to here!
+            int tmp;
+            std::cout << "error occurred when run to stmt->lval" << std::endl;
+//            std::cin >> tmp;
         }
+
         //should not run to here?
     }
     //should not run to here
-    int tmp;
-    std::cout << "error occurred in stmt" << std::endl;
-    std::cin >> tmp;
+//    int tmp;
+//    std::cout << "error occurred in stmt" << std::endl;
+//    std::cin >> tmp;
 }
 
 

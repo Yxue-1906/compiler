@@ -72,7 +72,7 @@ std::vector<std::shared_ptr<std::string>> LOrExp::toMidCode() {
                 //should not run to here!
                 int tmp;
                 std::cout << "error! get null ptr" << std::endl;
-                std::cin >> tmp;
+//                std::cin >> tmp;
             }
         }
         andLabels = formerAndLabels;
@@ -96,7 +96,7 @@ std::vector<std::shared_ptr<std::string>> LOrExp::toMidCode() {
                 //should not run to here!
                 int tmp;
                 std::cout << "error! get null ptr" << std::endl;
-                std::cin >> tmp;
+//                std::cin >> tmp;
             }
         }
         andLabels = formerAndLabels;

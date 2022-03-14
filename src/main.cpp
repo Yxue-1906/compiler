@@ -5,26 +5,30 @@
 #include "VM/Interpreter.h"
 
 int main() {
-    std::ifstream ifs;
-    ifs.open("testfile.txt", std::ios::in);
-    std::ofstream ofs;
-    ofs.open("output.txt", std::ios::out | std::ios::trunc);
-    MyOutput::setOutput(&ofs);
-    std::ofstream eofs;
-    eofs.open("error.txt", std::ios::out | std::ios::trunc);
+  std::ifstream ifs;
+  ifs.open("testfile.txt", std::ios::in);
+  std::ofstream ofs;
+  ofs.open("output.txt", std::ios::out | std::ios::trunc);
+  MyOutput::setOutput(&ofs);
+  std::ofstream eofs;
+  eofs.open("error.txt", std::ios::out | std::ios::trunc);
 #ifdef DEBUG
-    MyOutput::setErrorOutput(&eofs);
+  MyOutput::setErrorOutput(&eofs);
 #else
-    MyOutput::setErrorOutput(&eofs);
+  MyOutput::setErrorOutput(&eofs);
 #endif
-    Lexer lexer{std::move(ifs)};
-    Parser parser{lexer.getList()};
+  Lexer lexer{std::move(ifs)};
+  Parser parser{lexer.getList()};
 //    parser.getRoot()->myOutput();
-    auto root = parser.getRoot();
-    if (root->checkValid())
-        root->toMidCode();
-    INTERPRETER::Interpreter interpreter{GramNode::MidCodeSequence, GramNode::labels};
-    interpreter.setOs(std::make_shared<std::ostream>(std::cout.rdbuf()));
-    interpreter.run();
-    return 0;
+  auto root = parser.getRoot();
+  if (root->checkValid())
+    root->toMidCode();
+  INTERPRETER::Interpreter interpreter{GramNode::MidCodeSequence, GramNode::labels};
+#if defined(DEBUG) || defined(VM_DEBUG)
+  interpreter.setOs(std::make_shared<std::ostream>(std::cout.rdbuf()));
+#else
+  interpreter.setOs(std::make_shared<std::ofstream>("pcoderesult.txt", std::ios::out | std::ios::trunc));
+#endif
+  interpreter.run();
+  return 0;
 }

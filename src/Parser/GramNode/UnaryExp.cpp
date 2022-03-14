@@ -14,6 +14,7 @@
 #include "../../VM/PCode/NOT.h"
 #include "../../VM/PCode/CALL.h"
 #include "../../VM/PCode/LOD.h"
+#include "../../VM/PCode/ALLO.h"
 
 UnaryExp::UnaryExp(std::vector<std::shared_ptr<GramNode>> sons) : GramNode() {
     setGramName("UnaryExp");
@@ -208,6 +209,7 @@ std::vector<std::shared_ptr<std::string>> UnaryExp::toMidCode() {
             auto funcInfo = symTableGenCode.searchFunc_s(*ident_p);
             MidCodeSequence.push_back(std::make_shared<INTERPRETER::CALL>(*ident_p, params, *funcInfo));
             auto tmpVar_p = symTableGenCode.getNewTmpVarName();
+            MidCodeSequence.push_back(std::make_shared<INTERPRETER::ALLO>(*tmpVar_p, 1));
             MidCodeSequence.push_back(std::make_shared<INTERPRETER::LOD>(*tmpVar_p, "%ret", "0"));
             toReturn.push_back(tmpVar_p);
             return toReturn;

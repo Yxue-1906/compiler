@@ -208,6 +208,7 @@ INTERPRETER::Interpreter::getInterpreter_p(std::shared_ptr<std::istream> istream
 void INTERPRETER::Interpreter::run() {
     for (; PC < MidCodeSequence.size();) {
 #ifdef VM_DEBUG
+      if(!std::dynamic_pointer_cast<PSTR>(MidCodeSequence[PC]))
         std::cout << MidCodeSequence[PC]->to_string(varTable_p, DataStack) << std::endl;
 #endif
         if (std::dynamic_pointer_cast<ADD>(MidCodeSequence[PC])) {

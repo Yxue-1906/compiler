@@ -104,7 +104,7 @@ std::pair<std::string, std::string> FuncFParam::getParam() {
                 //should not happen;
                 int tmp;
                 std::cout << "error occured here" << std::endl;
-                std::cin >> tmp;
+//                std::cin >> tmp;
             }
         }
     }
